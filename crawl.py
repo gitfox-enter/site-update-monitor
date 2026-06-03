@@ -357,7 +357,8 @@ def check_site_update(url, old_records):
     page_info = {
         'url': url,
         'title': result['title'],
-        'summary': result['summary']
+        'summary': result['summary'],
+        'items': result['items']
     }
     
     new_hash = calculate_md5(text)
