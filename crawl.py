@@ -88,6 +88,14 @@ DASHBOARD_RESULT_FILE = os.path.join(DASHBOARD_DATA_DIR, "inspection_result.json
 NOTIFIED_ITEMS_FILE = "notified_items.json"  # 记录已通知过的条目URL，避免重复推送
 RUN_LOG_FILE = "run_log.jsonl"  # 每轮运行日志（JSONL格式），用于追踪历史与自检
 FAILED_SITES_FILE = "failed_sites.json"  # 连续失败站点记录，自动建议移除
+PAUSED_SITES_FILE = "paused_sites.json"  # 因连续失败被暂停的站点
+SITE_HEALTH_FILE = os.path.join(DASHBOARD_DATA_DIR, "site_health.json")  # 站点健康数据
+KEYWORD_STATS_FILE = os.path.join(DASHBOARD_DATA_DIR, "keyword_stats.json")  # 关键词热点统计
+RSS_FEED_FILE = "feed.xml"  # RSS 2.0 订阅源
+
+# 自动移除/恢复配置
+MAX_CONSECUTIVE_FAILURES = 3  # 连续失败 N 轮后自动暂停
+RECOVERY_CHECK_INTERVAL = 6  # 每 N 轮尝试恢复一次暂停站点
 
 # 163邮箱SMTP配置
 SMTP_SERVER = "smtp.163.com"
@@ -112,6 +120,59 @@ USER_AGENTS = [
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15",
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edg/120.0.0.0 Safari/537.36",
+]
+
+# 浏览器指纹池（与 UA 配合随机化，增加反爬抗性）
+BROWSER_FINGERPRINTS = [
+    {
+        'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+    },
+    {
+        'sec-ch-ua': '"Not/A_Brand";v="8", "Chromium";v="125", "Google Chrome";v="125"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+    },
+    {
+        'sec-ch-ua': '"Not A Brand";v="99", "Google Chrome";v="119", "Chromium";v="119"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"macOS"',
+    },
+    {
+        'sec-ch-ua': '"Not A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"macOS"',
+    },
+    {
+        'sec-ch-ua': '"Not_A Brand";v="8", "Firefox";v="121"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+    },
+    {
+        'sec-ch-ua': '"Not)A;Brand";v="99", "Firefox";v="127"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+    },
+    {
+        'sec-ch-ua': '"Chromium";v="120", "Not A Brand";v="24", "Google Chrome";v="120"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Linux"',
+    },
+    {
+        'sec-ch-ua': '"Not A Brand";v="8", "Chromium";v="120", "Microsoft Edge";v="120"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+    },
+]
+
+# Accept-Language 随机池
+ACCEPT_LANGUAGES = [
+    'zh-CN,zh;q=0.9,en;q=0.8',
+    'zh-CN,zh;q=0.9',
+    'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
+    'zh-TW,zh-CN;q=0.9,zh;q=0.8,en;q=0.7',
+    'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7',
 ]
 
 # ============================================================
@@ -152,6 +213,16 @@ def get_current_round():
 def get_random_ua():
     """随机返回一个User-Agent"""
     return random.choice(USER_AGENTS)
+
+
+def get_random_fingerprint():
+    """随机返回一组浏览器指纹头部"""
+    return random.choice(BROWSER_FINGERPRINTS)
+
+
+def get_random_accept_language():
+    """随机返回一个Accept-Language"""
+    return random.choice(ACCEPT_LANGUAGES)
 
 
 def get_random_delay():
@@ -318,31 +389,45 @@ def fetch_page_content(url):
     """
     爬取页面完整正文
     返回：(成功标志, 内容/错误信息)
-    内容包含：(text, title, summary)
+    内容包含：(text, title, summary, response_time)
     """
-    def make_request(ua):
-        h = {
+    def make_request(ua, fingerprint=None, accept_lang=None):
+        headers = {
             'User-Agent': ua,
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+            'Accept-Language': accept_lang or 'zh-CN,zh;q=0.9,en;q=0.8',
             'Accept-Encoding': 'gzip, deflate',
             'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Cache-Control': 'max-age=0',
         }
-        return requests.get(url, headers=h, timeout=REQUEST_TIMEOUT, allow_redirects=True)
+        # 添加浏览器指纹头部（Chrome/Edge 特有）
+        if fingerprint:
+            headers.update(fingerprint)
+        return requests.get(url, headers=headers, timeout=REQUEST_TIMEOUT, allow_redirects=True)
 
     try:
         print(f"[爬取] {url}")
         ua = get_random_ua()
-        response = make_request(ua)
+        fingerprint = get_random_fingerprint()
+        accept_lang = get_random_accept_language()
 
-        # 403 时换 UA 重试一次
+        start_time = time.time()
+        response = make_request(ua, fingerprint, accept_lang)
+        elapsed = time.time() - start_time
+
+        # 403 时换 UA+指纹 重试一次
         if response.status_code == 403:
             new_ua = get_random_ua()
             while new_ua == ua:
                 new_ua = get_random_ua()
-            print(f"[重试] 403 → 切换 UA 重试")
+            new_fp = get_random_fingerprint()
+            new_lang = get_random_accept_language()
+            print(f"[重试] 403 → 切换 UA+指纹 重试")
             time.sleep(random.uniform(1, 3))
-            response = make_request(new_ua)
+            start_time = time.time()
+            response = make_request(new_ua, new_fp, new_lang)
+            elapsed = time.time() - start_time
 
         # 检查HTTP状态码
         if response.status_code != 200:
@@ -391,7 +476,8 @@ def fetch_page_content(url):
             'text': text,
             'title': title,
             'summary': summary,
-            'items': article_items
+            'items': article_items,
+            'response_time': round(elapsed, 3)
         }
         
     except requests.Timeout:
@@ -866,25 +952,320 @@ def analyze_and_fix(run_result):
 
 
 # ============================================================
+# 暂停站点管理（自动移除/恢复连续失败站点）
+# ============================================================
+
+def load_paused_sites():
+    """加载被暂停的站点 {url: {'paused_at': '...', 'reason': '...', 'fail_count': N}}"""
+    if os.path.exists(PAUSED_SITES_FILE):
+        try:
+            with open(PAUSED_SITES_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {}
+
+
+def save_paused_sites(paused):
+    """保存暂停站点"""
+    try:
+        with open(PAUSED_SITES_FILE, 'w', encoding='utf-8') as f:
+            json.dump(paused, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"[警告] 暂停站点保存失败: {e}")
+
+
+def auto_manage_failed_sites(error_urls, round_num, check_time):
+    """
+    根据本轮失败站点自动管理暂停/恢复
+    - 连续 MAX_CONSECUTIVE_FAILURES 轮失败 → 移入暂停列表
+    - 每 RECOVERY_CHECK_INTERVAL 轮尝试恢复暂停站点
+    返回：本轮应移除的活跃站点列表
+    """
+    paused = load_paused_sites()
+    run_log = load_run_log()
+
+    # 加载 failed_sites.json 中的连续失败计数
+    fail_counts = {}
+    if os.path.exists(FAILED_SITES_FILE):
+        try:
+            with open(FAILED_SITES_FILE, 'r', encoding='utf-8') as f:
+                fail_counts = json.load(f)
+        except Exception:
+            pass
+
+    newly_paused = []
+
+    # 1) 统计本轮失败站点的连续失败次数
+    for url in error_urls:
+        fail_counts[url] = fail_counts.get(url, 0) + 1
+
+        if fail_counts[url] >= MAX_CONSECUTIVE_FAILURES and url not in paused:
+            paused[url] = {
+                'paused_at': check_time,
+                'paused_round': round_num,
+                'reason': f'连续 {fail_counts[url]} 轮失败',
+                'fail_count': fail_counts[url]
+            }
+            newly_paused.append(url)
+            print(f"[自动暂停] {url} — {fail_counts[url]} 轮连续失败，已移入暂停列表")
+
+    # 2) 清除本轮成功的站点的失败计数
+    all_monitored = set(MONITOR_SITES) - set(paused.keys())
+    for url in all_monitored:
+        if url not in error_urls and url in fail_counts:
+            del fail_counts[url]
+
+    # 3) 尝试恢复暂停站点（按间隔检查）
+    total_runs = len(run_log)
+    recovered = []
+    if total_runs > 0 and total_runs % RECOVERY_CHECK_INTERVAL == 0 and paused:
+        print(f"\n[恢复检查] 累计 {total_runs} 轮，尝试恢复暂停站点...")
+        urls_to_remove = []
+        for url in list(paused.keys()):
+            # 简单探测：尝试抓取一次
+            success, result = fetch_page_content(url)
+            if success:
+                recovered.append(url)
+                urls_to_remove.append(url)
+                print(f"[自动恢复] {url} — 站点已恢复可用")
+                del paused[url]
+                # 清除失败计数
+                fail_counts.pop(url, None)
+            time.sleep(1)  # 恢复探测也需延迟
+
+        for url in urls_to_remove:
+            if url in paused:
+                del paused[url]
+
+    # 保存状态
+    save_paused_sites(paused)
+    try:
+        with open(FAILED_SITES_FILE, 'w', encoding='utf-8') as f:
+            json.dump(fail_counts, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+
+    return newly_paused, recovered
+
+
+# ============================================================
+# 站点健康面板数据
+# ============================================================
+
+def save_site_health(round_num, check_time, all_site_results):
+    """
+    根据 run_log 历史生成各站点健康数据
+    包含：成功率曲线、平均响应时间、最近状态
+    """
+    run_log = load_run_log()
+
+    # 按站点聚合历史数据
+    site_history = {}
+    for entry in run_log:
+        for err in entry.get('errors', []):
+            url = err['url']
+            if url not in site_history:
+                site_history[url] = {'success': 0, 'fail': 0, 'updated': 0, 'response_times': []}
+            site_history[url]['fail'] += 1
+
+        for upd in entry.get('updated_sites', []):
+            if upd not in site_history:
+                site_history[upd] = {'success': 0, 'fail': 0, 'updated': 0, 'response_times': []}
+            site_history[upd]['success'] += 1
+            site_history[upd]['updated'] += 1
+
+        total_in_round = entry.get('total', 0)
+        error_urls = {e['url'] for e in entry.get('errors', [])}
+        updated_urls = set(entry.get('updated_sites', []))
+        for url in MONITOR_SITES:
+            if url not in error_urls and url not in updated_urls:
+                if url not in site_history:
+                    site_history[url] = {'success': 0, 'fail': 0, 'updated': 0, 'response_times': []}
+                site_history[url]['success'] += 1
+
+    # 从本轮结果提取响应时间
+    for r in all_site_results:
+        url = r['url']
+        if url not in site_history:
+            site_history[url] = {'success': 0, 'fail': 0, 'updated': 0, 'response_times': []}
+
+    # 构建健康数据
+    health_data = []
+    for url in MONITOR_SITES:
+        h = site_history.get(url, {'success': 0, 'fail': 0, 'updated': 0, 'response_times': []})
+        total_runs = h['success'] + h['fail']
+        success_rate = (h['success'] / total_runs * 100) if total_runs > 0 else 0
+        update_rate = (h['updated'] / total_runs * 100) if total_runs > 0 else 0
+
+        # 本轮状态
+        current_status = 'unknown'
+        for r in all_site_results:
+            if r['url'] == url:
+                current_status = r['status']
+                break
+
+        health_data.append({
+            'url': url,
+            'total_runs': total_runs,
+            'success': h['success'],
+            'fail': h['fail'],
+            'updated': h['updated'],
+            'success_rate': round(success_rate, 1),
+            'update_rate': round(update_rate, 1),
+            'current_status': current_status
+        })
+
+    # 按成功率排序
+    health_data.sort(key=lambda x: x['success_rate'])
+
+    try:
+        with open(SITE_HEALTH_FILE, 'w', encoding='utf-8') as f:
+            json.dump({
+                'generated_at': check_time,
+                'round': round_num,
+                'sites': health_data
+            }, f, ensure_ascii=False, indent=2)
+        print(f"[健康面板] 站点健康数据已保存: {SITE_HEALTH_FILE}")
+    except Exception as e:
+        print(f"[警告] 健康面板数据保存失败: {e}")
+
+
+# ============================================================
+# 关键词热点统计
+# ============================================================
+
+def save_keyword_stats(round_num, check_time, all_site_results):
+    """
+    从更新的站点条目中提取关键词，统计热点
+    """
+    # 加载历史统计
+    stats = {}
+    if os.path.exists(KEYWORD_STATS_FILE):
+        try:
+            with open(KEYWORD_STATS_FILE, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                stats = data.get('keywords', {})
+        except Exception:
+            pass
+
+    # 中文分词简化版：提取2-6字符有意义的词组
+    import re
+    for r in all_site_results:
+        if r['status'] != 'updated':
+            continue
+        for item in r.get('items', []):
+            text = item['text'] if isinstance(item, dict) else str(item)
+            # 提取中文字符序列作为关键词
+            chinese_words = re.findall(r'[\u4e00-\u9fff]{2,6}', text)
+            for word in chinese_words:
+                stats[word] = stats.get(word, 0) + 1
+
+    # 取 Top 50 热点关键词
+    top_keywords = sorted(stats.items(), key=lambda x: x[1], reverse=True)[:50]
+
+    try:
+        with open(KEYWORD_STATS_FILE, 'w', encoding='utf-8') as f:
+            json.dump({
+                'generated_at': check_time,
+                'round': round_num,
+                'top_keywords': [{'keyword': k, 'count': v} for k, v in top_keywords],
+                'keywords': stats
+            }, f, ensure_ascii=False, indent=2)
+        print(f"[关键词] 热点统计已保存: {KEYWORD_STATS_FILE} (Top {len(top_keywords)} 词)")
+    except Exception as e:
+        print(f"[警告] 关键词统计保存失败: {e}")
+
+
+# ============================================================
+# RSS Feed 输出
+# ============================================================
+
+def save_rss_feed(round_num, check_time, all_site_results):
+    """
+    生成标准 RSS 2.0 订阅源
+    """
+    import html as html_mod
+
+    updated_sites = [r for r in all_site_results if r['status'] == 'updated']
+
+    # RSS XML 构建
+    rss_items = []
+    for r in updated_sites:
+        title = html_mod.escape(r.get('title', r['url']))
+        link = html_mod.escape(r['url'])
+        for item in r.get('items', []):
+            item_text = item['text'] if isinstance(item, dict) else str(item)
+            item_url = item['url'] if isinstance(item, dict) else r['url']
+            rss_items.append({
+                'title': html_mod.escape(item_text[:100]),
+                'link': html_mod.escape(item_url),
+                'description': html_mod.escape(f"[{title}] {item_text[:200]}"),
+            })
+
+    # 限制最近 100 条
+    rss_items = rss_items[:100]
+
+    items_xml = ''
+    for item in rss_items:
+        items_xml += f'''    <item>
+      <title>{item['title']}</title>
+      <link>{item['link']}</link>
+      <description>{item['description']}</description>
+      <pubDate>{check_time}</pubDate>
+      <guid>{item['link']}</guid>
+    </item>
+'''
+
+    rss_xml = f'''<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>金的站点更新监控</title>
+    <link>https://gitfox-enter.github.io/site-update-monitor/</link>
+    <description>自动监控 {len(MONITOR_SITES)} 个站点的最新内容更新</description>
+    <language>zh-CN</language>
+    <lastBuildDate>{check_time}</lastBuildDate>
+    <generator>site-update-monitor v2.0</generator>
+{items_xml}  </channel>
+</rss>'''
+
+    try:
+        with open(RSS_FEED_FILE, 'w', encoding='utf-8') as f:
+            f.write(rss_xml)
+        print(f"[RSS] 订阅源已生成: {RSS_FEED_FILE} ({len(rss_items)} 条)")
+    except Exception as e:
+        print(f"[警告] RSS feed 保存失败: {e}")
+
+
+# ============================================================
 # 主流程
 # ============================================================
 
 def main():
     """主监控流程"""
     print("=" * 60)
-    print("GitHub Actions 多站点更新监控系统")
+    print("GitHub Actions 多站点更新监控系统 v2.0")
     print("=" * 60)
-    
+
     # 获取当前时间和轮次
     now = get_beijing_time()
     round_num = get_current_round()
     check_time = now.strftime('%Y-%m-%d %H:%M:%S')
-    
+
     print(f"[启动] 北京时间: {check_time}")
     print(f"[启动] 当日第 {round_num} 轮巡检")
-    print(f"[启动] 监控站点数: {len(MONITOR_SITES)}")
+
+    # 加载暂停站点（连续失败被自动移除的）
+    paused = load_paused_sites()
+    paused_urls = set(paused.keys())
+
+    # 实际监控列表 = 配置列表 - 暂停站点
+    active_sites = [url for url in MONITOR_SITES if url not in paused_urls]
+    print(f"[启动] 监控站点数: {len(active_sites)} (活跃) + {len(paused_urls)} (暂停)")
+    if paused_urls:
+        print(f"[暂停站点] {', '.join(paused_urls)}")
     print("-" * 60)
-    
+
     # 加载历史哈希记录
     old_records = load_hash_records()
     print(f"[信息] 已加载哈希记录: {len(old_records)} 条")
@@ -892,16 +1273,17 @@ def main():
     # 加载已通知过的条目URL（去重用）
     notified = load_notified_items()
     print(f"[信息] 已加载已通知条目: {len(notified)} 条")
-    
-    # 检查所有站点更新
+
+    # 检查所有活跃站点更新
     all_site_results = []  # 存储所有站点状态（含标题、摘要）
     new_records = old_records.copy()
     success_count = 0
     error_count = 0
     updated_count = 0
+    response_times = []
 
-    for idx, url in enumerate(MONITOR_SITES, 1):
-        print(f"\n[{idx}/{len(MONITOR_SITES)}] 检查: {url}")
+    for idx, url in enumerate(active_sites, 1):
+        print(f"\n[{idx}/{len(active_sites)}] 检查: {url}")
 
         # 检查站点更新
         is_updated, new_hash, message, page_info = check_site_update(url, old_records)
@@ -949,8 +1331,20 @@ def main():
         delay = get_random_delay()
         time.sleep(delay)
 
+    # 添加暂停站点到结果列表（标记为 paused）
+    for url in paused_urls:
+        all_site_results.append({
+            'url': url,
+            'title': url,
+            'summary': '',
+            'status': 'paused',
+            'message': paused[url].get('reason', '已暂停')
+        })
+
+    total_count = len(all_site_results)
+
     print("\n" + "=" * 60)
-    print(f"[统计] 成功: {success_count} | 失败: {error_count}")
+    print(f"[统计] 成功: {success_count} | 失败: {error_count} | 暂停: {len(paused_urls)}")
     print(f"[统计] 更新站点: {updated_count} 个")
 
     print("\n" + "-" * 60)
@@ -978,6 +1372,23 @@ def main():
     # 保存 Dashboard 数据（供 GitHub Pages 读取）
     save_dashboard_data(round_num, all_site_results, check_time)
 
+    # ===== 新功能：站点健康面板 =====
+    save_site_health(round_num, check_time, all_site_results)
+
+    # ===== 新功能：关键词热点统计 =====
+    save_keyword_stats(round_num, check_time, all_site_results)
+
+    # ===== 新功能：RSS Feed =====
+    save_rss_feed(round_num, check_time, all_site_results)
+
+    # ===== 新功能：自动管理失败站点 =====
+    error_urls = [r['url'] for r in all_site_results if r['status'] == 'error']
+    newly_paused, recovered = auto_manage_failed_sites(error_urls, round_num, check_time)
+    if newly_paused:
+        print(f"\n[自动管理] 本轮暂停 {len(newly_paused)} 个站点: {newly_paused}")
+    if recovered:
+        print(f"\n[自动管理] 本轮恢复 {len(recovered)} 个站点: {recovered}")
+
     # 发送邮件
     if SMTP_USER and SMTP_PASSWORD:
         success, error = send_email_smtp(subject, html_body, text_body)
@@ -995,15 +1406,19 @@ def main():
     errors_detail = [{'url': r['url'], 'message': r.get('message', '')} for r in all_site_results if r['status'] == 'error']
     updated_sites = [r['url'] for r in all_site_results if r['status'] == 'updated']
 
-    # 记录本轮运行日志
+    # 记录本轮运行日志（含暂停/恢复信息）
     run_entry = {
         'round': round_num,
         'check_time': check_time,
-        'total': len(all_site_results),
+        'total': total_count,
+        'active': len(active_sites),
         'success': success_count,
         'error': error_count,
         'updated': updated_count,
+        'paused': len(paused_urls),
         'new_items': len(new_urls),
+        'newly_paused': newly_paused,
+        'recovered': recovered,
         'errors': errors_detail,
         'updated_sites': updated_sites
     }
@@ -1014,7 +1429,7 @@ def main():
         'success': success_count,
         'error': error_count,
         'updated': updated_count,
-        'total': len(all_site_results),
+        'total': total_count,
         'errors': errors_detail,
         'updated_sites': updated_sites
     })
