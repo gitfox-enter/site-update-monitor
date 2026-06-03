@@ -310,39 +310,60 @@ def check_site_update(url, old_records):
 # 邮件推送（网易Claw）
 # ============================================================
 
-def generate_email_html(round_num, updated_sites, check_time):
+def generate_email_html(round_num, all_site_results, check_time):
     """
-    生成邮件HTML内容
-    - 标题：【站点更新提醒】当日第N轮巡检 | 共M个网站更新
-    - 正文：标准HTML格式，链接新窗口打开，包含页面标题和摘要
+    生成邮件HTML内容 — 显示所有站点状态
+    all_site_results: 列表，每个元素为 {'url':..., 'title':..., 'summary':..., 'status': 'updated'|'no_update'|'error'|'first', 'message':..., 'page_info':...}
+    排序规则：有更新的排在前面，无更新的排在后面
     返回：(主题, HTML正文, 纯文本正文)
     """
+    # 统计
+    updated_results = [r for r in all_site_results if r['status'] == 'updated']
+    no_update_results = [r for r in all_site_results if r['status'] in ('no_update', 'first')]
+    error_results = [r for r in all_site_results if r['status'] == 'error']
+    total = len(all_site_results)
+    updated_count = len(updated_results)
+
+    # 排序：更新的前面，无更新的后面
+    sorted_results = updated_results + no_update_results + error_results
+
     # 邮件标题
-    subject = f"【站点更新提醒】当日第{round_num}轮巡检 | 共{len(updated_sites)}个网站更新"
-    
-    # 纯文本正文
-    text_body = f"""站点更新监控提醒
+    if updated_count > 0:
+        subject = f"【站点更新提醒】第{round_num}轮巡检 | {updated_count}个站点有更新"
+    else:
+        subject = f"【站点巡检报告】第{round_num}轮巡检 | 暂无更新"
+
+    # ===== 纯文本正文 =====
+    text_body = f"""站点更新监控巡检报告
 
 📅 当日第 {round_num} 次全自动巡检
 ⏰ 巡检时间：{check_time}
-📊 检测到 {len(updated_sites)} 个网站内容更新
-
-更新站点列表：
-以下站点监测到内容更新，点击链接可直达原网页：
+📊 总计 {total} 个站点 | 更新 {updated_count} 个 | 无更新 {len(no_update_results)} 个 | 异常 {len(error_results)} 个
 
 """
-    for idx, site_info in enumerate(updated_sites, 1):
-        url = site_info.get('url', '')
-        title = site_info.get('title', url)
-        summary = site_info.get('summary', '')
-        text_body += f"{idx}. {title}\n   URL: {url}\n   摘要: {summary}\n\n"
-    
-    text_body += f"""
+    if updated_results:
+        text_body += "━━━ 有更新的站点 ━━━\n\n"
+        for idx, r in enumerate(updated_results, 1):
+            text_body += f"[更新] {idx}. {r['title']}\n   URL: {r['url']}\n   摘要: {r['summary']}\n\n"
+
+    if no_update_results:
+        text_body += "━━━ 无更新的站点 ━━━\n\n"
+        for idx, r in enumerate(no_update_results, 1):
+            text_body += f"[无新内容] {idx}. {r['title']}\n   URL: {r['url']}\n\n"
+
+    if error_results:
+        text_body += "━━━ 异常的站点 ━━━\n\n"
+        for idx, r in enumerate(error_results, 1):
+            text_body += f"[异常] {idx}. {r['url']}\n   原因: {r['message']}\n\n"
+
+    text_body += """
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 🤖 自动化监控来源：GitHub Actions 站点巡检机器人
 ⏱ 每4小时自动巡检 | 零运维 | 稳定可靠
 ✉️ 163邮箱推送服务
 """
+
+    # ===== HTML正文 =====
     body = f"""<!DOCTYPE html>
 <html>
 <head>
@@ -376,25 +397,34 @@ def generate_email_html(round_num, updated_sites, check_time):
             margin-bottom: 15px;
             border-left: 4px solid #667eea;
         }}
-        .site-list {{
-            background: white;
+        .section-title {{
+            background: #667eea;
+            color: white;
+            padding: 10px 15px;
             border-radius: 5px;
-            padding: 15px;
+            margin: 20px 0 10px 0;
+            font-size: 15px;
         }}
-        .site-item {{
+        .section-title.no-update {{
+            background: #9e9e9e;
+        }}
+        .section-title.error {{
+            background: #e53935;
+        }}
+        .site-item.updated {{
             padding: 15px;
             margin: 10px 0;
             background: #f0f4ff;
             border-radius: 5px;
             border-left: 3px solid #667eea;
         }}
-        .site-item a {{
+        .site-item.updated a {{
             color: #667eea;
             text-decoration: none;
             font-weight: 600;
-            font-size: 16px;
+            font-size: 15px;
         }}
-        .site-item a:hover {{
+        .site-item.updated a:hover {{
             text-decoration: underline;
         }}
         .site-summary {{
@@ -402,10 +432,42 @@ def generate_email_html(round_num, updated_sites, check_time):
             padding: 10px;
             background: white;
             border-radius: 3px;
-            font-size: 14px;
+            font-size: 13px;
             color: #666;
             line-height: 1.5;
         }}
+        .site-item.no-update {{
+            padding: 10px 15px;
+            margin: 6px 0;
+            background: #fafafa;
+            border-radius: 5px;
+            border-left: 3px solid #e0e0e0;
+            color: #999;
+            font-size: 14px;
+        }}
+        .site-item.no-update a {{
+            color: #999;
+            text-decoration: none;
+        }}
+        .site-item.error {{
+            padding: 10px 15px;
+            margin: 6px 0;
+            background: #fff5f5;
+            border-radius: 5px;
+            border-left: 3px solid #e53935;
+            color: #c62828;
+            font-size: 14px;
+        }}
+        .badge {{
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-left: 8px;
+        }}
+        .badge.updated {{ background: #667eea; color: white; }}
+        .badge.no-update {{ background: #e0e0e0; color: #666; }}
+        .badge.error {{ background: #e53935; color: white; }}
         .footer {{
             text-align: center;
             padding: 15px;
@@ -422,37 +484,56 @@ def generate_email_html(round_num, updated_sites, check_time):
 </head>
 <body>
     <div class="header">
-        <h2 style="margin: 0;">🔔 站点更新监控提醒</h2>
+        <h2 style="margin: 0;">🔔 站点更新监控巡检报告</h2>
     </div>
-    
+
     <div class="content">
         <div class="info-box">
             <p style="margin: 5px 0;">📅 当日第 <span class="highlight">{round_num}</span> 次全自动巡检</p>
             <p style="margin: 5px 0;">⏰ 巡检时间：<span class="highlight">{check_time}</span></p>
-            <p style="margin: 5px 0;">📊 检测到 <span class="highlight">{len(updated_sites)}</span> 个网站内容更新</p>
+            <p style="margin: 5px 0;">📊 总计 <span class="highlight">{total}</span> 个站点 ｜
+               更新 <span class="highlight" style="color:#2e7d32">{updated_count}</span> 个 ｜
+               无更新 <span class="highlight" style="color:#9e9e9e">{len(no_update_results)}</span> 个 ｜
+               异常 <span class="highlight" style="color:#e53935">{len(error_results)}</span> 个</p>
         </div>
-        
-        <div class="site-list">
-            <h3 style="margin-top: 0; color: #333;">更新站点列表</h3>
-            <p>以下站点监测到内容更新，点击链接可直达原网页：</p>
 """
-    
-    # 添加每个更新站点（包含标题和摘要）
-    for idx, site_info in enumerate(updated_sites, 1):
-        url = site_info.get('url', '')
-        title = site_info.get('title', url)
-        summary = site_info.get('summary', '')
-        body += f"""
-            <div class="site-item">
-                <strong>{idx}.</strong> <a href="{url}" target="_blank" rel="noopener noreferrer">{title}</a>
-                <div class="site-summary">{summary}</div>
+
+    # 有更新的站点
+    if updated_results:
+        body += f'        <div class="section-title">✅ 有更新的站点（{len(updated_results)}个）</div>\n'
+        for idx, r in enumerate(updated_results, 1):
+            body += f"""
+            <div class="site-item updated">
+                <strong>{idx}.</strong> <a href="{r['url']}" target="_blank" rel="noopener noreferrer">{r['title']}</a>
+                <span class="badge updated">已更新</span>
+                <div class="site-summary">{r['summary']}</div>
             </div>
 """
-    
+
+    # 无更新的站点
+    if no_update_results:
+        body += f'        <div class="section-title no-update">⭕ 无更新的站点（{len(no_update_results)}个）</div>\n'
+        for idx, r in enumerate(no_update_results, 1):
+            body += f"""
+            <div class="site-item no-update">
+                {idx}. <a href="{r['url']}" target="_blank" rel="noopener noreferrer">{r['title']}</a>
+                <span class="badge no-update">无新内容</span>
+            </div>
+"""
+
+    # 异常的站点
+    if error_results:
+        body += f'        <div class="section-title error">❌ 异常的站点（{len(error_results)}个）</div>\n'
+        for idx, r in enumerate(error_results, 1):
+            body += f"""
+            <div class="site-item error">
+                {idx}. {r['url']} <span class="badge error">异常</span> — {r['message']}
+            </div>
+"""
+
     body += """
-        </div>
     </div>
-    
+
     <div class="footer">
         <p style="margin: 5px 0;">🤖 自动化监控来源：GitHub Actions 站点巡检机器人</p>
         <p style="margin: 5px 0;">⏱ 每4小时自动巡检 | 零运维 | 稳定可靠</p>
@@ -461,7 +542,7 @@ def generate_email_html(round_num, updated_sites, check_time):
 </body>
 </html>
 """
-    
+
     return subject, body, text_body
 
 
@@ -618,200 +699,84 @@ def main():
     print(f"[信息] 已加载哈希记录: {len(old_records)} 条")
     
     # 检查所有站点更新
-    updated_sites = []  # 存储更新的站点信息（包含标题和摘要）
+    all_site_results = []  # 存储所有站点状态（含标题、摘要）
     new_records = old_records.copy()
     success_count = 0
     error_count = 0
-    
+    updated_count = 0
+
     for idx, url in enumerate(MONITOR_SITES, 1):
         print(f"\n[{idx}/{len(MONITOR_SITES)}] 检查: {url}")
-        
+
         # 检查站点更新
         is_updated, new_hash, message, page_info = check_site_update(url, old_records)
-        
+
         if is_updated is None:
             # 爬取失败
             print(f"[失败] {message}")
             error_count += 1
-            continue
-        
-        # 更新哈希记录
-        new_records[url] = new_hash
-        success_count += 1
-        
-        if is_updated:
-            # 检测到更新，保存页面信息
-            print(f"[更新] ✅ {message}")
-            if page_info:
-                updated_sites.append(page_info)
+            all_site_results.append({
+                'url': url,
+                'title': url,
+                'summary': '',
+                'status': 'error',
+                'message': message
+            })
         else:
-            print(f"[正常] {message}")
-        
+            # 更新哈希记录
+            new_records[url] = new_hash
+            success_count += 1
+
+            if is_updated:
+                print(f"[更新] ✅ {message}")
+                updated_count += 1
+                all_site_results.append({
+                    'url': url,
+                    'title': page_info.get('title', url) if page_info else url,
+                    'summary': page_info.get('summary', '') if page_info else '',
+                    'status': 'updated',
+                    'message': message
+                })
+            else:
+                print(f"[正常] {message}")
+                status = 'first' if url not in old_records else 'no_update'
+                all_site_results.append({
+                    'url': url,
+                    'title': page_info.get('title', url) if page_info else url,
+                    'summary': '',
+                    'status': status,
+                    'message': message
+                })
+
         # 随机延迟，防止封禁
         delay = get_random_delay()
         time.sleep(delay)
-    
+
     print("\n" + "=" * 60)
     print(f"[统计] 成功: {success_count} | 失败: {error_count}")
-    print(f"[统计] 更新站点: {len(updated_sites)} 个")
-    
-    # 处理更新
-    if updated_sites:
-        print("\n" + "-" * 60)
-        print("[处理] 检测到更新，开始处理...")
-        
-        # 1. 更新哈希文件
-        save_hash_records(new_records)
-        
-        # 2. 生成邮件内容
-        subject, html_body, text_body = generate_email_html(round_num, updated_sites, check_time)
-        
-        # 3. 保存邮件备份（无论发送成功与否）
-        backup_path = save_email_backup(round_num, html_body)
-        
-        # 4. 发送邮件
-        if SMTP_USER and SMTP_PASSWORD:
-            success, error = send_email_smtp(subject, html_body, text_body)
-            if not success:
-                print(f"[警告] 邮件发送失败: {error}")
-                print("[提示] 邮件已本地备份，可手动查看")
-        else:
-            print("[警告] 邮箱未配置，跳过邮件发送")
-            print("[提示] 请在GitHub Secrets中配置 SMTP_USER 和 SMTP_PASSWORD")
-        
-        # 5. Git提交（有哈希变更或新增邮件备份）
-        git_commit_if_changed()
-        
+    print(f"[统计] 更新站点: {updated_count} 个")
+
+    print("\n" + "-" * 60)
+    print("[处理] 生成巡检报告邮件...")
+
+    # 生成邮件内容（所有站点状态）
+    subject, html_body, text_body = generate_email_html(round_num, all_site_results, check_time)
+
+    # 保存邮件备份
+    backup_path = save_email_backup(round_num, html_body)
+
+    # 发送邮件
+    if SMTP_USER and SMTP_PASSWORD:
+        success, error = send_email_smtp(subject, html_body, text_body)
+        if not success:
+            print(f"[警告] 邮件发送失败: {error}")
+            print("[提示] 邮件已本地备份，可手动查看")
     else:
-        # 首次运行：保存哈希并发送通知邮件
-        if len(new_records) > len(old_records):
-            print("\n[结果] 首次监控，正在初始化...")
-            
-            # 保存哈希
-            save_hash_records(new_records)
-            
-            # 生成首次监控邮件
-            subject = f"【站点监控启动】首次监控完成 | 已录入{len(new_records)}个站点"
-            
-            # 纯文本正文
-            text_body = f"""站点更新监控系统已启动
+        print("[警告] 邮箱未配置，跳过邮件发送")
+        print("[提示] 请在GitHub Secrets中配置 SMTP_USER 和 SMTP_PASSWORD")
 
-📅 启动时间：{check_time}
-📊 已录入监控站点：{len(new_records)} 个
-⏰ 监控频率：每4小时自动巡检
-📧 通知邮箱：{EMAIL_TO}
-
-📌 说明：
-这是首次监控运行的初始化邮件。
-从现在开始，系统将每4小时自动检查所有站点。
-当检测到内容更新时，您将收到更新通知邮件。
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━
-🤖 GitHub Actions 站点巡检机器人
-⏱ 每4小时自动巡检 | 零运维 | 稳定可靠
-✉️ 163邮箱推送服务
-"""
-            
-            # HTML正文
-            html_body = f"""<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <style>
-        body {{
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }}
-        .container {{
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }}
-        .header {{
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px 20px;
-            text-align: center;
-        }}
-        .content {{
-            padding: 30px 20px;
-        }}
-        .info-box {{
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            border-left: 4px solid #667eea;
-        }}
-        .footer {{
-            text-align: center;
-            padding: 20px;
-            color: #999;
-            font-size: 12px;
-            border-top: 1px solid #e0e0e0;
-        }}
-        .highlight {{
-            color: #667eea;
-            font-weight: bold;
-        }}
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h2 style="margin: 0;">🔔 站点更新监控系统已启动</h2>
-        </div>
-        
-        <div class="content">
-            <div class="info-box">
-                <p style="margin: 10px 0;">📅 启动时间：<span class="highlight">{check_time}</span></p>
-                <p style="margin: 10px 0;">📊 已录入监控站点：<span class="highlight">{len(new_records)}</span> 个</p>
-                <p style="margin: 10px 0;">⏰ 监控频率：每4小时自动巡检</p>
-                <p style="margin: 10px 0;">📧 通知邮箱：{EMAIL_TO}</p>
-            </div>
-            
-            <div style="background: #fff3cd; padding: 15px; border-radius: 5px; border-left: 4px solid #ffc107;">
-                <p style="margin: 0;"><strong>📌 说明：</strong></p>
-                <p style="margin: 5px 0;">这是首次监控运行的初始化邮件。</p>
-                <p style="margin: 5px 0;">从现在开始，系统将每4小时自动检查所有站点。</p>
-                <p style="margin: 5px 0;">当检测到内容更新时，您将收到更新通知邮件。</p>
-            </div>
-        </div>
-        
-        <div class="footer">
-            <p style="margin: 5px 0;">🤖 GitHub Actions 站点巡检机器人</p>
-            <p style="margin: 5px 0;">⏱ 每4小时自动巡检 | 零运维 | 稳定可靠</p>
-            <p style="margin: 5px 0; color: #667eea;">✉️ 163邮箱推送服务</p>
-        </div>
-    </div>
-</body>
-</html>
-"""
-            
-            # 发送首次监控通知邮件
-            if SMTP_USER and SMTP_PASSWORD:
-                print("[邮件] 发送首次监控通知...")
-                success, error = send_email_smtp(subject, html_body, text_body)
-                if success:
-                    print("[邮件] ✓ 首次监控通知已发送")
-                else:
-                    print(f"[邮件] ✗ 发送失败: {error}")
-            else:
-                print("[警告] 邮箱未配置，跳过邮件发送")
-            
-            # 保存邮件备份
-            save_email_backup(round_num, html_body)
-            
-            # Git提交
-            git_commit_if_changed()
-        else:
-            print("\n[结果] 无更新，零输出、零提交、零打扰 ✓")
+    # Git提交
+    git_commit_if_changed()
     
     print("\n" + "=" * 60)
     print("[完成] 本轮巡检结束")
