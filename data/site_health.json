@@ -1,0 +1,436 @@
+{
+  "generated_at": "2026-06-03 20:37:52",
+  "round": 6,
+  "sites": [
+    {
+      "url": "https://www.iqshw.com/",
+      "total_runs": 4,
+      "success": 0,
+      "fail": 4,
+      "updated": 0,
+      "success_rate": 0.0,
+      "update_rate": 0.0,
+      "current_status": "error"
+    },
+    {
+      "url": "https://store.epicgames.com/zh-CN/free-games",
+      "total_runs": 4,
+      "success": 0,
+      "fail": 4,
+      "updated": 0,
+      "success_rate": 0.0,
+      "update_rate": 0.0,
+      "current_status": "error"
+    },
+    {
+      "url": "https://foxirj.com/",
+      "total_runs": 4,
+      "success": 1,
+      "fail": 3,
+      "updated": 0,
+      "success_rate": 25.0,
+      "update_rate": 0.0,
+      "current_status": "error"
+    },
+    {
+      "url": "https://ym2.cc/",
+      "total_runs": 4,
+      "success": 3,
+      "fail": 1,
+      "updated": 3,
+      "success_rate": 75.0,
+      "update_rate": 75.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "https://www.kxdao.net/forum-42-1.html",
+      "total_runs": 4,
+      "success": 3,
+      "fail": 1,
+      "updated": 3,
+      "success_rate": 75.0,
+      "update_rate": 75.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "https://www.ghxi.com/category/all",
+      "total_runs": 4,
+      "success": 3,
+      "fail": 1,
+      "updated": 2,
+      "success_rate": 75.0,
+      "update_rate": 50.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "https://store.steampowered.com/search/?specials=1&os=win",
+      "total_runs": 4,
+      "success": 3,
+      "fail": 1,
+      "updated": 0,
+      "success_rate": 75.0,
+      "update_rate": 0.0,
+      "current_status": "first"
+    },
+    {
+      "url": "https://store.steampowered.com/",
+      "total_runs": 4,
+      "success": 3,
+      "fail": 1,
+      "updated": 3,
+      "success_rate": 75.0,
+      "update_rate": 75.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "https://www.52hb.com/forum.php",
+      "total_runs": 4,
+      "success": 3,
+      "fail": 1,
+      "updated": 1,
+      "success_rate": 75.0,
+      "update_rate": 25.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "https://xianbaomi.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 0,
+      "success_rate": 100.0,
+      "update_rate": 0.0,
+      "current_status": "error"
+    },
+    {
+      "url": "http://www.0818tuan.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 4,
+      "success_rate": 100.0,
+      "update_rate": 100.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "http://79tao.linejia.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 0,
+      "success_rate": 100.0,
+      "update_rate": 0.0,
+      "current_status": "error"
+    },
+    {
+      "url": "https://www.daydayzhuan.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 2,
+      "success_rate": 100.0,
+      "update_rate": 50.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "https://cjx8.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 4,
+      "success_rate": 100.0,
+      "update_rate": 100.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "https://907k.cn/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 0,
+      "success_rate": 100.0,
+      "update_rate": 0.0,
+      "current_status": "no_update"
+    },
+    {
+      "url": "https://b1.ymxianbao.cn/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 4,
+      "success_rate": 100.0,
+      "update_rate": 100.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "https://www.007ymd.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 1,
+      "success_rate": 100.0,
+      "update_rate": 25.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "http://news.ixbk.net/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 4,
+      "success_rate": 100.0,
+      "update_rate": 100.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "https://www.zhuanyes.com/xianbao/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 4,
+      "success_rate": 100.0,
+      "update_rate": 100.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "https://www.huodong5.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 0,
+      "success_rate": 100.0,
+      "update_rate": 0.0,
+      "current_status": "no_update"
+    },
+    {
+      "url": "https://www.yxssp.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 0,
+      "success_rate": 100.0,
+      "update_rate": 0.0,
+      "current_status": "error"
+    },
+    {
+      "url": "https://www.wobangzhao.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 2,
+      "success_rate": 100.0,
+      "update_rate": 50.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "https://www.baicaio.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 4,
+      "success_rate": 100.0,
+      "update_rate": 100.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "https://yangmao.wang/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 0,
+      "success_rate": 100.0,
+      "update_rate": 0.0,
+      "current_status": "no_update"
+    },
+    {
+      "url": "https://www.12345pro.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 0,
+      "success_rate": 100.0,
+      "update_rate": 0.0,
+      "current_status": "no_update"
+    },
+    {
+      "url": "https://news.ixbk.fun/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 4,
+      "success_rate": 100.0,
+      "update_rate": 100.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "https://www.h6room.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 4,
+      "success_rate": 100.0,
+      "update_rate": 100.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "https://www.ithome.com/zt/xijiayi",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 0,
+      "success_rate": 100.0,
+      "update_rate": 0.0,
+      "current_status": "no_update"
+    },
+    {
+      "url": "https://free.apprcn.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 1,
+      "success_rate": 100.0,
+      "update_rate": 25.0,
+      "current_status": "error"
+    },
+    {
+      "url": "https://www.lsapk.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 0,
+      "success_rate": 100.0,
+      "update_rate": 0.0,
+      "current_status": "error"
+    },
+    {
+      "url": "https://www.appinn.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 1,
+      "success_rate": 100.0,
+      "update_rate": 25.0,
+      "current_status": "no_update"
+    },
+    {
+      "url": "https://www.423down.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 0,
+      "success_rate": 100.0,
+      "update_rate": 0.0,
+      "current_status": "no_update"
+    },
+    {
+      "url": "https://www.gog.com/partner/free_games",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 1,
+      "success_rate": 100.0,
+      "update_rate": 25.0,
+      "current_status": "no_update"
+    },
+    {
+      "url": "https://www.ziyuanting.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 0,
+      "success_rate": 100.0,
+      "update_rate": 0.0,
+      "current_status": "no_update"
+    },
+    {
+      "url": "https://www.wycad.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 4,
+      "success_rate": 100.0,
+      "update_rate": 100.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "https://www.ddooo.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 0,
+      "success_rate": 100.0,
+      "update_rate": 0.0,
+      "current_status": "no_update"
+    },
+    {
+      "url": "https://www.onlinedown.net/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 0,
+      "success_rate": 100.0,
+      "update_rate": 0.0,
+      "current_status": "no_update"
+    },
+    {
+      "url": "https://www.downxia.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 2,
+      "success_rate": 100.0,
+      "update_rate": 50.0,
+      "current_status": "no_update"
+    },
+    {
+      "url": "https://www.ypojie.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 4,
+      "success_rate": 100.0,
+      "update_rate": 100.0,
+      "current_status": "updated"
+    },
+    {
+      "url": "https://m.hybase.com/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 0,
+      "success_rate": 100.0,
+      "update_rate": 0.0,
+      "current_status": "no_update"
+    },
+    {
+      "url": "https://xzba.cc/",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 0,
+      "success_rate": 100.0,
+      "update_rate": 0.0,
+      "current_status": "no_update"
+    },
+    {
+      "url": "https://pc.qq.com/category/rank.html",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 0,
+      "success_rate": 100.0,
+      "update_rate": 0.0,
+      "current_status": "no_update"
+    },
+    {
+      "url": "https://feed.iplaysoft.com",
+      "total_runs": 4,
+      "success": 4,
+      "fail": 0,
+      "updated": 0,
+      "success_rate": 100.0,
+      "update_rate": 0.0,
+      "current_status": "no_update"
+    }
+  ]
+}
