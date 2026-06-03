@@ -1,6 +1,41 @@
-# 站点哈希记录文件
-# 格式: url=md5值
-# 说明: 此文件由程序自动维护，请勿手动编辑
-# 首次运行会自动生成所有站点的哈希值
-
-# 最后更新: 初始化文件
+# 站点哈希记录文件 - 格式: url=md5值
+# 最后更新: 2026-06-03 17:41:25
+https://xianbaomi.com/=ad54665861206358a5609bf5b1f209fd
+http://www.0818tuan.com/=3eeeab71d7d864b9e0f244320e8a4742
+http://79tao.linejia.com/=4d101d9579d67726e4a3233974561553
+https://www.daydayzhuan.com/=79909f7b990491409e1ba6188722f787
+https://cjx8.com/=0294950106f2ab5fe0ab166d050d5fb9
+https://907k.cn/=28cd013f15e60484b052e47f77948f1d
+https://ym2.cc/=70d9d50d0a7c97e42c312198544d8c91
+https://b1.ymxianbao.cn/=09def82b75e227e0deb31992153347d2
+https://www.007ymd.com/=b791cca4c7d51245eab57367eefabd18
+http://news.ixbk.net/=06dd43b33adff5d0eaf7ee6bcdb2544c
+https://www.zhuanyes.com/xianbao/=108a1edc3140df96b33d82a85f1559c0
+https://www.huodong5.com/=fb936ba2be35a0bbf7c8ec10e2473a04
+https://www.yxssp.com/=448091ff36ac21b84110a120e47be3c7
+https://www.wobangzhao.com/=ba61fb2affdaa31aad4d36f54198a015
+https://www.kxdao.net/forum-42-1.html=ab304bc9744b348a621178cabada3da1
+https://www.baicaio.com/=5bbc84ff33bc6a1d32be5784241581f8
+https://yangmao.wang/=dd0b65d1a52c730920dc7842e9b9e72b
+https://www.12345pro.com/=2daed4779423ddc60e2ea8bb59e60572
+https://news.ixbk.fun/=3ac34bc20013b74f21fe73f77f37e42b
+https://www.ithome.com/zt/xijiayi=7477918e2cec91fd59b80bd110603816
+https://free.apprcn.com/=3e03287d31590b9ed44c5681f0ec5401
+https://www.lsapk.com/=52c18191621be82655038ec902b5d666
+https://www.ghxi.com/category/all=4a32ab998ef5536db7469a222de9849d
+https://www.appinn.com/=a69f0c7905441b983d87426156cd0d84
+https://www.423down.com/=5c5551f214d54b5e83682729b17f7de8
+https://store.steampowered.com/search/?specials=1&os=win=27b08c312943ae599a98afd6fc02c349
+https://www.gog.com/partner/free_games=c459693218f7197e621186defdb46385
+https://store.steampowered.com/=7fdc94493ca8dee9140140279825a4e1
+https://www.ziyuanting.com/=585b895896757dff87d813764cdd9a34
+https://www.wycad.com/=7d0dd5e9305ec339316eb89f4d1d781a
+https://www.ddooo.com/=7fb9431a3d6a2151dd19f994d1d2b99d
+https://www.onlinedown.net/=26391c46109bf39389e90418a099239c
+https://www.downxia.com/=b2a7f16b6882a4341251b310d6355908
+https://www.ypojie.com/=5dfd3ca4a52f3085dc096f9d8ef60549
+https://www.52hb.com/forum.php=bf636cc508b1ffe2e4333e60d4085959
+https://m.hybase.com/=e289edfacd6cb8bcc9dfc230ec23cdd9
+https://xzba.cc/=5ad54680a9c60a43e7d37209d9b90598
+https://pc.qq.com/category/rank.html=4f4adcbf8c6f66dcfc8a3282ac2bf10a
+https://feed.iplaysoft.com=5eeade0a71f3b6753ba9fed9c211ba87
