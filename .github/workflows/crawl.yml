@@ -52,10 +52,9 @@ jobs:
       # 5. 执行监控脚本
       - name: 运行监控
         env:
-          # 网易Claw邮箱配置（从GitHub Secrets读取）
-          CLAW_AUTH_URL: ${{ secrets.CLAW_AUTH_URL }}
-          CLAWEMAIL_API_KEY: ${{ secrets.CLAWEMAIL_API_KEY }}
-          CLAWEMAIL_USER: ${{ secrets.CLAWEMAIL_USER }}
+          # 163邮箱SMTP配置（从GitHub Secrets读取）
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
         run: python crawl.py
       
       # 6. 提交变更（哈希记录或邮件备份）
