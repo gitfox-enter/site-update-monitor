@@ -25,6 +25,7 @@ jobs:
         with:
           # 需要写权限用于提交变更
           persist-credentials: true
+          fetch-depth: 0  # 获取完整历史，确保push正常
       
       # 2. 设置Python环境
       - name: 设置Python 3.11
@@ -55,11 +56,16 @@ jobs:
         run: python crawl.py
       
       # 6. 提交变更（哈希记录或邮件备份）
-      # 注意：crawl.py内部已包含智能提交逻辑，此处为兜底
       - name: 提交变更
         run: |
           git add -A
-          git diff --quiet && git diff --staged --quiet || (git commit -m "自动更新: $(date '+%Y-%m-%d %H:%M:%S')" && git push)
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "自动更新: $(date '+%Y-%m-%d %H:%M:%S')"
+            git push origin main
+            echo "✓ Changes committed and pushed"
+          fi
       
       # 7. 上传邮件备份（可选，用于手动下载查看）
       - name: 上传邮件备份
