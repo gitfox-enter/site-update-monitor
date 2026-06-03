@@ -16,5 +16,17 @@
     "paused_round": 1,
     "reason": "连续 3 轮失败",
     "fail_count": 3
+  },
+  "https://ym2.cc/": {
+    "paused_at": "2026-06-04 06:07:23",
+    "paused_round": 2,
+    "reason": "连续 3 轮失败",
+    "fail_count": 3
+  },
+  "https://www.kxdao.net/forum-42-1.html": {
+    "paused_at": "2026-06-04 06:07:23",
+    "paused_round": 2,
+    "reason": "连续 3 轮失败",
+    "fail_count": 3
   }
 }

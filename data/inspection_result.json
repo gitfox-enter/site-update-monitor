@@ -1,73 +1,25 @@
 {
   "round_num": 2,
-  "check_time": "2026-06-04 05:52:20",
+  "check_time": "2026-06-04 06:07:23",
   "total": 43,
-  "updated": 18,
+  "updated": 13,
   "sites": [
     {
       "url": "https://xianbaomi.com/",
-      "title": "线报迷 - 最新活动线报资讯分享,实时更新的线报网",
+      "title": "https://xianbaomi.com/",
       "summary": "",
       "items": [],
-      "status": "no-update",
-      "message": "无更新"
+      "status": "error",
+      "message": "请求超时"
     },
     {
       "url": "http://www.0818tuan.com/",
       "title": "0818团线报资源网-京东优惠券/抽奖-为赚客服务的一手线报网站-0818线报",
-      "summary": "最新线报 06-03 08:41 每天京东领618红包｜直达 06-04 05:49 工行消费季 06-04 04:40 【光大】小水 如图图 06-04 04:16 小米空调是纯铜电机；华凌2024年4月份后的机器全部是铝线电机 06-04 02:14 ️️️应用商店搜申万宏源app先登入资金账号我的左上角 06-04 02:00 领 可口可乐碳酸饮料 330ml*20罐 任选1窾31.9亓 折1 06-04 01:51 visa卡8折买e卡 话费 06-04 01:24 眇殺会场 （翻到产品加购） 60gx5独立装 8.53 06-04 01:20 详情页领80奍 过淘金币 06-04 0...",
+      "summary": "最新线报 06-03 08:41 每天京东领618红包｜直达 06-04 05:57 速度 06-04 05:49 工行消费季 06-04 04:40 【光大】小水 如图图 06-04 04:16 小米空调是纯铜电机；华凌2024年4月份后的机器全部是铝线电机 06-04 02:14 ️️️应用商店搜申万宏源app先登入资金账号我的左上角 06-04 02:00 领 可口可乐碳酸饮料 330ml*20罐 任选1窾31.9亓 折1 06-04 01:51 visa卡8折买e卡 话费 06-04 01:24 眇殺会场 （翻到产品加购） 60gx5独立装 8.53 06-04 01:20 详情页领8...",
       "items": [
         {
-          "text": "06-04 05:49工行消费季",
-          "url": "http://www.0818tuan.com/xbhd/2698870.html"
-        },
-        {
-          "text": "06-04 04:40【光大】小水 如图图",
-          "url": "http://www.0818tuan.com/xbhd/2698869.html"
-        },
-        {
-          "text": "06-04 04:16小米空调是纯铜电机；华凌2024年4月份后的机器全部是铝线电机",
-          "url": "http://www.0818tuan.com/xbhd/2698868.html"
-        },
-        {
-          "text": "06-04 02:14️️️应用商店搜申万宏源app先登入资金账号我的左上角",
-          "url": "http://www.0818tuan.com/xbhd/2698867.html"
-        },
-        {
-          "text": "06-04 02:00领 可口可乐碳酸饮料 330ml*20罐 任选1窾31.9亓 折1",
-          "url": "http://www.0818tuan.com/xbhd/2698866.html"
-        },
-        {
-          "text": "06-04 01:51visa卡8折买e卡 话费",
-          "url": "http://www.0818tuan.com/xbhd/2698865.html"
-        },
-        {
-          "text": "06-04 01:24眇殺会场 （翻到产品加购） 60gx5独立装 8.53",
-          "url": "http://www.0818tuan.com/xbhd/2698864.html"
-        },
-        {
-          "text": "06-04 01:20详情页领80奍 过淘金币",
-          "url": "http://www.0818tuan.com/xbhd/2698863.html"
-        },
-        {
-          "text": "06-04 01:12plus 200-25奍 200-20惊喜洪包 app搜标题或关键",
-          "url": "http://www.0818tuan.com/xbhd/2698862.html"
-        },
-        {
-          "text": "06-04 01:12互拼多多",
-          "url": "http://www.0818tuan.com/xbhd/2698861.html"
-        },
-        {
-          "text": "06-04 01:05北京fa~票有水",
-          "url": "http://www.0818tuan.com/xbhd/2698860.html"
-        },
-        {
-          "text": "06-04 01:04秒杀会场 （翻到产品加购￥ 1亓",
-          "url": "http://www.0818tuan.com/xbhd/2698859.html"
-        },
-        {
-          "text": "06-04 01:03深圳建行0.01抽2-8亓立减䋮_%E6%9C%88%E6%",
-          "url": "http://www.0818tuan.com/xbhd/2698858.html"
+          "text": "06-04 05:57速度",
+          "url": "http://www.0818tuan.com/xbhd/2698871.html"
         }
       ],
       "status": "updated",
@@ -75,19 +27,19 @@
     },
     {
       "url": "http://79tao.linejia.com/",
-      "title": "实时薅羊毛活动线报，79淘，线报屋，赚客吧的最新线报一站全知道 - 邻家惠",
+      "title": "http://79tao.linejia.com/",
       "summary": "",
       "items": [],
-      "status": "no-update",
-      "message": "无更新"
+      "status": "error",
+      "message": "请求超时"
     },
     {
       "url": "https://www.daydayzhuan.com/",
       "title": "天天线报网 - 薅羊毛|手机赚钱|线报首发平台",
-      "summary": "本站分享了超过 16609 个薅羊毛活动，累计可赚 46275 元 线报搜索 搜索 推荐活动 挂机赚钱 可乐读书复活：半自动阅读单号每天拿2~4元 02-22 168.8元 平安证券学知识领红包反馈68.8元现金秒到 06-03 30元 汽水音乐：看广告拿红包亲测30元+ 04-04 100元 几个任务平台完成新手任务免费赚100元 06-27 免费大流量卡 官方大流量卡免费拿，最低9元月租100G通用流量！ 10-21 注册领1.6~4元 趣闲赚拉新奖励升级，还有哪些注册就送红包的平台？ 05-28 十大赚钱APP 手机兼职十大赚钱最快的APP推荐 06-11 手机赚钱APP排行榜 趣闲赚 ...",
+      "summary": "",
       "items": [],
-      "status": "updated",
-      "message": "内容已更新"
+      "status": "no-update",
+      "message": "无更新"
     },
     {
       "url": "https://cjx8.com/",
@@ -95,12 +47,8 @@
       "summary": "查 询 首页 排行 更多 登录 主题 全部线报 赚客吧 豆瓣买组 豆瓣拼组 佩奇线报 蘑菇小牙牙 小屁屁找 小嘀咕 好心天天分享 败家少女的日常 丐帮羊毛日记 优惠女孩的日常 天涯花花的百宝袋 白菜省钱君 披着羊毛的魔鬼 妖娆本娆 无敌 线报酱 白给王酸菜 拼夕夕bot 光芒呀shine 买白菜的妹妹 薅羊毛的大队长 全部线报 赚客吧 豆瓣买组 豆瓣拼组 佩奇线报 蘑菇小牙牙 小屁屁找 小嘀咕 好心天天分享 败家少女的日常 丐帮羊毛日记 优惠女孩的日常 天涯花花的百宝袋 白菜省钱君 披着羊毛的魔鬼 妖娆本娆 无敌 线报酱 白给王酸菜 拼夕夕bot 光芒呀shine 买白菜的妹妹 薅羊毛的大队长...",
       "items": [
         {
-          "text": "菜吾岛希腊酸奶70g*12杯 折4.9/杯 到手59元2026-06-04 01:15:120京东菜京东Plus红包200-25/200-20，unifree绵柔巾60抽*6包临期7.72买一送一2026-06-04 01:12:470京东",
-          "url": "https://cjx8.com/post/1711968"
-        },
-        {
-          "text": "菜京东Plus红包200-25/200-20，unifree绵柔巾60抽*6包临期7.72买一送一2026-06-04 01:12:470京东",
-          "url": "https://cjx8.com/post/1711969"
+          "text": "菜贵三红泡椒小米辣2kg，点击弹2元红包，实付3元4斤2026-06-04 01:19:000京东菜京东Plus红包200-25/200-20，unifree绵柔巾60抽*6包临期7.72买一送一2026-06-04 01:12:470京东",
+          "url": "https://cjx8.com/post/1711977"
         }
       ],
       "status": "updated",
@@ -133,155 +81,35 @@
     {
       "url": "https://www.007ymd.com/",
       "title": "007线报网-撸羊毛-网赚-赚客-活动线报-薅羊毛-专业收集各大平台一手福利活动",
-      "summary": "每天分享众多福利活动，丰富业余生活，拿免费的奖品。 关于我们 广告位招租，联系微信yangmaodui666 首页 长期羊毛 有奖活动 撸实物 音影会员 话费流量活动 广告位招租，联系微信yangmaodui666 趣闲赚app做各种简单任务就能挣钱,拉新必备神器,1元起提(长期有效) 【千问】发25元免单购物卡，站长亲测真实 微信扫码领取25元淘宝闪购免单卡！1分钱下单，零售店也可用！... [查看详情] 02-06 【千问】发25元免单购物卡，站长亲测真实 11-27 【京东金融】限时邀请活动送红包 11-26 支付宝芝麻粒炼金领2.88-12.3元现金红包 亲测提现秒到 11-26 江西...",
+      "summary": "",
       "items": [],
-      "status": "updated",
-      "message": "内容已更新"
+      "status": "no-update",
+      "message": "无更新"
     },
     {
       "url": "http://news.ixbk.net/",
       "title": "线报酷 - 专注线报活动与优惠促销分享的线报网站",
-      "summary": "首页 我的关注 排行榜 赚客吧 赚客吧热帖 新赚吧 新赚吧热帖 豆瓣线报 豆瓣热帖 微博线报 微博超话 微博热帖 好单线报 值得买 值得买热帖 小嘀咕 葫芦侠三楼 更新较慢活动 小刀娱乐网 爱Q生活网 免费赚钱中心 活动24小时实时更新中... 05:49 0 工行消费季 05:47 0 星鲨维生素D滴剂30粒 15元 05:47 0 仲景蒜蓉酱葱姜蒜蓉酱180g 3.9元 05:46 0 厨邦三鲜鸡精200g带嘴袋装 18.96元 05:46 0 薇尔V感系列极薄棉柔夜用加长卫生巾42cm*6片 6.9元 05:46 0 三联生活周刊单期杂志 12.5元 05:46 0 教会你800个心眼子...",
+      "summary": "首页 我的关注 排行榜 赚客吧 赚客吧热帖 新赚吧 新赚吧热帖 豆瓣线报 豆瓣热帖 微博线报 微博超话 微博热帖 好单线报 值得买 值得买热帖 小嘀咕 葫芦侠三楼 更新较慢活动 小刀娱乐网 爱Q生活网 免费赚钱中心 活动24小时实时更新中... 06:01 0 红米K90Max手机12GB+256GB 2485.56元 06:00 0 工行互 05:57 0 速度 05:55 0 海尔波轮洗衣机全自动8公斤大神童洗脱一体除螨抗菌 578元 05:55 0 卡萨帝揽光10kg滚筒洗衣机CE B10LWBU1 3839.17元 05:55 0 LED灯泡E27 10W 2只装超亮白光防水 1.99...",
       "items": [
         {
-          "text": "工行消费季",
-          "url": "http://news.ixbk.net/xiaodigu/6401178.html"
+          "text": "红米K90Max手机12GB+256GB 2485.56元",
+          "url": "http://news.ixbk.net/haodan/6401185.html"
         },
         {
-          "text": "星鲨维生素D滴剂30粒 15元",
-          "url": "http://news.ixbk.net/haodan/6401177.html"
+          "text": "海尔波轮洗衣机全自动8公斤大神童洗脱一体除螨抗菌 578元",
+          "url": "http://news.ixbk.net/haodan/6401182.html"
         },
         {
-          "text": "仲景蒜蓉酱葱姜蒜蓉酱180g 3.9元",
-          "url": "http://news.ixbk.net/haodan/6401176.html"
+          "text": "卡萨帝揽光10kg滚筒洗衣机CE B10LWBU1 3839.17元",
+          "url": "http://news.ixbk.net/haodan/6401181.html"
         },
         {
-          "text": "厨邦三鲜鸡精200g带嘴袋装 18.96元",
-          "url": "http://news.ixbk.net/haodan/6401175.html"
+          "text": "LED灯泡E27 10W 2只装超亮白光防水 1.99元",
+          "url": "http://news.ixbk.net/haodan/6401180.html"
         },
         {
-          "text": "薇尔V感系列极薄棉柔夜用加长卫生巾42cm*6片 6.9元",
-          "url": "http://news.ixbk.net/haodan/6401174.html"
-        },
-        {
-          "text": "三联生活周刊单期杂志 12.5元",
-          "url": "http://news.ixbk.net/haodan/6401173.html"
-        },
-        {
-          "text": "教会你800个心眼子儿分寸的本质正版书籍人际锦囊教你识人避陷洞悉人性必学处世做人分寸 11.5元",
-          "url": "http://news.ixbk.net/haodan/6401172.html"
-        },
-        {
-          "text": "当当网正版童书九条命的猫蒲公英海外优秀儿童文学系列小学寒假推荐课外书目8-10岁二三四五年级阅读小说",
-          "url": "http://news.ixbk.net/haodan/6401171.html"
-        },
-        {
-          "text": "西麦即食燕麦片1kg 13.5元",
-          "url": "http://news.ixbk.net/haodan/6401170.html"
-        },
-        {
-          "text": "乡土中国和红楼梦费孝通原著完整版高中必读正版名著高一上册的课外书高中生课外阅读书籍 19.8元",
-          "url": "http://news.ixbk.net/haodan/6401169.html"
-        },
-        {
-          "text": "福兰农庄100%果汁冰冻柠檬水1L 6.9元",
-          "url": "http://news.ixbk.net/haodan/6401168.html"
-        },
-        {
-          "text": "笑为鲜100%NFC鲜榨水蜜桃汁12罐 15.7元",
-          "url": "http://news.ixbk.net/haodan/6401167.html"
-        },
-        {
-          "text": "jd试用 🈶",
-          "url": "http://news.ixbk.net/weibo-chaohua/6401166.html"
-        },
-        {
-          "text": "REDMI红米K90手机骁龙8至尊版16+512G黑色 2713.8元",
-          "url": "http://news.ixbk.net/haodan/6401165.html"
-        },
-        {
-          "text": "海天生抽酱油1.9L 10.5元",
-          "url": "http://news.ixbk.net/haodan/6401164.html"
-        },
-        {
-          "text": "很杂很杂的杂学知识 张立辉 生活常识杂学知识科普 9.1元",
-          "url": "http://news.ixbk.net/haodan/6401163.html"
-        },
-        {
-          "text": "PROTEFIX儿童牙刷3-12岁换牙期软毛小云朵收纳桶买2件 14.74元",
-          "url": "http://news.ixbk.net/haodan/6401162.html"
-        },
-        {
-          "text": "东边植造橙子胡萝卜复合果蔬汁200ml*12瓶整箱装 18.9元",
-          "url": "http://news.ixbk.net/haodan/6401161.html"
-        },
-        {
-          "text": "两面针缓解牙龈问题牙膏薄荷+果橙110g*2支 6.9元",
-          "url": "http://news.ixbk.net/haodan/6401160.html"
-        },
-        {
-          "text": "当当网跟踪信号黑盒交易如何影响从华尔街到上海的股市讲透量化交易揭秘股市 14.5元",
-          "url": "http://news.ixbk.net/haodan/6401159.html"
-        },
-        {
-          "text": "老管家运动鞋鞋袜除臭喷雾3瓶装 19.86元",
-          "url": "http://news.ixbk.net/haodan/6401158.html"
-        },
-        {
-          "text": "鸣亮麻薯糯米糍1000g/箱混合4种口味 15.53元",
-          "url": "http://news.ixbk.net/haodan/6401157.html"
-        },
-        {
-          "text": "美味泡菜彩色图解美食制作方法营养食谱菜谱教程书 9.1元",
-          "url": "http://news.ixbk.net/haodan/6401156.html"
-        },
-        {
-          "text": "MOCCONA摩可纳深度意式无蔗糖冻干咖啡粉400克 112.56元",
-          "url": "http://news.ixbk.net/haodan/6401154.html"
-        },
-        {
-          "text": "全国移动话费充值100元快充直充 98.5元",
-          "url": "http://news.ixbk.net/haodan/6401153.html"
-        },
-        {
-          "text": "工行许愿有人互吗在线回",
-          "url": "http://news.ixbk.net/xiaodigu/6401151.html"
-        },
-        {
-          "text": "控糖降压减脂食谱降三高食谱长寿的活法营养美食正版书籍 17元",
-          "url": "http://news.ixbk.net/haodan/6401150.html"
-        },
-        {
-          "text": "馥蕾诗红茶塑颜紧致修护睡眠面膜4ml*2 9.90元",
-          "url": "http://news.ixbk.net/haodan/6401149.html"
-        },
-        {
-          "text": "抖音同款彩图版百病食疗大全正版彩图解中医养生大全食谱 11.7元",
-          "url": "http://news.ixbk.net/haodan/6401148.html"
-        },
-        {
-          "text": "禧天龙便携水袋8L2件 18.24元",
-          "url": "http://news.ixbk.net/haodan/6401147.html"
-        },
-        {
-          "text": "2026年第23期1392什么是好的科学教育第22期沉默的蜜蜂第21期情感生意调查第20期",
-          "url": "http://news.ixbk.net/haodan/6401146.html"
-        },
-        {
-          "text": "欧孕吸汗巾儿童纯棉幼儿园隔汗巾男童女童宝吸汗巾婴儿5条装蔬菜车队S码五条装 16.90元",
-          "url": "http://news.ixbk.net/haodan/6401145.html"
-        },
-        {
-          "text": "中国国家地理杂志2024/2023/2022年1-12月 13.41元",
-          "url": "http://news.ixbk.net/haodan/6401144.html"
-        },
-        {
-          "text": "【光大】小水 如图图",
-          "url": "http://news.ixbk.net/zuankeba/6401143.html"
-        },
-        {
-          "text": "刚需轨道插座",
-          "url": "http://news.ixbk.net/douban-maizu/6401142.html"
+          "text": "山林新鲜鸡蛋当日现捡土鸡蛋30枚 14.9元",
+          "url": "http://news.ixbk.net/haodan/6401179.html"
         }
       ],
       "status": "updated",
@@ -290,33 +118,8 @@
     {
       "url": "https://www.zhuanyes.com/xianbao/",
       "title": "好赚网 - 每日分享新鲜活动线报和优惠信息",
-      "summary": "首页 版块 BBS 我的线报 神价白菜 登录 立即注册 搜索 搜索 线报 用户 线报讨论 优惠分享 站务处 我收藏的线报 我参与的线报 淘宝618超级红包，最高26888元无门槛红包，每天都能领 >>> 京东618红包来了，最高26618元无门槛超级大红包，每天可以领三次 >>> 置顶 每日必领：淘宝闪购+美团外卖+京东外卖红包 全部 24小时热门 一周热门 visa卡8折买e卡 话费 4 小时前 · 404 阅读 · 0 评论 深圳建行0.01抽2-8亓立减䋮 4 小时前 · 478 阅读 · 0 评论 银联添加企微抽奖概率≈1:3，可以多号，不必中 无头，不限新 4 小时前 · 481 阅...",
-      "items": [
-        {
-          "text": "visa卡8折买e卡 话费",
-          "url": "https://www.zhuanyes.com/xianbao/696781.html"
-        },
-        {
-          "text": "深圳建行0.01抽2-8亓立减䋮",
-          "url": "https://www.zhuanyes.com/xianbao/696780.html"
-        },
-        {
-          "text": "银联添加企微抽奖概率≈1:3，可以多号，不必中 无头，不限新",
-          "url": "https://www.zhuanyes.com/xianbao/696779.html"
-        },
-        {
-          "text": "淘宝超值白菜9.9元封顶",
-          "url": "https://quan.zhuanyes.com/"
-        },
-        {
-          "text": "拼多多每日超红，最高88.88元",
-          "url": "https://www.zhuanyes.com/xianbao/524014.html"
-        },
-        {
-          "text": "鲁公网安备37170202666312号",
-          "url": "https://beian.mps.gov.cn/#/query/webSearch?code=37170202666312"
-        }
-      ],
+      "summary": "首页 版块 BBS 我的线报 神价白菜 登录 立即注册 搜索 搜索 线报 用户 线报讨论 优惠分享 站务处 我收藏的线报 我参与的线报 淘宝618超级红包，最高26888元无门槛红包，每天都能领 >>> 京东618红包来了，最高26618元无门槛超级大红包，每天可以领三次 >>> 置顶 每日必领：淘宝闪购+美团外卖+京东外卖红包 全部 24小时热门 一周热门 visa卡8折买e卡 话费 4 小时前 · 428 阅读 · 0 评论 深圳建行0.01抽2-8亓立减䋮 4 小时前 · 501 阅读 · 0 评论 银联添加企微抽奖概率≈1:3，可以多号，不必中 无头，不限新 4 小时前 · 504 阅...",
+      "items": [],
       "status": "updated",
       "message": "内容已更新"
     },
@@ -330,11 +133,11 @@
     },
     {
       "url": "https://www.yxssp.com/",
-      "title": "异星软件空间 | 感受不一样的精彩体验！您的异星应用库！",
+      "title": "https://www.yxssp.com/",
       "summary": "",
       "items": [],
-      "status": "no-update",
-      "message": "无更新"
+      "status": "error",
+      "message": "请求超时"
     },
     {
       "url": "https://www.wobangzhao.com/",
@@ -343,7 +146,7 @@
       "items": [
         {
           "text": "天寻计划",
-          "url": "https://www.wobangzhao.com/search.php?mod=forum&srchtxt=%E5%A4%A9%E5%AF%BB%E8%AE%A1%E5%88%92&formhash=d732bcb1&searchsubmit=true&source=hotsearch"
+          "url": "https://www.wobangzhao.com/search.php?mod=forum&srchtxt=%E5%A4%A9%E5%AF%BB%E8%AE%A1%E5%88%92&formhash=ec312491&searchsubmit=true&source=hotsearch"
         }
       ],
       "status": "updated",
@@ -384,147 +187,27 @@
     {
       "url": "https://news.ixbk.fun/",
       "title": "线报酷 - 专注线报活动与优惠促销分享的线报网站",
-      "summary": "首页 我的关注 排行榜 赚客吧 赚客吧热帖 新赚吧 新赚吧热帖 豆瓣线报 豆瓣热帖 微博线报 微博超话 微博热帖 好单线报 值得买 值得买热帖 小嘀咕 葫芦侠三楼 更新较慢活动 小刀娱乐网 爱Q生活网 免费赚钱中心 活动24小时实时更新中... 05:49 0 工行消费季 05:47 0 星鲨维生素D滴剂30粒 15元 05:47 0 仲景蒜蓉酱葱姜蒜蓉酱180g 3.9元 05:46 0 厨邦三鲜鸡精200g带嘴袋装 18.96元 05:46 0 薇尔V感系列极薄棉柔夜用加长卫生巾42cm*6片 6.9元 05:46 0 三联生活周刊单期杂志 12.5元 05:46 0 教会你800个心眼子...",
+      "summary": "首页 我的关注 排行榜 赚客吧 赚客吧热帖 新赚吧 新赚吧热帖 豆瓣线报 豆瓣热帖 微博线报 微博超话 微博热帖 好单线报 值得买 值得买热帖 小嘀咕 葫芦侠三楼 更新较慢活动 小刀娱乐网 爱Q生活网 免费赚钱中心 活动24小时实时更新中... 06:01 0 红米K90Max手机12GB+256GB 2485.56元 06:00 0 工行互 05:57 0 速度 05:55 0 海尔波轮洗衣机全自动8公斤大神童洗脱一体除螨抗菌 578元 05:55 0 卡萨帝揽光10kg滚筒洗衣机CE B10LWBU1 3839.17元 05:55 0 LED灯泡E27 10W 2只装超亮白光防水 1.99...",
       "items": [
         {
-          "text": "工行消费季",
-          "url": "https://news.ixbk.fun/xiaodigu/6401178.html"
+          "text": "红米K90Max手机12GB+256GB 2485.56元",
+          "url": "https://news.ixbk.fun/haodan/6401185.html"
         },
         {
-          "text": "星鲨维生素D滴剂30粒 15元",
-          "url": "https://news.ixbk.fun/haodan/6401177.html"
+          "text": "海尔波轮洗衣机全自动8公斤大神童洗脱一体除螨抗菌 578元",
+          "url": "https://news.ixbk.fun/haodan/6401182.html"
         },
         {
-          "text": "仲景蒜蓉酱葱姜蒜蓉酱180g 3.9元",
-          "url": "https://news.ixbk.fun/haodan/6401176.html"
+          "text": "卡萨帝揽光10kg滚筒洗衣机CE B10LWBU1 3839.17元",
+          "url": "https://news.ixbk.fun/haodan/6401181.html"
         },
         {
-          "text": "厨邦三鲜鸡精200g带嘴袋装 18.96元",
-          "url": "https://news.ixbk.fun/haodan/6401175.html"
+          "text": "LED灯泡E27 10W 2只装超亮白光防水 1.99元",
+          "url": "https://news.ixbk.fun/haodan/6401180.html"
         },
         {
-          "text": "薇尔V感系列极薄棉柔夜用加长卫生巾42cm*6片 6.9元",
-          "url": "https://news.ixbk.fun/haodan/6401174.html"
-        },
-        {
-          "text": "三联生活周刊单期杂志 12.5元",
-          "url": "https://news.ixbk.fun/haodan/6401173.html"
-        },
-        {
-          "text": "教会你800个心眼子儿分寸的本质正版书籍人际锦囊教你识人避陷洞悉人性必学处世做人分寸 11.5元",
-          "url": "https://news.ixbk.fun/haodan/6401172.html"
-        },
-        {
-          "text": "当当网正版童书九条命的猫蒲公英海外优秀儿童文学系列小学寒假推荐课外书目8-10岁二三四五年级阅读小说",
-          "url": "https://news.ixbk.fun/haodan/6401171.html"
-        },
-        {
-          "text": "西麦即食燕麦片1kg 13.5元",
-          "url": "https://news.ixbk.fun/haodan/6401170.html"
-        },
-        {
-          "text": "乡土中国和红楼梦费孝通原著完整版高中必读正版名著高一上册的课外书高中生课外阅读书籍 19.8元",
-          "url": "https://news.ixbk.fun/haodan/6401169.html"
-        },
-        {
-          "text": "福兰农庄100%果汁冰冻柠檬水1L 6.9元",
-          "url": "https://news.ixbk.fun/haodan/6401168.html"
-        },
-        {
-          "text": "笑为鲜100%NFC鲜榨水蜜桃汁12罐 15.7元",
-          "url": "https://news.ixbk.fun/haodan/6401167.html"
-        },
-        {
-          "text": "jd试用 🈶",
-          "url": "https://news.ixbk.fun/weibo-chaohua/6401166.html"
-        },
-        {
-          "text": "REDMI红米K90手机骁龙8至尊版16+512G黑色 2713.8元",
-          "url": "https://news.ixbk.fun/haodan/6401165.html"
-        },
-        {
-          "text": "海天生抽酱油1.9L 10.5元",
-          "url": "https://news.ixbk.fun/haodan/6401164.html"
-        },
-        {
-          "text": "很杂很杂的杂学知识 张立辉 生活常识杂学知识科普 9.1元",
-          "url": "https://news.ixbk.fun/haodan/6401163.html"
-        },
-        {
-          "text": "PROTEFIX儿童牙刷3-12岁换牙期软毛小云朵收纳桶买2件 14.74元",
-          "url": "https://news.ixbk.fun/haodan/6401162.html"
-        },
-        {
-          "text": "东边植造橙子胡萝卜复合果蔬汁200ml*12瓶整箱装 18.9元",
-          "url": "https://news.ixbk.fun/haodan/6401161.html"
-        },
-        {
-          "text": "两面针缓解牙龈问题牙膏薄荷+果橙110g*2支 6.9元",
-          "url": "https://news.ixbk.fun/haodan/6401160.html"
-        },
-        {
-          "text": "当当网跟踪信号黑盒交易如何影响从华尔街到上海的股市讲透量化交易揭秘股市 14.5元",
-          "url": "https://news.ixbk.fun/haodan/6401159.html"
-        },
-        {
-          "text": "老管家运动鞋鞋袜除臭喷雾3瓶装 19.86元",
-          "url": "https://news.ixbk.fun/haodan/6401158.html"
-        },
-        {
-          "text": "鸣亮麻薯糯米糍1000g/箱混合4种口味 15.53元",
-          "url": "https://news.ixbk.fun/haodan/6401157.html"
-        },
-        {
-          "text": "美味泡菜彩色图解美食制作方法营养食谱菜谱教程书 9.1元",
-          "url": "https://news.ixbk.fun/haodan/6401156.html"
-        },
-        {
-          "text": "MOCCONA摩可纳深度意式无蔗糖冻干咖啡粉400克 112.56元",
-          "url": "https://news.ixbk.fun/haodan/6401154.html"
-        },
-        {
-          "text": "全国移动话费充值100元快充直充 98.5元",
-          "url": "https://news.ixbk.fun/haodan/6401153.html"
-        },
-        {
-          "text": "工行许愿有人互吗在线回",
-          "url": "https://news.ixbk.fun/xiaodigu/6401151.html"
-        },
-        {
-          "text": "控糖降压减脂食谱降三高食谱长寿的活法营养美食正版书籍 17元",
-          "url": "https://news.ixbk.fun/haodan/6401150.html"
-        },
-        {
-          "text": "馥蕾诗红茶塑颜紧致修护睡眠面膜4ml*2 9.90元",
-          "url": "https://news.ixbk.fun/haodan/6401149.html"
-        },
-        {
-          "text": "抖音同款彩图版百病食疗大全正版彩图解中医养生大全食谱 11.7元",
-          "url": "https://news.ixbk.fun/haodan/6401148.html"
-        },
-        {
-          "text": "禧天龙便携水袋8L2件 18.24元",
-          "url": "https://news.ixbk.fun/haodan/6401147.html"
-        },
-        {
-          "text": "2026年第23期1392什么是好的科学教育第22期沉默的蜜蜂第21期情感生意调查第20期",
-          "url": "https://news.ixbk.fun/haodan/6401146.html"
-        },
-        {
-          "text": "欧孕吸汗巾儿童纯棉幼儿园隔汗巾男童女童宝吸汗巾婴儿5条装蔬菜车队S码五条装 16.90元",
-          "url": "https://news.ixbk.fun/haodan/6401145.html"
-        },
-        {
-          "text": "中国国家地理杂志2024/2023/2022年1-12月 13.41元",
-          "url": "https://news.ixbk.fun/haodan/6401144.html"
-        },
-        {
-          "text": "【光大】小水 如图图",
-          "url": "https://news.ixbk.fun/zuankeba/6401143.html"
-        },
-        {
-          "text": "刚需轨道插座",
-          "url": "https://news.ixbk.fun/douban-maizu/6401142.html"
+          "text": "山林新鲜鸡蛋当日现捡土鸡蛋30枚 14.9元",
+          "url": "https://news.ixbk.fun/haodan/6401179.html"
         }
       ],
       "status": "updated",
@@ -548,19 +231,19 @@
     },
     {
       "url": "https://free.apprcn.com/",
-      "title": "反斗限免-反斗软件旗下软件限免资讯网站",
-      "summary": "   最新发布 Willow 是一款英文花体字，可以用于商业和非商业场合。  赞( 0 ) 2026-06-03  Mac 阅读(18) 去评论 Wise Registry Cleaner Pro 是一款系统注册表清理工具，它可以帮你对注册表无用的条目和键值进行清理，为你的注册表瘦身。当然在每次清理之前，都最好先对注册表进行备份。本次赠送的是 11.3.2 终身版本，能终身使用但不能升级到其他版本。  赞( 0 ) 2026-06-03  Windows 阅读(21) 去评论 Gravity Circuit 重力回路是一款极具经典街机精神的酷炫动作 2D 平台游戏。凯是一位孤胆战...",
+      "title": "https://free.apprcn.com/",
+      "summary": "",
       "items": [],
-      "status": "updated",
-      "message": "内容已更新"
+      "status": "error",
+      "message": "连接失败"
     },
     {
       "url": "https://www.lsapk.com/",
-      "title": "蓝鲨应用库 - 让您在互联网的海洋里自由的遨游！属于您的蓝鲨软件空间！",
+      "title": "https://www.lsapk.com/",
       "summary": "",
       "items": [],
-      "status": "no-update",
-      "message": "无更新"
+      "status": "error",
+      "message": "请求超时"
     },
     {
       "url": "https://www.ghxi.com/category/all",
@@ -609,43 +292,7 @@
       "items": [
         {
           "text": "Steam DeckYour Games, Everywhere",
-          "url": "https://store.steampowered.com/app/1675200/Steam_Deck/?deckapp=2344520&utm_source=steamhometop&snr=1_4_4__125"
-        },
-        {
-          "text": "Today's deal!-40%$17.59$10.55",
-          "url": "https://store.steampowered.com/app/638510/dotAGE/?snr=1_4_4__43_1"
-        },
-        {
-          "text": "Today's deal!-24%$24.99$18.99",
-          "url": "https://store.steampowered.com/app/1546090/RAIDBORN/?snr=1_4_4__43_1"
-        },
-        {
-          "text": "Today's deal!-75%$14.99$3.74",
-          "url": "https://store.steampowered.com/app/2328750/My_Little_Universe/?snr=1_4_4__43_3"
-        },
-        {
-          "text": "Today's deal!-50%$7.99$3.99",
-          "url": "https://store.steampowered.com/app/2692990/DONT_SCREAM_TOGETHER/?snr=1_4_4__43_3"
-        },
-        {
-          "text": "Today's deal!-40%$9.99$5.99",
-          "url": "https://store.steampowered.com/app/3730790/QUP/?snr=1_4_4__43_3"
-        },
-        {
-          "text": "Jun 3, 2026-24%$24.99$18.99RAIDBORNAction RPG, Dungeon Crawler, First-Person, Fantasy",
-          "url": "https://store.steampowered.com/app/1546090/RAIDBORN/?snr=1_4_4__145"
-        },
-        {
-          "text": "Jun 3, 2026-30%$6.99$4.89Slots & DiapersIncremental, Idler, Automation, Simulation",
-          "url": "https://store.steampowered.com/app/4409870/Slots__Diapers/?snr=1_4_4__145"
-        },
-        {
-          "text": "May 22, 2026$69.99LEGO® Batman™: Legacy of the Dark KnightOpen World, Co-op, Superhero, Comic Book",
-          "url": "https://store.steampowered.com/app/2215200/LEGO_Batman_Legacy_of_the_Dark_Knight/?snr=1_4_4__145"
-        },
-        {
-          "text": "May 21, 2026-10%$12.99$11.69The House Always WinsSimulation, Co-op, Funny, Management",
-          "url": "https://store.steampowered.com/app/3412160/The_House_Always_Wins/?snr=1_4_4__145"
+          "url": "https://store.steampowered.com/app/1675200/Steam_Deck/?deckapp=2379780&utm_source=steamhometop&snr=1_4_4__125"
         }
       ],
       "status": "updated",
@@ -662,7 +309,7 @@
     {
       "url": "https://www.wycad.com/",
       "title": "无忧软件网 | 分享互联网优质资源，常用绿色破解版软件",
-      "summary": "站内 百度 谷歌 必应 搜狗 360 热门搜索 pdf CAD OFFICE 不忘初心 wps 无忧软件网 | 分享互联网优质资源，常用绿色破解版软件 adobe2025 autocad2026下载 OFFICE系统软件 Windows11系统 推荐 2026年4月27日 50,080 酷我音乐 音乐软件 2026年6月1日 50,393 LTSC ltsc2024 2026年5月31日 32,464 windows11_24h2 不忘初心 2025年11月4日 25,027 autodesk cad软件 2026年2月10日 5,814 adobe 全家桶 2025年9月30日 19,784...",
+      "summary": "站内 百度 谷歌 必应 搜狗 360 热门搜索 pdf CAD OFFICE 不忘初心 wps 无忧软件网 | 分享互联网优质资源，常用绿色破解版软件 adobe2025 autocad2026下载 OFFICE系统软件 Windows11系统 推荐 2026年4月27日 50,081 酷我音乐 音乐软件 2026年6月1日 50,396 LTSC ltsc2024 2026年5月31日 32,464 windows11_24h2 不忘初心 2025年11月4日 25,027 autodesk cad软件 2026年2月10日 5,814 adobe 全家桶 2025年9月30日 19,784...",
       "items": [],
       "status": "updated",
       "message": "内容已更新"
@@ -686,10 +333,10 @@
     {
       "url": "https://www.downxia.com/",
       "title": "当下软件园-提供最新绿色软件_热门手机游戏应用APP下载",
-      "summary": "当下软件园 / 汇聚当下最新最酷的软件下载站！ 最新更新 | 软件分类 | 软件专题 | 软件标签 | 论坛转贴 | 软件发布 排行榜 首页 软件下载 安卓下载 苹果下载 软件专题 网络软件 | 系统工具 | 应用软件 | 联络聊天 | 图形图像 | 多媒体类 | 游戏娱乐 | 安全相关 | 教育教学 | 手机软件 | 专题软件 安卓游戏 | 安卓软件 | 手机网游 | 休闲益智 | 棋牌卡牌 | 动作射击 | 角色扮演 | 系统安全 | 聊天社交 | 生活服务 | 视频播放 苹果游戏 | 苹果软件 | MAC游戏 | MAC软件 | 休闲益智 | 棋牌游戏 | 动作射击 | 角色扮演 | 工...",
+      "summary": "",
       "items": [],
-      "status": "updated",
-      "message": "内容已更新"
+      "status": "no-update",
+      "message": "无更新"
     },
     {
       "url": "https://www.ypojie.com/",
@@ -697,32 +344,36 @@
       "summary": "      11 正版特惠  10 系统应用  34 编程开发 今日观点： 每日签到可免费获取积分，带来的不便请谅解，抱歉！ 由于垃圾采集站恶意采集本站资源，不得已使用积分查看高速通道，自2023年8月中起开始执行，每日签到可免费获取积分，下载资源一样都是免费的。 只是限制了下载次数，杜绝垃圾采集站恶意采集本站资源，导致相关下载链接失效，一个人维护网站补链接也是很... 最新发布 Photoshop 天翼免登录下载 度盘会员免费领 IDM AiPy是一款超级AI助手，支持skills，开源、免费、内网能用。一句话交给AiPy，他能全自动完成PPT/写作/报表/图片/视频/创建应...",
       "items": [
         {
-          "text": "MemInfo v4.1.0 内存监视整理软件单文件版中文汉化版2024-12-25评论(0)",
-          "url": "https://www.ypojie.com/14637.html"
+          "text": "Adobe InCopy 2021 v16.4.0.55 文字编写创意设计软件2021-11-02评论(0)",
+          "url": "https://www.ypojie.com/10021.html"
         },
         {
-          "text": "Foxit PDF Editor Pro v12.1.3.153 中文优化绿色便携版2023-08-02评论(7)",
-          "url": "https://www.ypojie.com/5508.html"
+          "text": "NoteExpress v3.8.0.9492 文献管理软件批量授权特别版2023-08-03评论(2)",
+          "url": "https://www.ypojie.com/8632.html"
         },
         {
-          "text": "XMind 2026 v26.03.04126 x64 中文绿色免安装便携版2026-05-05评论(7)",
-          "url": "https://www.ypojie.com/14874.html"
+          "text": "OmniPlan Pro v4.5.4.0 功能强大的项目管理软件苹果版2023-08-23评论(0)",
+          "url": "https://www.ypojie.com/13337.html"
         },
         {
-          "text": "U盘魔术师 USM v3.0/v5.0/v6.0 免费的PE启动盘维护工具2021-11-02评论(10)",
-          "url": "https://www.ypojie.com/1280.html"
+          "text": "USB Safely Remove v7.2.1.1330 USB移除软件绿色版2025-12-06评论(0)",
+          "url": "https://www.ypojie.com/13837.html"
         },
         {
-          "text": "Adobe Substance 3D Designer v12.4.0 免授权苹果版2023-04-09评论(0)",
-          "url": "https://www.ypojie.com/12330.html"
+          "text": "Adobe Character Animator 2020 v3.5.0 简体中文特别版2021-11-02评论(0)",
+          "url": "https://www.ypojie.com/8714.html"
         },
         {
-          "text": "Adobe InDesign 2022 v17.4.0.051 桌面出版和设计软件2022-08-25评论(0)",
-          "url": "https://www.ypojie.com/10868.html"
+          "text": "HWiNFO v8.46.5960 电脑硬件信息检测工具中文绿色版2026-04-15评论(0)",
+          "url": "https://www.ypojie.com/12514.html"
         },
         {
-          "text": "ZWCAD 2025 中望三维CAD设计和制图软件中文特别版2025-02-07评论(6)",
-          "url": "https://www.ypojie.com/14137.html"
+          "text": "Topaz Video v1.6.0 人工智能视频增强软件绿色便携版2026-05-17评论(0)",
+          "url": "https://www.ypojie.com/14949.html"
+        },
+        {
+          "text": "T20天正建筑个人单机版 V10.0 官方离线安装包中文特别版2024-08-30评论(19)",
+          "url": "https://www.ypojie.com/2548.html"
         }
       ],
       "status": "updated",
@@ -735,11 +386,11 @@
       "items": [
         {
           "text": "网络验证",
-          "url": "https://www.52hb.com/search.php?mod=forum&srchtxt=%E7%BD%91%E7%BB%9C%E9%AA%8C%E8%AF%81&formhash=558dc348&searchsubmit=true&source=hotsearch"
+          "url": "https://www.52hb.com/search.php?mod=forum&srchtxt=%E7%BD%91%E7%BB%9C%E9%AA%8C%E8%AF%81&formhash=114a94dc&searchsubmit=true&source=hotsearch"
         },
         {
           "text": "吾爱破解",
-          "url": "https://www.52hb.com/search.php?mod=forum&srchtxt=%E5%90%BE%E7%88%B1%E7%A0%B4%E8%A7%A3&formhash=558dc348&searchsubmit=true&source=hotsearch"
+          "url": "https://www.52hb.com/search.php?mod=forum&srchtxt=%E5%90%BE%E7%88%B1%E7%A0%B4%E8%A7%A3&formhash=114a94dc&searchsubmit=true&source=hotsearch"
         }
       ],
       "status": "updated",
@@ -756,10 +407,10 @@
     {
       "url": "https://xzba.cc/",
       "title": "游戏下载吧-PC游戏免费下载",
-      "summary": "最新发布 角色扮演 仁王3 动作 最新 角色扮演 2个月前 0 1143 14 咸鱼殿下 / My journey 最新 模拟 2个月前 0 1183 16 命运游戏2：百年之约 最新 模拟 2个月前 0 544 11 嘟嘟嘟~恋爱信号响不停 最新 模拟 2个月前 0 467 15 完蛋！我被美女包围了！2 最新 模拟 2个月前 0 1084 5 台北仲夏夜之梦 最新 模拟 2个月前 0 1681 14 心跳文学部Plus! 休闲 最新 独立 2个月前 0 370 12 雨世界 冒险 动作 最新 2个月前 0 237 13 北境之地/Northgard 冒险 最新 独立 2个月前 0 274 ...",
+      "summary": "",
       "items": [],
-      "status": "updated",
-      "message": "内容已更新"
+      "status": "no-update",
+      "message": "无更新"
     },
     {
       "url": "https://pc.qq.com/category/rank.html",
