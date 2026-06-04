@@ -370,6 +370,297 @@ def parse_yxssp(soup):
     return '\n'.join(items[:30])
 
 
+def parse_423down(soup):
+    """423Down - 精准提取软件文章，排除分类导航和侧边栏"""
+    items = []
+    seen = set()
+    # 主内容区的文章标题链接（格式：/数字.html 才是文章页）
+    for a in soup.select('.post-list a, .content-list a, article h2 a, .entry-title a, #main a, .list-item a'):
+        text = a.get_text(strip=True)
+        href = a.get('href', '')
+        if not text or len(text) < 5:
+            continue
+        # 只要文章页（/数字.html 格式）
+        import re
+        if not re.search(r'/\d+\.html', href):
+            continue
+        if text in seen:
+            continue
+        seen.add(text)
+        items.append(f"{text} ({href})")
+    # 如果上面没找到，用更宽松的方式：取包含日期关键词的链接
+    if not items:
+        for a in soup.find_all('a', href=True):
+            href = a.get('href', '')
+            text = a.get_text(strip=True)
+            if not text or len(text) < 5 or len(text) > 80:
+                continue
+            import re
+            if not re.search(r'/\d+\.html', href):
+                continue
+            # 排除纯英文短标题（通常是导航）
+            chinese_count = len(re.findall(r'[\u4e00-\u9fff]', text))
+            if chinese_count < 2 and len(text) < 15:
+                continue
+            if text in seen:
+                continue
+            seen.add(text)
+            items.append(f"{text} ({href})")
+    return '\n'.join(items[:30])
+
+
+def parse_423down_items(soup, base_url):
+    """423Down - 提取文章条目，返回 [{'text':..., 'url':...}] 格式"""
+    import re
+    items = []
+    seen = set()
+    for a in soup.find_all('a', href=True):
+        href = a.get('href', '').strip()
+        text = a.get_text(strip=True)
+        if not text or len(text) < 5 or len(text) > 80:
+            continue
+        if not re.search(r'/\d+\.html', href):
+            continue
+        chinese_count = len(re.findall(r'[\u4e00-\u9fff]', text))
+        if chinese_count < 2 and len(text) < 15:
+            continue
+        if text in seen:
+            continue
+        seen.add(text)
+        if href.startswith('/'):
+            from urllib.parse import urljoin
+            href = urljoin(base_url, href)
+        items.append({'text': text, 'url': href})
+    return items[:30]
+
+
+def parse_ziyuanting_items(soup, base_url):
+    """晓晓资源网 - 只提取公告/文章，不提取网站目录导航"""
+    import re
+    items = []
+    seen = set()
+    # 只取 /bulletin/ 路径下的公告文章
+    for a in soup.find_all('a', href=True):
+        href = a.get('href', '').strip()
+        text = a.get_text(strip=True)
+        if not text or len(text) < 5:
+            continue
+        if '/bulletin/' not in href and '/article/' not in href and '/post/' not in href:
+            continue
+        if text in seen:
+            continue
+        seen.add(text)
+        if href.startswith('/'):
+            from urllib.parse import urljoin
+            href = urljoin(base_url, href)
+        items.append({'text': text, 'url': href})
+    return items[:20]
+
+
+def parse_ziyuanting(soup):
+    """晓晓资源网 - 只提取公告文本用于MD5比对"""
+    items = []
+    for a in soup.find_all('a', href=True):
+        href = a.get('href', '')
+        text = a.get_text(strip=True)
+        if '/bulletin/' in href or '/article/' in href or '/post/' in href:
+            if text and len(text) > 5:
+                items.append(f"{text} ({href})")
+    return '\n'.join(items[:20])
+
+
+def parse_wycad_items(soup, base_url):
+    """无忧软件网 - 提取真正的软件文章，排除标签/分类链接"""
+    import re
+    items = []
+    seen = set()
+    for a in soup.find_all('a', href=True):
+        href = a.get('href', '').strip()
+        text = a.get_text(strip=True)
+        if not text or len(text) < 4:
+            continue
+        # 排除 /tag/ /soft/ /category/ 等分类链接
+        if any(x in href for x in ['/tag/', '/soft/', '/category/', '/page/']):
+            continue
+        # 只取文章页：域名下的带数字slug或有汉字的路径
+        if not re.search(r'wycad\.com/\w', href):
+            continue
+        # 排除纯英文/数字短文本（通常是导航）
+        chinese_count = len(re.findall(r'[\u4e00-\u9fff]', text))
+        if chinese_count < 2 and len(text) < 10:
+            continue
+        if text in seen:
+            continue
+        seen.add(text)
+        items.append({'text': text, 'url': href})
+    return items[:20]
+
+
+def parse_baicaio_items(soup, base_url):
+    """白菜哦 - 每个商品只取一条，不重复"""
+    import re
+    items = []
+    seen_urls = set()
+    seen_texts = set()
+    for a in soup.find_all('a', href=True):
+        href = a.get('href', '').strip()
+        text = a.get_text(strip=True)
+        if not text or len(text) < 5 or len(text) > 100:
+            continue
+        # 只取 /item/ 路径下的商品页
+        if '/item/' not in href:
+            continue
+        # 过滤掉"查看详情"/"直达链接"/"阅读全文"等无意义文本
+        skip_words = ['查看详情', '直达链接', '阅读全文', '去购买', '更多', '返回']
+        if any(w in text for w in skip_words):
+            continue
+        # URL去重
+        if href in seen_urls:
+            continue
+        # 文本去重（避免同一商品多条）
+        text_key = text[:30]
+        if text_key in seen_texts:
+            continue
+        seen_urls.add(href)
+        seen_texts.add(text_key)
+        if href.startswith('/'):
+            from urllib.parse import urljoin
+            href = urljoin(base_url, href)
+        items.append({'text': text, 'url': href})
+    return items[:30]
+
+
+def parse_h6room_items(soup, base_url):
+    """好料空间 - 提取最新发布的软件/资源文章"""
+    items = []
+    seen = set()
+    # 主内容区文章标题
+    for a in soup.select('.post-title a, .item-title a, h2 a, h3 a, .content a[href*="/"]'):
+        text = a.get_text(strip=True)
+        href = a.get('href', '').strip()
+        if not text or len(text) < 4 or len(text) > 80:
+            continue
+        if text in seen:
+            continue
+        # 过滤导航词
+        skip = ['首页', '导航', '站点地图', '关于', '联系', '最新软件', '热门资源']
+        if text in skip:
+            continue
+        seen.add(text)
+        if href.startswith('/'):
+            from urllib.parse import urljoin
+            href = urljoin(base_url, href)
+        items.append({'text': text, 'url': href})
+    # 如果主选择器失败，尝试通用文章链接
+    if not items:
+        import re
+        for a in soup.find_all('a', href=True):
+            href = a.get('href', '').strip()
+            text = a.get_text(strip=True)
+            if not text or len(text) < 5 or len(text) > 80:
+                continue
+            if not re.search(r'h6room\.com/\w+/\w+', href):
+                continue
+            import re as _re
+            if len(_re.findall(r'[\u4e00-\u9fff]', text)) < 1:
+                continue
+            if text in seen:
+                continue
+            seen.add(text)
+            items.append({'text': text, 'url': href})
+    return items[:20]
+
+
+def parse_xzba_items(soup, base_url):
+    """游戏下载吧 - 提取最新游戏条目"""
+    items = []
+    seen = set()
+    for a in soup.select('.post-title a, .item-title a, h2 a, h3 a, .game-title a, .list-item a'):
+        text = a.get_text(strip=True)
+        href = a.get('href', '').strip()
+        if not text or len(text) < 2 or len(text) > 60:
+            continue
+        if text in seen:
+            continue
+        skip = ['首页', '最新发布', '角色扮演', '动作', '模拟', '休闲', '独立', '冒险']
+        if text in skip:
+            continue
+        seen.add(text)
+        if href.startswith('/'):
+            from urllib.parse import urljoin
+            href = urljoin(base_url, href)
+        items.append({'text': text, 'url': href})
+    # 通用备选
+    if len(items) < 3:
+        import re
+        for a in soup.find_all('a', href=True):
+            href = a.get('href', '').strip()
+            text = a.get_text(strip=True)
+            if not text or len(text) < 2 or len(text) > 60:
+                continue
+            if not re.search(r'xzba\.cc/\w+/\d+', href):
+                continue
+            if text in seen:
+                continue
+            seen.add(text)
+            items.append({'text': text, 'url': href})
+    return items[:20]
+
+
+def parse_apprcn_items(soup, base_url):
+    """反斗限免 - 提取限免软件列表"""
+    items = []
+    seen = set()
+    for a in soup.select('article a, .post a, h2 a, h3 a, .entry-title a'):
+        text = a.get_text(strip=True)
+        href = a.get('href', '').strip()
+        if not text or len(text) < 3 or len(text) > 80:
+            continue
+        skip = ['阅读全文', '赞', '评论', '去评论', '下一页', '上一页', '返回顶部']
+        if text in skip:
+            continue
+        if text in seen:
+            continue
+        seen.add(text)
+        if href.startswith('/'):
+            from urllib.parse import urljoin
+            href = urljoin(base_url, href)
+        items.append({'text': text, 'url': href})
+    return items[:20]
+
+
+def parse_rss_feed(content_bytes, base_url):
+    """RSS/Atom Feed 解析器 - 直接从XML提取文章条目"""
+    from xml.etree import ElementTree as ET
+    items = []
+    seen = set()
+    try:
+        root = ET.fromstring(content_bytes)
+        ns = {'atom': 'http://www.w3.org/2005/Atom'}
+        # RSS 2.0
+        for item in root.findall('.//item'):
+            title_el = item.find('title')
+            link_el = item.find('link')
+            title = title_el.text.strip() if title_el is not None and title_el.text else ''
+            link = link_el.text.strip() if link_el is not None and link_el.text else base_url
+            if title and title not in seen:
+                seen.add(title)
+                items.append({'text': title, 'url': link})
+        # Atom
+        if not items:
+            for entry in root.findall('.//{http://www.w3.org/2005/Atom}entry'):
+                title_el = entry.find('{http://www.w3.org/2005/Atom}title')
+                link_el = entry.find('{http://www.w3.org/2005/Atom}link')
+                title = title_el.text.strip() if title_el is not None and title_el.text else ''
+                link = link_el.get('href', base_url) if link_el is not None else base_url
+                if title and title not in seen:
+                    seen.add(title)
+                    items.append({'text': title, 'url': link})
+    except ET.ParseError:
+        pass
+    return items[:30]
+
+
 def parse_ghxi(soup):
     """果核剥壳 (新版结构 .item-content h2 a) - 精准提取文章"""
     items = []
@@ -513,19 +804,45 @@ def fetch_page_content(url):
         # 获取页面标题
         title_tag = soup.find('title')
         title = title_tag.get_text(strip=True) if title_tag else url
-        
-        # 提取文章条目列表（含链接）
-        article_items = extract_article_items(soup, url)
 
-        # 站点专用解析器（精准提取正文，避免抓取到导航/侧边栏/旧内容）
+        # 站点专用解析器（精准提取正文+条目，避免抓到导航/侧边栏/旧目录）
+        if 'feed.iplaysoft.com' in url or url.endswith('.xml'):
+            # RSS/Atom Feed：直接解析XML
+            article_items = parse_rss_feed(response.content, url)
+            text = '\n'.join(item['text'] for item in article_items)
+        elif '423down.com' in url:
+            article_items = parse_423down_items(soup, url)
+            text = parse_423down(soup)
+        elif 'ziyuanting.com' in url:
+            article_items = parse_ziyuanting_items(soup, url)
+            text = parse_ziyuanting(soup)
+        elif 'wycad.com' in url:
+            article_items = parse_wycad_items(soup, url)
+            text = '\n'.join(item['text'] for item in article_items)
+        elif 'baicaio.com' in url:
+            article_items = parse_baicaio_items(soup, url)
+            text = '\n'.join(item['text'] for item in article_items)
+        elif 'h6room.com' in url:
+            article_items = parse_h6room_items(soup, url)
+            text = '\n'.join(item['text'] for item in article_items)
+        elif 'xzba.cc' in url:
+            article_items = parse_xzba_items(soup, url)
+            text = '\n'.join(item['text'] for item in article_items)
+        elif 'free.apprcn.com' in url:
+            article_items = parse_apprcn_items(soup, url)
+            text = '\n'.join(item['text'] for item in article_items)
         elif 'kxdao.net' in url:
+            article_items = []
             text = parse_discuz_threadlist(soup)
         elif 'yxssp.com' in url:
+            article_items = []
             text = parse_yxssp(soup)
         elif 'ghxi.com' in url:
+            article_items = []
             text = parse_ghxi(soup)
         else:
-            # 通用解析：移除干扰元素后取body文本
+            # 通用解析：移除干扰元素后取body文本，同时用通用条目提取器
+            article_items = extract_article_items(soup, url)
             for tag in soup(['script', 'style', 'nav', 'footer', 'header', 'aside']):
                 tag.decompose()
             body = soup.find('body')
