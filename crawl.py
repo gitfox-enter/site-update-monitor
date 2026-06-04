@@ -1131,7 +1131,7 @@ def refresh_email_backup_index():
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>邮件备份存档 - 金的站点监控</title>
+<title>邮件备份存档 - 站点更新监控</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 *{{margin:0;padding:0;box-sizing:border-box}}
