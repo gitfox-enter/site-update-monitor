@@ -1,133 +1,217 @@
 {
-  "_comment": "网站黑名单 - 被拒绝的站点不会加入MONITOR_SITES，也不会被推荐",
+  "_comment": "\u7f51\u7ad9\u9ed1\u540d\u5355 - \u88ab\u62d2\u7edd\u7684\u7ad9\u70b9\u4e0d\u4f1a\u52a0\u5165MONITOR_SITES\uff0c\u4e5f\u4e0d\u4f1a\u88ab\u63a8\u8350",
   "_categories": {
-    "paid_required": "需要付费才能注册/使用的网站",
-    "anti_crawl": "反爬严格，无法抓取内容的网站",
-    "spam_download": "流氓软件下载站（捆绑安装/广告过多）",
-    "user_hated": "用户明确表示讨厌的网站",
-    "inaccessible": "域名无法访问/已失效的网站",
-    "not_content": "纯工具页无内容列表可监控的网站"
+    "paid_required": "\u9700\u8981\u4ed8\u8d39\u624d\u80fd\u6ce8\u518c/\u4f7f\u7528\u7684\u7f51\u7ad9",
+    "anti_crawl": "\u53cd\u722c\u4e25\u683c\uff0c\u65e0\u6cd5\u6293\u53d6\u5185\u5bb9\u7684\u7f51\u7ad9",
+    "spam_download": "\u6d41\u6c13\u8f6f\u4ef6\u4e0b\u8f7d\u7ad9\uff08\u6346\u7ed1\u5b89\u88c5/\u5e7f\u544a\u8fc7\u591a\uff09",
+    "user_hated": "\u7528\u6237\u660e\u786e\u8868\u793a\u8ba8\u538c\u7684\u7f51\u7ad9",
+    "inaccessible": "\u57df\u540d\u65e0\u6cd5\u8bbf\u95ee/\u5df2\u5931\u6548\u7684\u7f51\u7ad9",
+    "not_content": "\u7eaf\u5de5\u5177\u9875\u65e0\u5185\u5bb9\u5217\u8868\u53ef\u76d1\u63a7\u7684\u7f51\u7ad9"
   },
   "blacklist": [
     {
       "domain": "store.steampowered.com",
       "category": "user_hated",
-      "reason": "用户明确表示讨厌Steam",
+      "reason": "\u7528\u6237\u660e\u786e\u8868\u793a\u8ba8\u538cSteam",
       "added": "2026-06-04"
     },
     {
       "domain": "store.epicgames.com",
       "category": "user_hated",
-      "reason": "用户明确要求不要Epic Games Store",
+      "reason": "\u7528\u6237\u660e\u786e\u8981\u6c42\u4e0d\u8981Epic Games Store",
       "added": "2026-06-04"
     },
     {
       "domain": "ypojie.com",
       "category": "paid_required",
-      "reason": "亿破解需要付费注册才能使用",
+      "reason": "\u4ebf\u7834\u89e3\u9700\u8981\u4ed8\u8d39\u6ce8\u518c\u624d\u80fd\u4f7f\u7528",
       "added": "2026-06-04"
     },
     {
       "domain": "52hb.com",
       "category": "paid_required",
-      "reason": "52破解需要付费注册才能使用",
+      "reason": "52\u7834\u89e3\u9700\u8981\u4ed8\u8d39\u6ce8\u518c\u624d\u80fd\u4f7f\u7528",
       "added": "2026-06-04"
     },
     {
       "domain": "xdowns.com",
       "category": "spam_download",
-      "reason": "用户确认为流氓软件下载站",
+      "reason": "\u7528\u6237\u786e\u8ba4\u4e3a\u6d41\u6c13\u8f6f\u4ef6\u4e0b\u8f7d\u7ad9",
       "added": "2026-06-04"
     },
     {
       "domain": "downza.com",
       "category": "spam_download",
-      "reason": "用户确认为流氓软件下载站",
+      "reason": "\u7528\u6237\u786e\u8ba4\u4e3a\u6d41\u6c13\u8f6f\u4ef6\u4e0b\u8f7d\u7ad9",
       "added": "2026-06-04"
     },
     {
       "domain": "pc6.com",
       "category": "spam_download",
-      "reason": "用户确认为流氓软件下载站",
+      "reason": "\u7528\u6237\u786e\u8ba4\u4e3a\u6d41\u6c13\u8f6f\u4ef6\u4e0b\u8f7d\u7ad9",
       "added": "2026-06-04"
     },
     {
       "domain": "onlinedown.net",
       "category": "spam_download",
-      "reason": "用户确认为流氓软件下载站",
+      "reason": "\u7528\u6237\u786e\u8ba4\u4e3a\u6d41\u6c13\u8f6f\u4ef6\u4e0b\u8f7d\u7ad9",
       "added": "2026-06-04"
     },
     {
       "domain": "appcgn.com",
       "category": "inaccessible",
-      "reason": "2026-06-04测试无法连接",
+      "reason": "2026-06-04\u6d4b\u8bd5\u65e0\u6cd5\u8fde\u63a5",
       "added": "2026-06-04"
     },
     {
       "domain": "surferline.cn",
       "category": "inaccessible",
-      "reason": "2026-06-04测试无法连接",
+      "reason": "2026-06-04\u6d4b\u8bd5\u65e0\u6cd5\u8fde\u63a5",
       "added": "2026-06-04"
     },
     {
       "domain": "geekapp.net",
       "category": "inaccessible",
-      "reason": "2026-06-04测试无法连接",
+      "reason": "2026-06-04\u6d4b\u8bd5\u65e0\u6cd5\u8fde\u63a5",
       "added": "2026-06-04"
     },
     {
       "domain": "greendown.cn",
       "category": "inaccessible",
-      "reason": "2026-06-04测试无法连接",
+      "reason": "2026-06-04\u6d4b\u8bd5\u65e0\u6cd5\u8fde\u63a5",
       "added": "2026-06-04"
     },
     {
       "domain": "skycn.com",
       "category": "inaccessible",
-      "reason": "2026-06-04测试无法连接",
+      "reason": "2026-06-04\u6d4b\u8bd5\u65e0\u6cd5\u8fde\u63a5",
       "added": "2026-06-04"
     },
     {
       "domain": "pcunion.cn",
       "category": "inaccessible",
-      "reason": "2026-06-04测试无法连接",
+      "reason": "2026-06-04\u6d4b\u8bd5\u65e0\u6cd5\u8fde\u63a5",
       "added": "2026-06-04"
     },
     {
       "domain": "crsky.com",
       "category": "anti_crawl",
-      "reason": "返回403反爬",
+      "reason": "\u8fd4\u56de403\u53cd\u722c",
       "added": "2026-06-04"
     },
     {
       "domain": "smzdm.com",
       "category": "anti_crawl",
-      "reason": "反爬严格，WebFetch无法获取内容",
+      "reason": "\u53cd\u722c\u4e25\u683c\uff0cWebFetch\u65e0\u6cd5\u83b7\u53d6\u5185\u5bb9",
       "added": "2026-06-04"
     },
     {
       "domain": "indiemade.app",
       "category": "inaccessible",
-      "reason": "2026-06-04测试无法连接",
+      "reason": "2026-06-04\u6d4b\u8bd5\u65e0\u6cd5\u8fde\u63a5",
       "added": "2026-06-04"
     },
     {
       "domain": "hisprice.com",
       "category": "not_content",
-      "reason": "纯工具页，无内容列表可监控",
+      "reason": "\u7eaf\u5de5\u5177\u9875\uff0c\u65e0\u5185\u5bb9\u5217\u8868\u53ef\u76d1\u63a7",
       "added": "2026-06-04"
     },
     {
       "domain": "whylangit.com",
       "category": "inaccessible",
-      "reason": "2026-06-04测试无法连接",
+      "reason": "2026-06-04\u6d4b\u8bd5\u65e0\u6cd5\u8fde\u63a5",
       "added": "2026-06-04"
     },
     {
       "domain": "free-and-below.com",
       "category": "inaccessible",
-      "reason": "2026-06-04测试无法连接",
+      "reason": "2026-06-04\u6d4b\u8bd5\u65e0\u6cd5\u8fde\u63a5",
       "added": "2026-06-04"
+    },
+    {
+      "domain": "www.iqshw.com",
+      "category": "inaccessible",
+      "reason": "\u8fde\u7eed3+\u8f6e\u8fde\u63a5\u5931\u8d25",
+      "added": "2026-06-06"
+    },
+    {
+      "domain": "store.epicgames.com",
+      "category": "inaccessible",
+      "reason": "\u8fde\u7eed3+\u8f6e\u8fde\u63a5\u5931\u8d25",
+      "added": "2026-06-06"
+    },
+    {
+      "domain": "ym2.cc",
+      "category": "inaccessible",
+      "reason": "\u8fde\u7eed3+\u8f6e\u8fde\u63a5\u5931\u8d25",
+      "added": "2026-06-06"
+    },
+    {
+      "domain": "www.kxdao.net",
+      "category": "inaccessible",
+      "reason": "\u8fde\u7eed3+\u8f6e\u8fde\u63a5\u5931\u8d25",
+      "added": "2026-06-06"
+    },
+    {
+      "domain": "www.ghxi.com",
+      "category": "inaccessible",
+      "reason": "\u8fde\u7eed3+\u8f6e\u8fde\u63a5\u5931\u8d25",
+      "added": "2026-06-06"
+    },
+    {
+      "domain": "foxirj.com",
+      "category": "inaccessible",
+      "reason": "\u8fde\u7eed3+\u8f6e\u8fde\u63a5\u5931\u8d25",
+      "added": "2026-06-06"
+    },
+    {
+      "domain": "www.52hb.com",
+      "category": "inaccessible",
+      "reason": "\u8fde\u7eed3+\u8f6e\u8fde\u63a5\u5931\u8d25",
+      "added": "2026-06-06"
+    },
+    {
+      "domain": "xianbaomi.com",
+      "category": "inaccessible",
+      "reason": "\u8fde\u7eed3+\u8f6e\u8fde\u63a5\u5931\u8d25",
+      "added": "2026-06-06"
+    },
+    {
+      "domain": "79tao.linejia.com",
+      "category": "inaccessible",
+      "reason": "\u8fde\u7eed3+\u8f6e\u8fde\u63a5\u5931\u8d25",
+      "added": "2026-06-06"
+    },
+    {
+      "domain": "www.yxssp.com",
+      "category": "inaccessible",
+      "reason": "\u8fde\u7eed3+\u8f6e\u8fde\u63a5\u5931\u8d25",
+      "added": "2026-06-06"
+    },
+    {
+      "domain": "free.apprcn.com",
+      "category": "inaccessible",
+      "reason": "\u8fde\u7eed3+\u8f6e\u8fde\u63a5\u5931\u8d25",
+      "added": "2026-06-06"
+    },
+    {
+      "domain": "www.lsapk.com",
+      "category": "inaccessible",
+      "reason": "\u8fde\u7eed3+\u8f6e\u8fde\u63a5\u5931\u8d25",
+      "added": "2026-06-06"
+    },
+    {
+      "domain": "www.ypojie.com",
+      "category": "inaccessible",
+      "reason": "\u8fde\u7eed3+\u8f6e\u8fde\u63a5\u5931\u8d25",
+      "added": "2026-06-06"
+    },
+    {
+      "domain": "feed.iplaysoft.com",
+      "category": "inaccessible",
+      "reason": "\u8fde\u7eed3+\u8f6e\u8fde\u63a5\u5931\u8d25",
+      "added": "2026-06-06"
     }
   ]
 }
