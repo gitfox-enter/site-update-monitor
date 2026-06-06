@@ -629,6 +629,88 @@ def parse_apprcn_items(soup, base_url):
     return items[:20]
 
 
+def parse_daydayzhuan_items(soup, base_url):
+    """天天线报网 - 提取文章列表"""
+    from urllib.parse import urljoin
+    items = []
+    seen = set()
+    # 匹配 /article/{id} 模式
+    for a in soup.select('a[href*="/article/"]'):
+        href = a.get('href', '').strip()
+        text = a.get_text(strip=True)
+        if not text or len(text) < 5:
+            continue
+        if text in seen:
+            continue
+        # 过滤导航
+        skip = ['首页', '实时线报', '项目首码', '手机赚钱', '爆款秒杀', '随笔', '去下载']
+        if text in skip:
+            continue
+        seen.add(text)
+        if href.startswith('/'):
+            href = urljoin(base_url, href)
+        items.append({'text': text, 'url': href})
+    return items[:20]
+
+
+def parse_007ymd_items(soup, base_url):
+    """007线报网 - 提取文章列表"""
+    items = []
+    seen = set()
+    # 匹配 ?id={数字} 模式
+    import re
+    for a in soup.select('a[href*="?id="]'):
+        href = a.get('href', '').strip()
+        text = a.get_text(strip=True)
+        if not text or len(text) < 5:
+            continue
+        if text in seen:
+            continue
+        # 过滤导航
+        if text in ['首页', '关于我们', '长期羊毛', '有奖活动', '撸实物', '音影会员', '话费流量活动', '[查看详情]']:
+            continue
+        seen.add(text)
+        items.append({'text': text, 'url': href})
+    return items[:20]
+
+
+def parse_baicaio_items_v2(soup, base_url):
+    """白菜哦 v2 - 提取文章列表"""
+    from urllib.parse import urljoin
+    items = []
+    seen = set()
+    # 匹配 /article/ 和 /item/ 模式
+    for a in soup.select('a[href*="/article/"], a[href*="/item/"]'):
+        href = a.get('href', '').strip()
+        text = a.get_text(strip=True)
+        if not text or len(text) < 5:
+            continue
+        if text in seen:
+            continue
+        seen.add(text)
+        if href.startswith('/'):
+            href = urljoin(base_url, href)
+        items.append({'text': text, 'url': href})
+    return items[:20]
+
+
+def parse_manmanbuy_items(soup, base_url):
+    """慢慢买 - 提取搜索结果"""
+    items = []
+    seen = set()
+    # 搜索结果链接
+    for a in soup.select('a[href*="s.manmanbuy.com"], a[href*="pc/search"]'):
+        href = a.get('href', '').strip()
+        text = a.get_text(strip=True)
+        if not text or len(text) < 2:
+            continue
+        if text in seen:
+            continue
+        seen.add(text)
+        items.append({'text': text, 'url': href})
+    return items[:20]
+
+
 def parse_rss_feed(content_bytes, base_url):
     """RSS/Atom Feed 解析器 - 直接从XML提取文章条目"""
     from xml.etree import ElementTree as ET
@@ -840,6 +922,18 @@ def fetch_page_content(url):
         elif 'ghxi.com' in url:
             article_items = []
             text = parse_ghxi(soup)
+        elif 'daydayzhuan.com' in url:
+            article_items = parse_daydayzhuan_items(soup, url)
+            text = '\n'.join(item['text'] for item in article_items)
+        elif '007ymd.com' in url:
+            article_items = parse_007ymd_items(soup, url)
+            text = '\n'.join(item['text'] for item in article_items)
+        elif 'baicaio.com' in url:
+            article_items = parse_baicaio_items_v2(soup, url)
+            text = '\n'.join(item['text'] for item in article_items)
+        elif 'manmanbuy.com' in url:
+            article_items = parse_manmanbuy_items(soup, url)
+            text = '\n'.join(item['text'] for item in article_items)
         else:
             # 通用解析：移除干扰元素后取body文本，同时用通用条目提取器
             article_items = extract_article_items(soup, url)
