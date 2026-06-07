@@ -1,6 +1,6 @@
 # Site Monitor
 
-Automated content change tracker. Runs on a schedule, compares page hashes, and sends email alerts when updates are detected.
+Automated content change tracker. Runs on a schedule, crawls deal sites, and aggregates results into a live web page.
 
 ---
 
@@ -8,22 +8,24 @@ Automated content change tracker. Runs on a schedule, compares page hashes, and 
 
 ### 1. Fork this repo
 
-### 2. Add Secrets
+### 2. Enable Workflows
 
-Go to **Settings** → **Secrets and variables** → **Actions** → add:
+Go to **Actions** → enable **Site Update Monitor** and **Fast Check**.
 
-| Secret | Value |
-|---|---|
-| `SMTP_USER` | your email address |
-| `SMTP_PASSWORD` | app password |
+### 3. View Results
 
-### 3. Enable Workflow
-
-Go to **Actions** → enable **Site Update Monitor**.
+After the first run, visit your GitHub Pages site:
+`https://<your-username>.github.io/<repo-name>/`
 
 ---
+
+## How It Works
+
+- **Full Crawl** (`crawl.yml`): Every hour, checks all 33 sites for updates
+- **Fast Check** (`fast_check.yml`): Every 5 minutes, checks top 8 active sites for new items
+- **Frontend** (`index.html`): SPA that loads from `items.json`, with search, categories, and infinite scroll
 
 ## Config
 
 Edit `MONITOR_SITES` list in `crawl.py` to add or remove sites.
-Change schedule in `.github/workflows/crawl.yml`.
+Edit `FAST_SITES` list in `fast_check.py` to change high-frequency sites.

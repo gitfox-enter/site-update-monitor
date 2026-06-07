@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 """
 GitHub Actions 多站点更新监控系统
-功能：爬取33个站点 → MD5比对检测更新 → 163邮箱SMTP推送 → 本地备份归档
-时间：每4小时执行一次（00:00, 04:00, 08:00, 12:00, 16:00, 20:00）
+功能：爬取33个站点 → MD5比对检测更新 → 数据持久化到 items.json
+时间：每小时执行一次
 时区：Asia/Shanghai（北京时间）
 """
 
@@ -13,12 +13,9 @@ import time
 import random
 import hashlib
 import requests
-import smtplib
 import warnings
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timezone, timedelta
 from bs4 import BeautifulSoup, XMLParsedAsHTMLWarning
 from urllib.parse import urlparse
@@ -79,13 +76,6 @@ ITEMS_DB_FILE = "items.json"  # 全量线报数据库（持久化累积，供前
 # 自动移除/恢复配置
 MAX_CONSECUTIVE_FAILURES = 3  # 连续失败 N 轮后自动暂停
 RECOVERY_CHECK_INTERVAL = 6  # 每 N 轮尝试恢复一次暂停站点
-
-# 163邮箱SMTP配置
-SMTP_SERVER = "smtp.163.com"
-SMTP_PORT = 465
-SMTP_USER = os.getenv("SMTP_USER", "")  # 邮箱地址
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")  # 授权码
-EMAIL_TO = os.getenv("SMTP_USER", "")  # 发送到自己
 
 # 爬虫配置
 REQUEST_TIMEOUT = 15  # 单个站点超时时间（秒）
@@ -1083,171 +1073,12 @@ def check_site_update(url, old_records):
         return False, new_hash, "无更新", page_info
 
 
-# ============================================================
-# 邮件推送（网易Claw）
-# ============================================================
-
-def generate_email_html(round_num, all_site_results, check_time, notified=None):
-    """
-    生成邮件内容 — 纯文本格式
-    all_site_results: 列表，每个元素为 {'url':..., 'title':..., 'summary':..., 'items':..., 'status': 'updated'|'no_update'|'error'|'first', 'message':...}
-    items 格式: [{'text': '标题', 'url': '链接'}, ...]
-    notified: 已通知条目列表 [{"url":..., "text":...}, ...]，用于去重
-    排序规则：有更新的排在前面（按条目数降序），无更新的排在后面
-    返回：(主题, HTML正文, 纯文本正文, 本轮新增条目URL集合)
-    """
-    # 标准化 notified 为 dict list（兼容旧 set/str/纯URL 格式）
-    if not notified:
-        notif_list = []
-    elif isinstance(notified, list):
-        if notified and isinstance(notified[0], str):
-            # 旧格式：纯URL字符串列表，转成 dict list
-            notif_list = [{'url': u} for u in notified]
-        else:
-            notif_list = notified
-    elif isinstance(notified, dict):
-        notif_list = notified.get('items', [])
-    else:
-        notif_list = []
-
-    # 计算统计
-    updated_results = [r for r in all_site_results if r['status'] == 'updated']
-    no_update_results = [r for r in all_site_results if r['status'] in ('no_update', 'first')]
-    error_results = [r for r in all_site_results if r['status'] == 'error']
-    total = len(all_site_results)
-    updated_count = len(updated_results)
-
-    all_new_urls = set()
-    existing_urls = {item['url'] for item in notif_list}
-
-    for r in updated_results:
-        new_items, new_urls = filter_new_items(r.get('items', []), existing_urls)
-        r['items'] = new_items
-        all_new_urls.update(new_urls)
-
-    # 生成邮件主题
-    if updated_count > 0:
-        subject = f"【线报巡检】第{round_num}轮 · {updated_count}个站点有更新"
-    else:
-        subject = f"【线报巡检】第{round_num}轮 · 暂无更新"
-
-    # ===== 纯文本正文 =====
-    lines = []
-    lines.append("站点更新监控巡检报告")
-    lines.append("")
-    lines.append(f"第 {round_num} 轮巡检  {check_time}")
-    lines.append(f"总计 {total} 个站点 | 更新 {updated_count} 个 | 无更新 {len(no_update_results)} 个 | 异常 {len(error_results)} 个")
-    lines.append("")
-
-    idx = 1
-    for r in updated_results:
-        items = r.get('items', [])
-        item_count = len(items)
-        title = r.get('title', r['url'])
-        url = r['url']
-        lines.append(f"{idx}. {title} ({url}) [{item_count}条新]")
-        for item in items:
-            item_text = item['text'] if isinstance(item, dict) else item
-            item_url = item['url'] if isinstance(item, dict) else url
-            lines.append(f"  - {item_text}")
-            lines.append(f"    {item_url}")
-        lines.append("")
-        lines.append("---")
-        lines.append("")
-        idx += 1
-
-    for r in no_update_results:
-        title = r.get('title', r['url'])
-        url = r['url']
-        lines.append(f"{idx}. {title} ({url})")
-        lines.append("  暂无新内容")
-        lines.append("")
-        lines.append("---")
-        lines.append("")
-        idx += 1
-
-    for r in error_results:
-        url = r['url']
-        lines.append(f"{idx}. {url}")
-        lines.append(f"  异常: {r['message']}")
-        lines.append("")
-        lines.append("---")
-        lines.append("")
-        idx += 1
-
-    lines.append("")
-    lines.append("GitHub Actions 站点巡检机器人 | 每4小时自动巡检 | 163邮箱推送")
-
-    text_body = '\n'.join(lines)
-
-    # HTML 版本：用 <br> 标签换行，兼容所有邮箱客户端
-    html_escaped = html_escape(text_body).replace('\n', '<br>\n')
-    html_body = f"""<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"></head>
-<body style="font-family:'Courier New',Consolas,monospace;font-size:14px;line-height:1.6;padding:20px;color:#333;">
-{html_escaped}
-</body>
-</html>"""
-
-    return subject, html_body, text_body, all_new_urls
-
-
-
-
-def html_escape(text):
-    """转义HTML特殊字符"""
-    return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
-
-
-def send_email_smtp(subject, html_body, text_body=None):
-    """
-    通过163邮箱SMTP发送邮件
-    返回：(成功标志, 错误信息)
-    """
-    if not SMTP_USER or not SMTP_PASSWORD:
-        return False, "邮箱配置缺失"
-
-    try:
-        message = MIMEMultipart('alternative')
-        message['From'] = SMTP_USER
-        message['To'] = EMAIL_TO
-        message['Subject'] = subject
-
-        if text_body:
-            text_part = MIMEText(text_body, 'plain', 'utf-8')
-            message.attach(text_part)
-        else:
-            text_part = MIMEText(subject, 'plain', 'utf-8')
-            message.attach(text_part)
-
-        html_part = MIMEText(html_body, 'html', 'utf-8')
-        message.attach(html_part)
-
-        print(f"[邮件] 发送到: {EMAIL_TO}")
-
-        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as server:
-            server.login(SMTP_USER, SMTP_PASSWORD)
-            server.sendmail(SMTP_USER, EMAIL_TO, message.as_string())
-
-        print(f"[邮件] ✓ 发送成功: {subject}")
-        return True, None
-
-    except smtplib.SMTPAuthenticationError:
-        return False, "邮箱认证失败（检查授权码）"
-    except smtplib.SMTPException as e:
-        return False, f"SMTP错误: {e}"
-    except Exception as e:
-        return False, f"发送异常: {str(e)}"
-
-
 def git_commit_if_changed():
     """
     检查是否有变更，仅在有变更时执行commit & push
-    变更条件：哈希文件修改 或 新增邮件备份
+    变更条件：哈希文件修改
     
     注意：此函数在GitHub Actions环境中会跳过git操作，
-    因为workflow有专门的提交步骤
     """
     # 检查是否在GitHub Actions环境中
     if os.getenv('GITHUB_ACTIONS') == 'true':
@@ -2110,13 +1941,9 @@ def main():
     print(f"[统计] 更新站点: {updated_count} 个")
 
     print("\n" + "-" * 60)
-    print("[处理] 生成巡检报告邮件...")
 
     # 总是更新哈希文件
     save_hash_records(new_records)
-
-    # 生成邮件内容（传入已通知条目用于去重）
-    subject, html_body, text_body, new_urls = generate_email_html(round_num, all_site_results, check_time, notified.get('items', []) if isinstance(notified, dict) else notified)
 
     # 构建完整条目字典（URL + 正文 + 来源 + 时间）
     new_item_list = []
@@ -2142,16 +1969,10 @@ def main():
 
     # index.html 现在是静态 SPA，从 items.json 加载数据，无需每次重新生成
 
+    # 计算本轮新增URL数
+    existing_urls_set = set(item['url'] for item in (notified.get('items', []) if isinstance(notified, dict) else []))
+    new_urls = set(item['url'] for item in new_item_list if item['url'] not in existing_urls_set)
     print(f"[信息] 本轮新通知条目: {len(new_urls)} 条")
-
-    # 发送邮件
-    if SMTP_USER and SMTP_PASSWORD:
-        success, error = send_email_smtp(subject, html_body, text_body)
-        if not success:
-            print(f"[警告] 邮件发送失败: {error}")
-    else:
-        print("[提示] 邮箱未配置，跳过邮件发送")
-        print("[提示] 请在GitHub Secrets中配置 SMTP_USER 和 SMTP_PASSWORD")
 
     # Git提交
     git_commit_if_changed()
