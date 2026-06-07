@@ -1500,7 +1500,7 @@ def main():
         is_updated, new_hash, message, page_info = check_site_update(url, old_records)
         time.sleep(get_random_delay())
         if is_updated is None:
-            return {'url': url, 'title': url, 'summary': '', 'status': 'error', 'message': message, 'is_updated': None, 'new_hash': None, 'page_info': None}
+            return {'url': url, 'title': url, 'summary': '', 'items': [], 'status': 'error', 'message': message, 'is_updated': None, 'new_hash': None, 'page_info': None}
         return {
             'url': url,
             'title': page_info.get('title', url) if page_info else url,
