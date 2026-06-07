@@ -818,6 +818,62 @@ a { color: inherit; text-decoration: none; }
 @media (min-width: 769px) {
   .item-meta { min-width: 120px; }
 }
+
+/* ========== SOURCE TABS BAR ========== */
+.source-tabs-wrapper {
+  position: sticky;
+  top: var(--header-height);
+  z-index: 150;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.source-tabs {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  gap: 6px;
+  padding: 10px 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.source-tabs::-webkit-scrollbar { display: none; }
+.source-tab {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  user-select: none;
+}
+.source-tab:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-light);
+}
+.source-tab.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+  box-shadow: 0 2px 8px rgba(232,93,4,0.25);
+}
+.source-tab .tab-count {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 11px;
+  opacity: 0.7;
+}
+@media (max-width: 768px) {
+  .source-tabs { padding: 8px 12px; gap: 5px; }
+  .source-tab { padding: 5px 11px; font-size: 12px; }
+}
 </style>
 </head>
 <body>
@@ -882,6 +938,11 @@ a { color: inherit; text-decoration: none; }
   </div>
 </section>
 
+<!-- ===== SOURCE TABS ===== -->
+<div class="source-tabs-wrapper">
+  <div class="source-tabs" id="sourceTabs"></div>
+</div>
+
 <!-- ===== MAIN ===== -->
 <main class="main" id="mainContent">
   <div class="loading" id="loadingState">
@@ -922,6 +983,7 @@ a { color: inherit; text-decoration: none; }
   var displayedCount = 0;
   var isLoading = false;
   var expandedCardId = null;   // currently expanded card index
+  var activeSourceTab = "all"; // "all" or a source name
 
   /* ---- DOM refs ---- */
   var $mainContent     = document.getElementById("mainContent");
@@ -938,6 +1000,7 @@ a { color: inherit; text-decoration: none; }
   var $heroTime        = document.getElementById("heroTime");
   var $heroTotal       = document.getElementById("heroTotal");
   var $backToTop       = document.getElementById("backToTop");
+  var $sourceTabs      = document.getElementById("sourceTabs");
 
   /* ---- Utility ---- */
   function escapeHtml(str) {
@@ -1054,6 +1117,7 @@ a { color: inherit; text-decoration: none; }
     });
 
     updateHeroStats();
+    buildSourceTabs();
     buildSourcePanel();
     applyFilters();
     restoreHashState();
@@ -1064,6 +1128,32 @@ a { color: inherit; text-decoration: none; }
     $heroTime.textContent = "最后更新：" + (updatedAt || "未知");
     $heroTotal.textContent = "共收录 " + allItems.length + " 条";
     $headerCount.textContent = allItems.length + " 条";
+  }
+
+  /* ---- Source Tabs Bar ---- */
+  function buildSourceTabs() {
+    // Only show sources that are selected in the gear panel
+    var visibleSources = sourceList.filter(function (s) {
+      return selectedSources[s.name] !== false;
+    });
+
+    var html = '<div class="source-tab' + (activeSourceTab === "all" ? " active" : "") + '" data-tab="all">全部<span class="tab-count">' + allItems.length + '</span></div>';
+    visibleSources.forEach(function (s) {
+      html += '<div class="source-tab' + (activeSourceTab === s.name ? " active" : "") + '" data-tab="' + escapeHtml(s.name) + '">' + escapeHtml(s.name) + '<span class="tab-count">' + s.count + '</span></div>';
+    });
+    $sourceTabs.innerHTML = html;
+
+    // Attach click events
+    var tabs = $sourceTabs.querySelectorAll(".source-tab");
+    tabs.forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        activeSourceTab = this.getAttribute("data-tab");
+        // Update active class
+        tabs.forEach(function (t) { t.classList.remove("active"); });
+        this.classList.add("active");
+        applyFilters();
+      });
+    });
   }
 
   /* ---- Source Filter Panel ---- */
@@ -1087,6 +1177,7 @@ a { color: inherit; text-decoration: none; }
       cb.addEventListener("change", function () {
         selectedSources[this.getAttribute("data-source")] = this.checked;
         updateSourcePanelCount();
+        buildSourceTabs();
         applyFilters();
       });
     });
@@ -1107,6 +1198,7 @@ a { color: inherit; text-decoration: none; }
     var checkboxes = $sourceGrid.querySelectorAll('input[type="checkbox"]');
     checkboxes.forEach(function (cb) { cb.checked = true; });
     updateSourcePanelCount();
+    buildSourceTabs();
     applyFilters();
   });
 
@@ -1116,6 +1208,7 @@ a { color: inherit; text-decoration: none; }
     var checkboxes = $sourceGrid.querySelectorAll('input[type="checkbox"]');
     checkboxes.forEach(function (cb) { cb.checked = false; });
     updateSourcePanelCount();
+    buildSourceTabs();
     applyFilters();
   });
 
@@ -1156,9 +1249,12 @@ a { color: inherit; text-decoration: none; }
     var query = searchQuery.toLowerCase().trim();
 
     filteredItems = allItems.filter(function (item) {
-      // Source filter
+      // Source filter (gear panel)
       var src = item.source || "未知";
       if (selectedSources[src] === false) return false;
+
+      // Source tab filter
+      if (activeSourceTab !== "all" && src !== activeSourceTab) return false;
 
       // Search filter
       if (query) {
