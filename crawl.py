@@ -958,9 +958,9 @@ def fetch_page_content(url):
             article_items = parse_baicaio_items_v2(soup, url)
             text = '\n'.join(item['text'] for item in article_items)
         elif 'axutongxue.net' in url:
-    article_items = parse_axutongxue_items(soup, url)
-    text = '\n'.join(item['text'] for item in article_items)
-elif 'manmanbuy.com' in url:
+            article_items = parse_axutongxue_items(soup, url)
+            text = '\n'.join(item['text'] for item in article_items)
+        elif 'manmanbuy.com' in url:
             article_items = parse_manmanbuy_items(soup, url)
             text = '\n'.join(item['text'] for item in article_items)
         else:
