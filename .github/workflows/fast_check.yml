@@ -1,0 +1,43 @@
+name: 快速增量检查
+
+on:
+  schedule:
+    # 每 5 分钟检查一次 top 站点
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: fast-check
+  cancel-in-progress: true
+
+jobs:
+  fast-check:
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
+    permissions:
+      contents: write
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: 设置 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 安装依赖
+        run: |
+          pip install -r requirements.txt
+
+      - name: 配置 Git
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+      - name: 运行快速检查
+        run: python fast_check.py
