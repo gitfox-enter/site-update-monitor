@@ -30,15 +30,15 @@ FAST_LOG_FILE = "fast_log.jsonl"
 FAST_SITES = [
     {"url": "https://www.zhuanyes.com/xianbao/", "name": "专业线报"},
     {"url": "https://news.ixbk.net/", "name": "线报酷"},
-    {"url": "https://news.ixbk.fun/", "name": "好赚线报"},
+    {"url": "https://news.ixbk.fun/", "name": "线报酷"},
     {"url": "http://www.0818tuan.com/", "name": "0818团"},
     {"url": "https://www.huifabu.cn/", "name": "汇发部"},
-    {"url": "https://cjx8.com/", "name": "促销吧"},
+    {"url": "https://cjx8.com/", "name": "超级线报"},
     {"url": "https://xianbao.icu/", "name": "线报ICU"},
-    {"url": "https://www.baicaio.com/", "name": "拔草哦"},
-    {"url": "https://www.iqnew.com/", "name": "爱Q生活"},
-    {"url": "https://www.51kanong.com/", "name": "卡农羊毛"},
-    {"url": "https://v1.xianbao.net/", "name": "新赚吧"},
+    {"url": "https://www.baicaio.com/", "name": "白菜哦"},
+    {"url": "https://www.iqnew.com/", "name": "爱Q社区"},
+    {"url": "https://www.51kanong.com/", "name": "51卡农"},
+    {"url": "https://v1.xianbao.net/", "name": "线报网"},
     {"url": "http://www.xiaodigu.com/", "name": "小嘀咕"},
 ]
 

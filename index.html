@@ -2,1556 +2,1077 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>线报聚合 - 全网羊毛线报实时聚合</title>
-<meta name="description" content="聚合全网优质羊毛线报，自动抓取实时更新，告别垃圾站">
-<link rel="icon" type="image/svg+xml" href="/site-update-monitor/public/favicon.svg">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1,user-scalable=no">
+<title>线报聚合 - 实时监控全网羊毛线报</title>
+<meta name="description" content="线报聚合：通过自动化爬虫实时监控全网电商、购物平台线报，聚合展示">
+<meta name="renderer" content="webkit">
+<meta name="apple-mobile-web-app-title" content="线报聚合">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" type="image/svg+xml" href="public/favicon.svg">
 <link rel="manifest" href="manifest.json">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ========== CSS RESET & CUSTOM PROPERTIES ========== */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-:root {
-  --primary: #e85d04;
-  --primary-dark: #c94d03;
-  --primary-light: #fff0e6;
-  --primary-gradient: linear-gradient(135deg, #e85d04 0%, #dc2f02 50%, #d00000 100%);
-  --bg: #f5f0eb;
-  --bg-alt: #ede7e0;
-  --surface: #ffffff;
-  --surface-hover: #fffbf7;
-  --text: #1a1a1a;
-  --text-secondary: #555;
-  --text-muted: #999;
-  --text-light: #bbb;
-  --border: #e8e0d8;
-  --border-light: #f0ebe5;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
-  --shadow: 0 2px 8px rgba(0,0,0,0.06);
-  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
-  --shadow-primary: 0 4px 20px rgba(232,93,4,0.25);
-  --radius-sm: 8px;
-  --radius: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --header-height: 60px;
-  --max-width: 860px;
-  --transition: 0.2s ease;
-  --transition-slow: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#1976d2;
+  --primary-hover:#1565c0;
+  --bg:#fff;
+  --bg-alt:#f7f8fa;
+  --text:#333;
+  --text-sec:#666;
+  --text-muted:#999;
+  --border:#e8e8e8;
+  --border-light:#f0f0f0;
+  --sidebar-w:200px;
+  --header-h:52px;
+  --radius:6px;
+  --font: -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
 }
-
-/* ========== BASE ========== */
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-
-body {
-  font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a { color: inherit; text-decoration: none; }
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--font);background:var(--bg-alt);color:var(--text);min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
 
 /* ========== HEADER ========== */
-.header {
-  background: var(--primary);
-  color: #fff;
-  height: var(--header-height);
-  padding: 0 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 200;
-  box-shadow: 0 2px 16px rgba(232,93,4,0.35);
+#header{
+  background:#fff;
+  height:var(--header-h);
+  display:flex;
+  align-items:center;
+  padding:0 16px;
+  position:sticky;
+  top:0;
+  z-index:100;
+  border-bottom:1px solid var(--border);
+  gap:12px;
+}
+#icon-menu{display:none;font-size:20px;cursor:pointer;color:var(--text);padding:4px 8px;border-radius:4px;flex-shrink:0}
+#icon-menu:hover{background:var(--bg-alt)}
+#logo{
+  font-size:18px;
+  font-weight:700;
+  color:var(--primary);
+  white-space:nowrap;
+  flex-shrink:0;
+  letter-spacing:-0.5px;
+}
+.header-divider{width:1px;height:24px;background:var(--border);flex-shrink:0}
+#search-form{
+  display:flex;
+  align-items:center;
+  flex:1;
+  max-width:360px;
+  height:34px;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  background:#fff;
+  transition:border-color .2s;
+}
+#search-form:focus-within{border-color:var(--primary)}
+#search-form svg{width:16px;height:16px;margin-left:10px;color:var(--text-muted);flex-shrink:0}
+#search-input{
+  border:none;
+  outline:none;
+  flex:1;
+  height:100%;
+  padding:0 8px;
+  font-size:13px;
+  font-family:inherit;
+  background:transparent;
+  color:var(--text);
+}
+#search-input::placeholder{color:var(--text-muted)}
+#search-btn{
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  height:100%;
+  padding:0 14px;
+  font-size:13px;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:background .2s;
+}
+#search-btn:hover{background:var(--primary-hover)}
+#menu{display:flex;align-items:center;gap:2px;flex-shrink:0}
+#menu a{
+  padding:6px 14px;
+  font-size:14px;
+  color:var(--text-sec);
+  border-radius:var(--radius);
+  cursor:pointer;
+  transition:all .15s;
+  white-space:nowrap;
+}
+#menu a:hover{color:var(--primary);background:#e3f2fd}
+#menu a.active{color:var(--primary);font-weight:600;background:#e3f2fd}
+#icon-search-mobile{display:none;font-size:18px;cursor:pointer;color:var(--text);padding:4px 8px}
+
+/* ========== MAIN LAYOUT ========== */
+#app{
+  display:flex;
+  max-width:1200px;
+  margin:0 auto;
+  min-height:calc(100vh - var(--header-h));
 }
 
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
+/* ========== SIDEBAR ========== */
+#sidebar{
+  width:var(--sidebar-w);
+  flex-shrink:0;
+  background:#fff;
+  border-right:1px solid var(--border);
+  overflow-y:auto;
+  position:sticky;
+  top:var(--header-h);
+  height:calc(100vh - var(--header-h));
+}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:#ddd;border-radius:2px}
+.cat-section{padding:8px 0}
+.cat-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:9px 16px;
+  font-size:13px;
+  color:var(--text-sec);
+  cursor:pointer;
+  transition:all .15s;
+  border-left:3px solid transparent;
+}
+.cat-item:hover{background:var(--bg-alt);color:var(--text)}
+.cat-item.active{
+  color:var(--primary);
+  font-weight:600;
+  background:#e3f2fd;
+  border-left-color:var(--primary);
+}
+.cat-item .cat-name{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  flex:1;
+}
+.cat-item .cat-count{
+  font-size:11px;
+  color:var(--text-muted);
+  background:var(--bg-alt);
+  padding:1px 6px;
+  border-radius:10px;
+  flex-shrink:0;
+  margin-left:6px;
+  min-width:20px;
+  text-align:center;
+}
+.cat-item.active .cat-count{background:#bbdefb;color:var(--primary)}
+.sidebar-divider{height:1px;background:var(--border-light);margin:4px 16px}
+
+/* ========== CONTENT AREA ========== */
+#content{
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
 }
 
-.logo {
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-  white-space: nowrap;
+/* -- View tabs (首页/排行) -- */
+#view-bar{
+  display:none;
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  padding:0 16px;
 }
-
-.badge-auto {
-  background: rgba(255,255,255,0.2);
-  backdrop-filter: blur(4px);
-  padding: 2px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  white-space: nowrap;
+#view-bar .view-tab{
+  display:inline-block;
+  padding:10px 16px;
+  font-size:14px;
+  color:var(--text-sec);
+  cursor:pointer;
+  border-bottom:2px solid transparent;
+  transition:all .15s;
 }
+#view-bar .view-tab:hover{color:var(--primary)}
+#view-bar .view-tab.active{color:var(--primary);font-weight:600;border-bottom-color:var(--primary)}
 
-.header-count {
-  font-size: 12px;
-  opacity: 0.85;
-  white-space: nowrap;
-  margin-left: 2px;
+/* -- Status bar -- */
+#status-bar{
+  padding:10px 16px;
+  font-size:12px;
+  color:var(--text-muted);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#fff;
+  border-bottom:1px solid var(--border-light);
 }
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn-icon {
-  background: rgba(255,255,255,0.15);
-  border: none;
-  color: #fff;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--transition);
-  font-size: 18px;
-  flex-shrink: 0;
-}
-
-.btn-icon:hover { background: rgba(255,255,255,0.3); }
-.btn-icon.active { background: rgba(255,255,255,0.35); }
-
-.btn-icon svg {
-  width: 18px;
-  height: 18px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-/* ========== SEARCH PANEL (slides down from header) ========== */
-.search-panel {
-  background: var(--primary-dark);
-  overflow: hidden;
-  max-height: 0;
-  transition: max-height var(--transition-slow), padding var(--transition-slow);
-  padding: 0 20px;
-}
-
-.search-panel.open {
-  max-height: 90px;
-  padding: 10px 20px;
-}
-
-.search-panel-inner {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  position: relative;
-}
-
-.search-input {
-  width: 100%;
-  height: 42px;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 0 40px 0 42px;
-  font-size: 14px;
-  font-family: inherit;
-  background: rgba(255,255,255,0.15);
-  color: #fff;
-  outline: none;
-  transition: background var(--transition), box-shadow var(--transition);
-}
-
-.search-input::placeholder { color: rgba(255,255,255,0.6); }
-.search-input:focus {
-  background: rgba(255,255,255,0.25);
-  box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
-}
-
-.search-icon-inner {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 16px;
-  height: 16px;
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.search-clear {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(255,255,255,0.3);
-  border: none;
-  color: #fff;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 14px;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--transition);
-}
-
-.search-clear.visible { display: flex; }
-.search-clear:hover { background: rgba(255,255,255,0.5); }
-
-.search-result-count {
-  color: rgba(255,255,255,0.8);
-  font-size: 12px;
-  margin-top: 4px;
-  padding-left: 4px;
-  min-height: 16px;
-}
-
-/* ========== SOURCE FILTER PANEL (slides down) ========== */
-.source-panel {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  overflow: hidden;
-  max-height: 0;
-  transition: max-height var(--transition-slow);
-  box-shadow: var(--shadow-md);
-  position: relative;
-  z-index: 150;
-}
-
-.source-panel.open {
-  max-height: 500px;
-  overflow-y: auto;
-}
-
-.source-panel-inner {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 20px 20px 24px;
-}
-
-.source-panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.source-panel-header h3 {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.source-panel-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.source-panel-actions button {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 4px 12px;
-  font-size: 12px;
-  font-family: inherit;
-  cursor: pointer;
-  color: var(--text-secondary);
-  transition: all var(--transition);
-}
-
-.source-panel-actions button:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
-.source-panel-count {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-bottom: 12px;
-}
-
-.source-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 8px;
-}
-
-.source-check {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: var(--bg);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: background var(--transition);
-  user-select: none;
-  font-size: 13px;
-}
-
-.source-check:hover { background: var(--bg-alt); }
-
-.source-check input[type="checkbox"] {
-  accent-color: var(--primary);
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.source-check-name {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-weight: 500;
-  color: var(--text);
-}
-
-.source-check-count {
-  font-size: 11px;
-  color: var(--text-muted);
-  flex-shrink: 0;
-}
-
-/* ========== HERO ========== */
-.hero {
-  background: var(--primary-gradient);
-  color: #fff;
-  padding: 40px 24px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.hero::before {
-  content: "";
-  position: absolute;
-  top: -40%;
-  right: -10%;
-  width: 300px;
-  height: 300px;
-  background: rgba(255,255,255,0.06);
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.hero::after {
-  content: "";
-  position: absolute;
-  bottom: -30%;
-  left: -5%;
-  width: 200px;
-  height: 200px;
-  background: rgba(255,255,255,0.04);
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.hero-content { position: relative; z-index: 1; }
-
-.hero h1 {
-  font-size: 26px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  letter-spacing: -0.5px;
-}
-
-.hero-subtitle {
-  font-size: 14px;
-  opacity: 0.85;
-  max-width: 440px;
-  margin: 0 auto 16px;
-  line-height: 1.7;
-}
-
-.hero-stats {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  font-size: 13px;
-  opacity: 0.8;
-}
-
-.hero-stat {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.hero-stat svg {
-  width: 14px;
-  height: 14px;
-  opacity: 0.7;
-}
-
-/* ========== MAIN CONTENT ========== */
-.main {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 16px 16px 80px;
-}
-
-/* ========== STATUS BAR ========== */
-.status-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 4px;
-  margin-bottom: 8px;
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-.status-bar .search-result-info {
-  color: var(--primary);
-  font-weight: 500;
-}
+#status-bar .highlight{color:var(--primary);font-weight:500}
 
 /* ========== ITEM LIST ========== */
-.item-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.list-wrap{background:#fff;flex:1}
+.list-empty{
+  padding:60px 20px;
+  text-align:center;
+  color:var(--text-muted);
+  font-size:14px;
+}
+.item{
+  border-bottom:1px solid var(--border-light);
+  transition:background .1s;
+}
+.item:hover{background:#fafbfc}
+.item>a{
+  display:flex;
+  align-items:center;
+  padding:11px 16px;
+  gap:10px;
+  color:var(--text);
+  transition:color .15s;
+}
+.item>a:hover .item-title{color:var(--primary)}
+.src-badge{
+  width:26px;
+  height:26px;
+  border-radius:4px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:13px;
+  font-weight:700;
+  flex-shrink:0;
+  line-height:1;
+}
+.item-body{flex:1;min-width:0}
+.item-title{
+  font-size:14px;
+  font-weight:400;
+  color:var(--text);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  line-height:1.5;
+  transition:color .15s;
+}
+.item-meta{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-top:2px;
+  font-size:12px;
+  color:var(--text-muted);
+}
+.item-meta svg{width:12px;height:12px;vertical-align:-1px;margin-right:2px}
+.platform-tag{
+  font-size:11px;
+  color:var(--primary);
+  border:1px solid #bbdefb;
+  border-radius:3px;
+  padding:0 5px;
+  line-height:1.6;
+  background:#e3f2fd;
+}
+.price-hl{color:#e53935;font-weight:600}
+
+/* ========== PAGINATION ========== */
+#pagination{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:16px;
+  background:#fff;
+  border-top:1px solid var(--border-light);
+}
+.page-btn{
+  padding:6px 16px;
+  font-size:13px;
+  color:var(--text-sec);
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  cursor:pointer;
+  transition:all .15s;
+}
+.page-btn:hover{border-color:var(--primary);color:var(--primary)}
+.page-btn.disabled{opacity:.4;pointer-events:none}
+#page-select{
+  padding:6px 8px;
+  font-size:13px;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  background:#fff;
+  color:var(--text);
+  min-width:80px;
 }
 
-.item-card {
-  background: var(--surface);
-  border: 1px solid var(--border-light);
-  border-left: 3px solid transparent;
-  border-radius: var(--radius);
-  padding: 14px 18px;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  color: var(--text);
-  transition: all var(--transition);
-  cursor: pointer;
-  position: relative;
+/* ========== RANKING SECTION ========== */
+#ranking-section{
+  background:#fff;
+  margin-top:8px;
+  border-top:1px solid var(--border);
 }
-
-.item-card:hover {
-  border-left-color: var(--primary);
-  background: var(--surface-hover);
-  box-shadow: var(--shadow-md);
+.ranking-tabs{
+  display:flex;
+  border-bottom:1px solid var(--border-light);
 }
-
-.item-card.expanded {
-  border-left-color: var(--primary);
-  background: var(--surface-hover);
-  box-shadow: var(--shadow-md);
+.ranking-tab{
+  flex:1;
+  padding:10px 0;
+  font-size:13px;
+  color:var(--text-sec);
+  background:none;
+  border:none;
+  cursor:pointer;
+  text-align:center;
+  border-bottom:2px solid transparent;
+  transition:all .15s;
 }
-
-.item-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-top: 8px;
-  flex-shrink: 0;
-  transition: transform var(--transition);
+.ranking-tab:hover{color:var(--primary)}
+.ranking-tab.active{color:var(--primary);font-weight:600;border-bottom-color:var(--primary)}
+.ranking-list{list-style:none;padding:0}
+.ranking-item{
+  display:flex;
+  align-items:center;
+  padding:10px 16px;
+  gap:10px;
+  border-bottom:1px solid var(--border-light);
+  transition:background .1s;
 }
-
-.item-card:hover .item-dot { transform: scale(1.4); }
-
-.item-body {
-  flex: 1;
-  min-width: 0;
+.ranking-item:hover{background:#fafbfc}
+.ranking-item:last-child{border-bottom:none}
+.rank-num{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  font-weight:700;
+  flex-shrink:0;
+  background:var(--bg-alt);
+  color:var(--text-muted);
 }
-
-.item-title {
-  font-size: 14.5px;
-  font-weight: 500;
-  line-height: 1.6;
-  color: var(--text);
-  word-break: break-all;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+.rank-num.top1{background:#fff3e0;color:#ef6c00}
+.rank-num.top2{background:#e3f2fd;color:#1976d2}
+.rank-num.top3{background:#e8f5e9;color:#2e7d32}
+.ranking-item .src-badge{width:22px;height:22px;font-size:11px}
+.ranking-item .rank-title{
+  flex:1;
+  min-width:0;
+  font-size:13px;
+  color:var(--text);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
-
-.item-card.expanded .item-title {
-  -webkit-line-clamp: unset;
-  display: block;
+.ranking-item .rank-count{
+  font-size:12px;
+  color:var(--text-muted);
+  flex-shrink:0;
 }
-
-.item-card:hover .item-title { color: var(--primary); }
-
-/* Expanded detail area */
-.item-detail {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height var(--transition-slow), margin var(--transition-slow), opacity var(--transition-slow);
-  opacity: 0;
-  margin-top: 0;
+.ranking-empty{
+  padding:30px 16px;
+  text-align:center;
+  color:var(--text-muted);
+  font-size:13px;
 }
-
-.item-card.expanded .item-detail {
-  max-height: 300px;
-  opacity: 1;
-  margin-top: 12px;
-}
-
-.item-detail-inner {
-  padding-top: 12px;
-  border-top: 1px solid var(--border-light);
-}
-
-.item-detail-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--text-secondary);
-  margin-bottom: 8px;
-}
-
-.item-detail-row:last-child { margin-bottom: 0; }
-
-.item-detail-label {
-  color: var(--text-muted);
-  font-size: 12px;
-  flex-shrink: 0;
-}
-
-.item-detail-value {
-  font-weight: 500;
-}
-
-.btn-go {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 10px;
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 8px 20px;
-  font-size: 13px;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  transition: background var(--transition), box-shadow var(--transition);
-  text-decoration: none;
-}
-
-.btn-go:hover {
-  background: var(--primary-dark);
-  box-shadow: var(--shadow-primary);
-}
-
-.item-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 5px;
-  flex-shrink: 0;
-  min-width: 80px;
-}
-
-.item-source {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 10px;
-  border-radius: 20px;
-  white-space: nowrap;
-  letter-spacing: 0.2px;
-}
-
-.item-time {
-  font-size: 11px;
-  color: var(--text-muted);
-  white-space: nowrap;
-}
-
-/* ========== PRICE HIGHLIGHT ========== */
-.price-hl {
-  background: linear-gradient(135deg, #fff0e6, #ffe0cc);
-  color: var(--primary-dark);
-  font-weight: 700;
-  padding: 1px 4px;
-  border-radius: 3px;
-}
-
-/* ========== LOAD MORE ========== */
-.load-more-wrap {
-  text-align: center;
-  padding: 24px 0;
-}
-
-.btn-load-more {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  padding: 10px 32px;
-  font-size: 14px;
-  font-weight: 500;
-  font-family: inherit;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all var(--transition);
-}
-
-.btn-load-more:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-  box-shadow: var(--shadow);
-}
-
-/* ========== LOADING SPINNER ========== */
-.loading {
-  text-align: center;
-  padding: 60px 20px;
-}
-
-.spinner {
-  width: 36px;
-  height: 36px;
-  border: 3px solid var(--border);
-  border-top-color: var(--primary);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin: 0 auto 16px;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.loading-text {
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
-/* ========== EMPTY STATE ========== */
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-}
-
-.empty-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
-  opacity: 0.4;
-}
-
-.empty-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  margin-bottom: 8px;
-}
-
-.empty-desc {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-/* ========== ERROR STATE ========== */
-.error-state {
-  text-align: center;
-  padding: 60px 20px;
-}
-
-.error-icon { font-size: 48px; margin-bottom: 16px; }
-
-.error-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  margin-bottom: 8px;
-}
-
-.error-desc {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-bottom: 20px;
-}
-
-.btn-retry {
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 10px 28px;
-  font-size: 14px;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  transition: background var(--transition);
-}
-
-.btn-retry:hover { background: var(--primary-dark); }
-
-/* ========== SCROLL SENTINEL ========== */
-.scroll-sentinel {
-  height: 1px;
-  width: 100%;
-}
-
-/* ========== BACK TO TOP ========== */
-.back-to-top {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  box-shadow: var(--shadow-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(12px);
-  transition: all var(--transition-slow);
-  z-index: 100;
-}
-
-.back-to-top.visible {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.back-to-top:hover {
-  background: var(--primary-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(232,93,4,0.35);
-}
-
-.back-to-top svg { width: 20px; height: 20px; }
 
 /* ========== FOOTER ========== */
-.footer {
-  text-align: center;
-  padding: 28px 16px;
-  color: var(--text-muted);
-  font-size: 12px;
-  border-top: 1px solid var(--border);
-  background: var(--surface);
+#footer{
+  text-align:center;
+  padding:20px 16px;
+  font-size:12px;
+  color:var(--text-muted);
+  background:var(--bg-alt);
 }
+#footer a{color:var(--text-muted);margin:0 6px}
+#footer a:hover{color:var(--primary)}
 
-.footer a {
-  color: var(--primary);
-  text-decoration: none;
-  font-weight: 500;
+/* ========== MOBILE DROPDOWN (category) ========== */
+#cat-dropdown{
+  display:none;
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .3s ease;
+  position:sticky;
+  top:var(--header-h);
+  z-index:90;
 }
-
-.footer a:hover { text-decoration: underline; }
-
-/* ========== SOURCE COLORS ========== */
-.src-color-0  { background: #fff0e6; color: #e85d04; }
-.src-color-1  { background: #e8f5e9; color: #2e7d32; }
-.src-color-2  { background: #e3f2fd; color: #1565c0; }
-.src-color-3  { background: #fce4ec; color: #c62828; }
-.src-color-4  { background: #f3e5f5; color: #7b1fa2; }
-.src-color-5  { background: #e0f2f1; color: #00695c; }
-.src-color-6  { background: #fff3e0; color: #e65100; }
-.src-color-7  { background: #e8eaf6; color: #283593; }
-.src-color-8  { background: #fbe9e7; color: #bf360c; }
-.src-color-9  { background: #e1f5fe; color: #0277bd; }
-.src-color-10 { background: #f1f8e9; color: #33691e; }
-.src-color-11 { background: #fff8e1; color: #f57f17; }
-
-.dot-color-0  { background: #e85d04; }
-.dot-color-1  { background: #2e7d32; }
-.dot-color-2  { background: #1565c0; }
-.dot-color-3  { background: #c62828; }
-.dot-color-4  { background: #7b1fa2; }
-.dot-color-5  { background: #00695c; }
-.dot-color-6  { background: #e65100; }
-.dot-color-7  { background: #283593; }
-.dot-color-8  { background: #bf360c; }
-.dot-color-9  { background: #0277bd; }
-.dot-color-10 { background: #33691e; }
-.dot-color-11 { background: #f57f17; }
-
-/* ========== ANIMATIONS ========== */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+#cat-dropdown.open{max-height:320px;overflow-y:auto}
+#cat-dropdown .cat-item{padding:10px 20px;border-left:none}
+#cat-dropdown .cat-item.active{background:#e3f2fd;border-left:none}
+#cat-toggle-bar{
+  display:none;
+  background:#fff;
+  padding:8px 16px;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+  font-size:13px;
+  color:var(--text-sec);
+  position:sticky;
+  top:var(--header-h);
+  z-index:91;
 }
+#cat-toggle-bar:hover{background:var(--bg-alt)}
+#cat-toggle-bar .toggle-arrow{
+  display:inline-block;
+  transition:transform .2s;
+  margin-right:6px;
+  font-size:10px;
+}
+#cat-toggle-bar.open .toggle-arrow{transform:rotate(90deg)}
 
-.item-card { animation: fadeInUp 0.3s ease both; }
+/* ========== BACK TO TOP ========== */
+#back-top{
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:#fff;
+  border:1px solid var(--border);
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:all .2s;
+  z-index:50;
+}
+#back-top.show{opacity:1;pointer-events:auto}
+#back-top:hover{border-color:var(--primary);color:var(--primary)}
+#back-top svg{width:18px;height:18px}
+
+/* ========== LOADING ========== */
+.loading{
+  padding:40px 20px;
+  text-align:center;
+  color:var(--text-muted);
+  font-size:14px;
+}
+.loading::before{
+  content:"";
+  display:inline-block;
+  width:20px;
+  height:20px;
+  border:2px solid var(--border);
+  border-top-color:var(--primary);
+  border-radius:50%;
+  animation:spin .6s linear infinite;
+  margin-right:8px;
+  vertical-align:middle;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* ========== RESPONSIVE ========== */
-@media (max-width: 768px) {
-  .header { padding: 0 12px; }
-  .header-count { display: none; }
-  .hero { padding: 28px 16px; }
-  .hero h1 { font-size: 20px; }
-  .hero-subtitle { font-size: 13px; }
-  .hero-stats { gap: 16px; font-size: 12px; }
-  .main { padding: 12px 10px 80px; }
-  .item-card { padding: 12px 14px; gap: 10px; }
-  .item-title { font-size: 14px; }
-  .item-meta { min-width: 70px; }
-  .item-source { font-size: 10px; padding: 2px 8px; }
-  .item-time { font-size: 10px; }
-  .source-grid { grid-template-columns: 1fr; }
-  .source-panel-inner { padding: 16px 12px 20px; }
-  .search-panel.open { padding: 10px 12px; }
-  .back-to-top { bottom: 20px; right: 16px; width: 40px; height: 40px; }
+@media(max-width:960px){
+  #sidebar{display:none}
+  #icon-menu{display:block}
+  #cat-toggle-bar{display:flex;align-items:center}
+  #cat-dropdown{display:block}
+  #menu a.hide-mobile{display:none}
+  #view-bar{display:flex}
+  #search-form{max-width:none}
+  .header-divider{display:none}
+  #app{flex-direction:column}
 }
-
-@media (min-width: 769px) {
-  .item-meta { min-width: 120px; }
-}
-
-/* ========== SOURCE TABS BAR ========== */
-.source-tabs-wrapper {
-  position: sticky;
-  top: var(--header-height);
-  z-index: 150;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
-}
-.source-tabs {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  display: flex;
-  gap: 6px;
-  padding: 10px 16px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-.source-tabs::-webkit-scrollbar { display: none; }
-.source-tab {
-  flex-shrink: 0;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  cursor: pointer;
-  transition: all var(--transition);
-  white-space: nowrap;
-  user-select: none;
-}
-.source-tab:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-  background: var(--primary-light);
-}
-.source-tab.active {
-  background: var(--primary);
-  color: #fff;
-  border-color: var(--primary);
-  box-shadow: 0 2px 8px rgba(232,93,4,0.25);
-}
-.source-tab .tab-count {
-  display: inline-block;
-  margin-left: 4px;
-  font-size: 11px;
-  opacity: 0.7;
-}
-@media (max-width: 768px) {
-  .source-tabs { padding: 8px 12px; gap: 5px; }
-  .source-tab { padding: 5px 11px; font-size: 12px; }
+@media(max-width:600px){
+  #header{padding:0 10px;gap:8px}
+  #logo{font-size:16px}
+  #search-form{height:32px}
+  #search-btn{padding:0 10px;font-size:12px}
+  #menu a{padding:6px 8px;font-size:13px}
+  .item>a{padding:10px 12px;gap:8px}
+  .item-title{font-size:13px}
+  .src-badge{width:24px;height:24px;font-size:12px}
+  #footer{padding:16px 12px}
+  #back-top{bottom:16px;right:16px;width:36px;height:36px}
 }
 </style>
 </head>
 <body>
 
 <!-- ===== HEADER ===== -->
-<header class="header">
-  <div class="header-left">
-    <div class="logo">&#x26A1; 线报聚合</div>
-    <span class="badge-auto">自动更新</span>
-    <span class="header-count" id="headerCount"></span>
-  </div>
-  <div class="header-right">
-    <button class="btn-icon" id="btnSearch" title="搜索">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    </button>
-    <button class="btn-icon" id="btnSourceFilter" title="筛选来源">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-    </button>
-  </div>
-</header>
-
-<!-- ===== SEARCH PANEL ===== -->
-<div class="search-panel" id="searchPanel">
-  <div class="search-panel-inner">
-    <svg class="search-icon-inner" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" class="search-input" id="searchInput" placeholder="搜索线报内容、来源..." autocomplete="off">
-    <button class="search-clear" id="searchClear" title="清除">&times;</button>
-    <div class="search-result-count" id="searchResultCount"></div>
+<div id="header">
+  <a id="icon-menu" onclick="toggleCatDropdown()">&#9776;</a>
+  <a id="logo" href="/">⚡ 线报聚合</a>
+  <div class="header-divider"></div>
+  <form id="search-form" onsubmit="handleSearch(event)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input id="search-input" type="text" autocomplete="off" placeholder="请输入关键词..">
+    <button type="submit" id="search-btn">搜 索</button>
+  </form>
+  <div id="menu">
+    <a class="active" data-view="list" onclick="switchView('list')">首页</a>
+    <a data-view="ranking" onclick="switchView('ranking')">排行</a>
   </div>
 </div>
 
-<!-- ===== SOURCE FILTER PANEL ===== -->
-<div class="source-panel" id="sourcePanel">
-  <div class="source-panel-inner">
-    <div class="source-panel-header">
-      <h3>选择线报来源</h3>
-      <div class="source-panel-actions">
-        <button id="btnSelectAll">全选</button>
-        <button id="btnDeselectAll">全不选</button>
+<!-- ===== MOBILE CATEGORY TOGGLE ===== -->
+<div id="cat-toggle-bar" onclick="toggleCatDropdown()">
+  <span class="toggle-arrow">▶</span>
+  <span id="cat-toggle-text">全部线报</span>
+</div>
+<div id="cat-dropdown"></div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="app">
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div class="cat-section" id="sidebar-cats"></div>
+  </div>
+
+  <!-- Content -->
+  <div id="content">
+    <!-- View bar (mobile only) -->
+    <div id="view-bar">
+      <div class="view-tab active" data-view="list" onclick="switchView('list')">首页</div>
+      <div class="view-tab" data-view="ranking" onclick="switchView('ranking')">排行</div>
+    </div>
+
+    <!-- List View -->
+    <div id="list-view">
+      <div id="status-bar">
+        <span id="status-text">加载中...</span>
+      </div>
+      <div class="list-wrap" id="item-list"></div>
+      <div id="pagination"></div>
+    </div>
+
+    <!-- Ranking View (also shown at bottom on desktop) -->
+    <div id="ranking-view" style="display:none">
+      <div id="ranking-section">
+        <div class="ranking-tabs">
+          <button class="ranking-tab active" data-period="1h" onclick="switchRankTab('1h')">一小时排行</button>
+          <button class="ranking-tab" data-period="3h" onclick="switchRankTab('3h')">三小时排行</button>
+          <button class="ranking-tab" data-period="6h" onclick="switchRankTab('6h')">六小时排行</button>
+        </div>
+        <div id="ranking-list" class="ranking-list"></div>
       </div>
     </div>
-    <div class="source-panel-count" id="sourcePanelCount"></div>
-    <div class="source-grid" id="sourceGrid"></div>
   </div>
 </div>
-
-<!-- ===== HERO ===== -->
-<section class="hero">
-  <div class="hero-content">
-    <h1>全网羊毛线报实时聚合</h1>
-    <p class="hero-subtitle">自动抓取多个线报站点，智能过滤去重，只保留真实有价值的优惠线报</p>
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span id="heroTime">加载中...</span>
-      </div>
-      <div class="hero-stat">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        <span id="heroTotal">共收录 -- 条</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== SOURCE TABS ===== -->
-<div class="source-tabs-wrapper">
-  <div class="source-tabs" id="sourceTabs"></div>
-</div>
-
-<!-- ===== MAIN ===== -->
-<main class="main" id="mainContent">
-  <div class="loading" id="loadingState">
-    <div class="spinner"></div>
-    <div class="loading-text">正在加载线报数据...</div>
-  </div>
-</main>
-
-<!-- ===== BACK TO TOP ===== -->
-<button class="back-to-top" id="backToTop" title="回到顶部">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
-</button>
 
 <!-- ===== FOOTER ===== -->
-<footer class="footer">
-  <p>自动更新 &middot; 永不停止 &middot; <a href="https://github.com/gitfox-enter/site-update-monitor" target="_blank" rel="noopener">GitHub</a></p>
-</footer>
+<div id="footer">
+  <p>&copy; 2024-2026 线报聚合 All Right Reserved</p>
+  <p style="margin-top:4px">
+    <a href="https://github.com/gitfox-enter/site-update-monitor" target="_blank" rel="noopener">GitHub</a>
+  </p>
+</div>
+
+<!-- ===== BACK TO TOP ===== -->
+<div id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+</div>
 
 <script>
 /* ================================================================
-   线报聚合 - 主应用逻辑
+   DATA & STATE
    ================================================================ */
-(function () {
-  "use strict";
+var allItems = [];
+var sources = [];       // [{name, count, color}]
+var activeSource = 'all';
+var searchQuery = '';
+var currentPage = 1;
+var PAGE_SIZE = 40;
+var currentView = 'list';
+var currentRankTab = '1h';
 
-  /* ---- Constants ---- */
-  var PAGE_SIZE = 30;
-  var DEBOUNCE_MS = 250;
+/* Source name normalization map */
+var SOURCE_MAP = {
+  '线报酷 - 专注线报活动与优惠促销分享的线报网站': '线报酷',
+  '好赚网 - 每日分享新鲜活动线报和优惠信息': '好赚网',
+  '0818团线报资源网-京东优惠券/抽奖-为赚客服务的一手线报网站-0818线报': '0818团',
+  '拔草哦 | 折扣信息分享网站_推荐海淘折扣信息_转运攻略，告诉你什么值得买': '拔草哦',
+  '聚合线报 - 实时优惠线报 | 薅羊毛 | 赚客吧 | 好单精选': '聚合线报',
+  '鲸线报 - 专业实时搜集与分享全网优惠线报和促销活动的平台': '鲸线报',
+  '超级线报 - 实时监控 / AI驱动 / 体验超好的线报网站！': '超级线报',
+  '白菜哦-高性价比网购海淘推荐': '白菜哦'
+};
 
-  /* ---- State ---- */
-  var allItems = [];
-  var updatedAt = "";
-  var sourceMap = {};          // source -> colorIndex
-  var sourceList = [];         // [{name, count}]
-  var selectedSources = {};    // sourceName -> true/false
-  var searchQuery = "";
-  var filteredItems = [];
-  var displayedCount = 0;
-  var isLoading = false;
-  var expandedCardId = null;   // currently expanded card index
-  var activeSourceTab = "all"; // "all" or a source name
+/* Source badge colors */
+var SRC_COLORS = {
+  '爱Q生活':   '#43a047',
+  '赚客吧':   '#e53935',
+  '线报酷':   '#1e88e5',
+  '好赚网':   '#8e24aa',
+  '汇发部':   '#00897b',
+  '聚合线报':  '#f4511e',
+  '拔草哦':   '#d81b60',
+  '新赚吧':   '#6d4c41',
+  '0818团':   '#546e7a',
+  '鲸线报':   '#039be5',
+  '专业线报':  '#7cb342',
+  '超级线报':  '#fb8c00',
+  '线报ICU':  '#5e35b1',
+  '白菜哦':   '#00acc1',
+  '促销吧':   '#c0ca33',
+  '好赚线报':  '#ab47bc',
+  '79淘':     '#ff7043',
+  '907线报':  '#26a69a',
+  '天天赚':   '#ff8a65',
+  '慢慢买':   '#42a5f5',
+  '小众软件':  '#66bb6a',
+  'IT之家':   '#ef5350',
+  '开心赚':   '#ffa726',
+  '羊毛党':   '#ab47bc',
+  '线报迷':   '#29b6f6',
+  '羊毛王':   '#ff5722',
+  '资源厅':   '#5c6bc0',
+  '51卡农':   '#8d6e63',
+  '线报网':   '#26c6da',
+  '小嘀咕':   '#ec407a',
+  '豆瓣小组':  '#66bb6a',
+  '好单库':   '#26a69a',
+  '免费族':   '#78909c',
+  '网赚':     '#7e57c2',
+  '优惠线报':  '#ff7043',
+  '活动5':    '#42a5f5',
+  '线报迷':   '#29b6f6'
+};
+var DEFAULT_COLOR = '#78909c';
 
-  /* ---- DOM refs ---- */
-  var $mainContent     = document.getElementById("mainContent");
-  var $searchPanel     = document.getElementById("searchPanel");
-  var $searchInput     = document.getElementById("searchInput");
-  var $searchClear     = document.getElementById("searchClear");
-  var $searchResultCnt = document.getElementById("searchResultCount");
-  var $btnSearch       = document.getElementById("btnSearch");
-  var $btnSourceFilter = document.getElementById("btnSourceFilter");
-  var $sourcePanel     = document.getElementById("sourcePanel");
-  var $sourceGrid      = document.getElementById("sourceGrid");
-  var $sourcePanelCnt  = document.getElementById("sourcePanelCount");
-  var $headerCount     = document.getElementById("headerCount");
-  var $heroTime        = document.getElementById("heroTime");
-  var $heroTotal       = document.getElementById("heroTotal");
-  var $backToTop       = document.getElementById("backToTop");
-  var $sourceTabs      = document.getElementById("sourceTabs");
+function normalizeSource(raw) {
+  if (!raw) return '未知来源';
+  var mapped = SOURCE_MAP[raw];
+  return mapped || raw;
+}
 
-  /* ---- Utility ---- */
-  function escapeHtml(str) {
-    var div = document.createElement("div");
-    div.appendChild(document.createTextNode(str));
-    return div.innerHTML;
-  }
+function getSourceColor(name) {
+  return SRC_COLORS[name] || DEFAULT_COLOR;
+}
 
-  function debounce(fn, ms) {
-    var timer;
-    return function () {
-      var ctx = this, args = arguments;
-      clearTimeout(timer);
-      timer = setTimeout(function () { fn.apply(ctx, args); }, ms);
-    };
-  }
+function getSourceChar(name) {
+  if (!name) return '?';
+  return name.charAt(0);
+}
 
-  function getSourceColorIndex(source) {
-    if (!(source in sourceMap)) {
-      sourceMap[source] = Object.keys(sourceMap).length % 12;
+/* ================================================================
+   PLATFORM DETECTION
+   ================================================================ */
+var PLATFORM_RULES = [
+  {name: '京东', kw: ['京东','jd.com','jd','京豆','京享','百亿补贴','PLUS']},
+  {name: '淘宝', kw: ['淘宝','天猫','tmall','taobao','淘金币']},
+  {name: '拼多多', kw: ['拼多多','pdd','拼多','拼夕夕']},
+  {name: '抖音', kw: ['抖音','douyin','tiktok']},
+  {name: '外卖', kw: ['外卖','美团','饿了么']},
+  {name: '唯品会', kw: ['唯品会','vip.com']},
+  {name: '苏宁', kw: ['苏宁','suning']}
+];
+
+function detectPlatform(item) {
+  var text = (item.text || '') + ' ' + (item.url || '');
+  for (var i = 0; i < PLATFORM_RULES.length; i++) {
+    var r = PLATFORM_RULES[i];
+    for (var j = 0; j < r.kw.length; j++) {
+      if (text.indexOf(r.kw[j]) !== -1) return r.name;
     }
-    return sourceMap[source];
   }
+  return null;
+}
 
-  function formatRelativeTime(timeStr) {
-    if (!timeStr) return "";
-    var d = new Date(timeStr.replace(" ", "T"));
-    if (isNaN(d.getTime())) return timeStr;
-    var now = new Date();
-    var diffMs = now - d;
-    var diffMin = Math.floor(diffMs / 60000);
-    if (diffMin < 1) return "刚刚";
-    if (diffMin < 60) return diffMin + " 分钟前";
-    var diffHr = Math.floor(diffMin / 60);
-    if (diffHr < 24) return diffHr + " 小时前";
-    var diffDay = Math.floor(diffHr / 24);
-    if (diffDay < 7) return diffDay + " 天前";
-    return timeStr.slice(5, 16);
-  }
+/* ================================================================
+   PRICE HIGHLIGHTING
+   ================================================================ */
+var PRICE_RE = /((?:到手|约|仅需|券后|实付|折合|折后|大概)?[¥￥]?\d+(?:\.\d+)?(?:元|块|亓|￥)?)/g;
+function highlightPrice(text) {
+  return text.replace(PRICE_RE, '<span class="price-hl">$1</span>');
+}
 
-  function extractDomain(url) {
-    try {
-      var u = new URL(url);
-      return u.hostname;
-    } catch (e) {
-      return "";
-    }
-  }
+/* ================================================================
+   TIME FORMATTING
+   ================================================================ */
+function formatTime(t) {
+  if (!t) return '';
+  return t.replace(/^\d{4}-/, '').replace(/:\d{2}$/, '');
+}
 
-  /* ---- Price Highlighting ---- */
-  function highlightPrices(text) {
-    var escaped = escapeHtml(text);
-    // Apply patterns in order: prefix-keywords first, then currency symbols, then suffix-keywords.
-    // Deduplication: if the match is already inside a price-hl span, skip it.
-    var patterns = [
-      /((?:到手价|到手|优惠|特价|仅需|秒杀价|活动价|券后价|凑单价|折后)[\s:]*(\d+(?:\.\d{1,2})?))/g,
-      /([¥￥]\s*(\d+(?:\.\d{1,2})?))/g,
-      /((\d+(?:\.\d{1,2})?)\s*[元亓块])/g
-    ];
+/* ================================================================
+   DATA LOADING
+   ================================================================ */
+function loadData() {
+  document.getElementById('item-list').innerHTML = '<div class="loading">加载中</div>';
 
-    var result = escaped;
-    for (var i = 0; i < patterns.length; i++) {
-      result = result.replace(patterns[i], function (match, p1, p2, offset, string) {
-        // Prevent double-wrapping: check if this match is preceded by a price-hl span
-        var preStart = Math.max(0, offset - 24);
-        var preceding = string.substring(preStart, offset);
-        if (preceding.indexOf('class="price-hl">') !== -1) {
-          return match;
-        }
-        return '<span class="price-hl">' + match + '</span>';
+  fetch('items.json?t=' + Date.now())
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var rawItems = data.items || [];
+      /* Normalize sources & detect platform */
+      allItems = rawItems.map(function(it) {
+        return {
+          url: it.url || '',
+          text: (it.text || '').trim(),
+          source: normalizeSource(it.source),
+          rawSource: it.source || '',
+          time: it.time || '',
+          category: it.category || null,
+          platform: detectPlatform(it)
+        };
       });
-    }
-    return result;
-  }
 
-  /* ---- Data fetching ---- */
-  function fetchData() {
-    isLoading = true;
-    showLoading();
-    fetch("items.json?t=" + Date.now())
-      .then(function (r) {
-        if (!r.ok) throw new Error("HTTP " + r.status);
-        return r.json();
-      })
-      .then(function (data) {
-        allItems = data.items || [];
-        updatedAt = data.updated_at || "";
-        isLoading = false;
-        init();
-      })
-      .catch(function (err) {
-        isLoading = false;
-        showError(err.message);
+      /* Build source stats */
+      var srcMap = {};
+      allItems.forEach(function(it) {
+        srcMap[it.source] = (srcMap[it.source] || 0) + 1;
       });
-  }
+      sources = Object.keys(srcMap).map(function(name) {
+        return { name: name, count: srcMap[name], color: getSourceColor(name) };
+      }).sort(function(a, b) { return b.count - a.count; });
 
-  /* ---- Initialization after data load ---- */
-  function init() {
-    // Pre-compute source colors and list
-    var sourceCounts = {};
-    allItems.forEach(function (item) {
-      var s = item.source || "未知";
-      getSourceColorIndex(s);
-      sourceCounts[s] = (sourceCounts[s] || 0) + 1;
+      buildSidebar();
+      buildMobileDropdown();
+      renderAll();
+      updateStatus();
+    })
+    .catch(function(err) {
+      document.getElementById('item-list').innerHTML =
+        '<div class="list-empty">加载失败，请刷新重试<br><small>' + err.message + '</small></div>';
     });
+}
 
-    sourceList = Object.keys(sourceCounts).map(function (name) {
-      return { name: name, count: sourceCounts[name] };
-    }).sort(function (a, b) { return b.count - a.count; });
+/* ================================================================
+   SIDEBAR
+   ================================================================ */
+function buildSidebar() {
+  var container = document.getElementById('sidebar-cats');
+  var html = '<div class="cat-item' + (activeSource === 'all' ? ' active' : '') + '" data-src="all" onclick="selectSource(\'all\')">' +
+    '<span class="cat-name">全部线报</span>' +
+    '<span class="cat-count">' + allItems.length + '</span></div>';
 
-    // All sources selected by default
-    sourceList.forEach(function (s) {
-      selectedSources[s.name] = true;
-    });
-
-    updateHeroStats();
-    buildSourceTabs();
-    buildSourcePanel();
-    applyFilters();
-    restoreHashState();
-  }
-
-  /* ---- Hero / header stats ---- */
-  function updateHeroStats() {
-    $heroTime.textContent = "最后更新：" + (updatedAt || "未知");
-    $heroTotal.textContent = "共收录 " + allItems.length + " 条";
-    $headerCount.textContent = allItems.length + " 条";
-  }
-
-  /* ---- Source Tabs Bar ---- */
-  function buildSourceTabs() {
-    // Only show sources that are selected in the gear panel
-    var visibleSources = sourceList.filter(function (s) {
-      return selectedSources[s.name] !== false;
-    });
-
-    var html = '<div class="source-tab' + (activeSourceTab === "all" ? " active" : "") + '" data-tab="all">全部<span class="tab-count">' + allItems.length + '</span></div>';
-    visibleSources.forEach(function (s) {
-      html += '<div class="source-tab' + (activeSourceTab === s.name ? " active" : "") + '" data-tab="' + escapeHtml(s.name) + '">' + escapeHtml(s.name) + '<span class="tab-count">' + s.count + '</span></div>';
-    });
-    $sourceTabs.innerHTML = html;
-
-    // Attach click events
-    var tabs = $sourceTabs.querySelectorAll(".source-tab");
-    tabs.forEach(function (tab) {
-      tab.addEventListener("click", function () {
-        activeSourceTab = this.getAttribute("data-tab");
-        // Update active class
-        tabs.forEach(function (t) { t.classList.remove("active"); });
-        this.classList.add("active");
-        applyFilters();
-      });
-    });
-  }
-
-  /* ---- Source Filter Panel ---- */
-  function buildSourcePanel() {
-    var html = "";
-    sourceList.forEach(function (s) {
-      var srcIdx = getSourceColorIndex(s.name);
-      var checked = selectedSources[s.name] !== false ? " checked" : "";
-      html += '<label class="source-check">';
-      html += '<input type="checkbox" data-source="' + escapeHtml(s.name) + '"' + checked + '>';
-      html += '<span class="source-check-name">' + escapeHtml(s.name) + '</span>';
-      html += '<span class="source-check-count">' + s.count + '</span>';
-      html += '</label>';
-    });
-    $sourceGrid.innerHTML = html;
-    updateSourcePanelCount();
-
-    // Attach change events
-    var checkboxes = $sourceGrid.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(function (cb) {
-      cb.addEventListener("change", function () {
-        selectedSources[this.getAttribute("data-source")] = this.checked;
-        updateSourcePanelCount();
-        buildSourceTabs();
-        applyFilters();
-      });
-    });
-  }
-
-  function updateSourcePanelCount() {
-    var total = sourceList.length;
-    var selected = 0;
-    sourceList.forEach(function (s) {
-      if (selectedSources[s.name] !== false) selected++;
-    });
-    $sourcePanelCnt.textContent = "已选择 " + selected + " / " + total + " 个来源";
-  }
-
-  // Select All
-  document.getElementById("btnSelectAll").addEventListener("click", function () {
-    sourceList.forEach(function (s) { selectedSources[s.name] = true; });
-    var checkboxes = $sourceGrid.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(function (cb) { cb.checked = true; });
-    updateSourcePanelCount();
-    buildSourceTabs();
-    applyFilters();
+  sources.forEach(function(s) {
+    var isActive = activeSource === s.name;
+    html += '<div class="cat-item' + (isActive ? ' active' : '') + '" data-src="' + escAttr(s.name) + '" onclick="selectSource(\'' + escAttr(s.name) + '\')">' +
+      '<span class="cat-name">' + esc(s.name) + '</span>' +
+      '<span class="cat-count">' + s.count + '</span></div>';
   });
 
-  // Deselect All
-  document.getElementById("btnDeselectAll").addEventListener("click", function () {
-    sourceList.forEach(function (s) { selectedSources[s.name] = false; });
-    var checkboxes = $sourceGrid.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(function (cb) { cb.checked = false; });
-    updateSourcePanelCount();
-    buildSourceTabs();
-    applyFilters();
+  container.innerHTML = html;
+}
+
+function buildMobileDropdown() {
+  var container = document.getElementById('cat-dropdown');
+  var html = '<div class="cat-item' + (activeSource === 'all' ? ' active' : '') + '" onclick="selectSource(\'all\');closeCatDropdown()">' +
+    '<span class="cat-name">全部线报</span>' +
+    '<span class="cat-count">' + allItems.length + '</span></div>';
+
+  sources.forEach(function(s) {
+    var isActive = activeSource === s.name;
+    html += '<div class="cat-item' + (isActive ? ' active' : '') + '" onclick="selectSource(\'' + escAttr(s.name) + '\');closeCatDropdown()">' +
+      '<span class="cat-name">' + esc(s.name) + '</span>' +
+      '<span class="cat-count">' + s.count + '</span></div>';
   });
 
-  /* ---- Toggle panels ---- */
-  $btnSearch.addEventListener("click", function () {
-    var isOpen = $searchPanel.classList.contains("open");
-    // Close source panel if open
-    $sourcePanel.classList.remove("open");
-    $btnSourceFilter.classList.remove("active");
+  container.innerHTML = html;
+}
 
-    if (isOpen) {
-      $searchPanel.classList.remove("open");
-      this.classList.remove("active");
-    } else {
-      $searchPanel.classList.add("open");
-      this.classList.add("active");
-      setTimeout(function () { $searchInput.focus(); }, 350);
-    }
-  });
+function selectSource(name) {
+  activeSource = name;
+  currentPage = 1;
+  buildSidebar();
+  buildMobileDropdown();
+  renderList();
+  updateStatus();
+  /* Update toggle bar text */
+  var toggleText = document.getElementById('cat-toggle-text');
+  toggleText.textContent = name === 'all' ? '全部线报' : name;
+  /* Scroll to top of list */
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
 
-  $btnSourceFilter.addEventListener("click", function () {
-    var isOpen = $sourcePanel.classList.contains("open");
-    // Close search panel if open
-    $searchPanel.classList.remove("open");
-    $btnSearch.classList.remove("active");
+/* ================================================================
+   FILTERING
+   ================================================================ */
+function getFiltered() {
+  var filtered = allItems;
 
-    if (isOpen) {
-      $sourcePanel.classList.remove("open");
-      this.classList.remove("active");
-    } else {
-      $sourcePanel.classList.add("open");
-      this.classList.add("active");
-    }
-  });
-
-  /* ---- Filtering + Search ---- */
-  function applyFilters() {
-    var query = searchQuery.toLowerCase().trim();
-
-    filteredItems = allItems.filter(function (item) {
-      // Source filter (gear panel)
-      var src = item.source || "未知";
-      if (selectedSources[src] === false) return false;
-
-      // Source tab filter
-      if (activeSourceTab !== "all" && src !== activeSourceTab) return false;
-
-      // Search filter
-      if (query) {
-        var text = (item.text || "").toLowerCase();
-        var source = (item.source || "").toLowerCase();
-        if (text.indexOf(query) === -1 && source.indexOf(query) === -1) return false;
-      }
-
-      return true;
-    });
-
-    displayedCount = 0;
-    expandedCardId = null;
-    renderItems();
-    updateSearchResultCount();
+  /* Source filter */
+  if (activeSource !== 'all') {
+    filtered = filtered.filter(function(it) { return it.source === activeSource; });
   }
 
-  function updateSearchResultCount() {
-    if (searchQuery) {
-      $searchResultCnt.textContent = "找到 " + filteredItems.length + " 条结果";
-    } else {
-      $searchResultCnt.textContent = "";
-    }
-  }
-
-  /* ---- Search ---- */
-  var debouncedSearch = debounce(function () {
-    searchQuery = $searchInput.value.trim();
-    $searchClear.classList.toggle("visible", searchQuery.length > 0);
-    saveHashState();
-    applyFilters();
-  }, DEBOUNCE_MS);
-
-  $searchInput.addEventListener("input", debouncedSearch);
-
-  $searchClear.addEventListener("click", function () {
-    $searchInput.value = "";
-    searchQuery = "";
-    $searchClear.classList.remove("visible");
-    saveHashState();
-    applyFilters();
-    $searchInput.focus();
-  });
-
-  /* ---- Rendering ---- */
-  function renderItems() {
-    var total = filteredItems.length;
-    var toShow = Math.min(displayedCount + PAGE_SIZE, total);
-
-    var html = "";
-
-    // Status bar
-    html += '<div class="status-bar">';
-    if (searchQuery) {
-      html += '<span class="search-result-info">搜索 "' + escapeHtml(searchQuery) + '" 找到 ' + total + " 条结果</span>";
-    } else {
-      html += "<span>共 " + total + " 条线报</span>";
-    }
-    html += '<span id="displayCounter">显示 ' + (total > 0 ? toShow : 0) + " / " + total + " 条</span>";
-    html += "</div>";
-
-    if (total === 0) {
-      html += '<div class="empty-state">';
-      html += '<div class="empty-icon">&#x1F50D;</div>';
-      html += '<div class="empty-title">没有找到相关线报</div>';
-      html += '<div class="empty-desc">试试其他关键词、切换来源筛选或清除搜索</div>';
-      html += "</div>";
-    } else {
-      html += '<div class="item-list" id="itemList">';
-      for (var i = 0; i < toShow; i++) {
-        html += renderItemCard(filteredItems[i], i);
-      }
-      html += "</div>";
-
-      // Load more
-      if (toShow < total) {
-        html += '<div class="load-more-wrap">';
-        html += '<button class="btn-load-more" id="btnLoadMore">加载更多 (' + (total - toShow) + " 条)</button>";
-        html += "</div>";
-        html += '<div class="scroll-sentinel" id="scrollSentinel"></div>';
-      }
-    }
-
-    $mainContent.innerHTML = html;
-    displayedCount = toShow;
-
-    // Rebind load more
-    var $btn = document.getElementById("btnLoadMore");
-    if ($btn) {
-      $btn.addEventListener("click", function () { loadMore(); });
-    }
-
-    // Bind card click events
-    bindCardEvents();
-
-    // Setup intersection observer
-    setupInfiniteScroll();
-  }
-
-  function renderItemCard(item, idx) {
-    var src = item.source || "未知";
-    var srcIdx = getSourceColorIndex(src);
-    var time = formatRelativeTime(item.time);
-    var timeRaw = item.time || "";
-    var url = item.url || "#";
-    var domain = extractDomain(url);
-    var delay = Math.min(idx, 10) * 0.03;
-    var isExpanded = expandedCardId === idx;
-    var cardClass = "item-card" + (isExpanded ? " expanded" : "");
-
-    // Highlighted title
-    var titleHighlighted = highlightPrices(item.text || "无线报标题");
-
-    var s = "";
-    s += '<div class="' + cardClass + '" data-idx="' + idx + '" style="animation-delay:' + delay.toFixed(2) + 's">';
-    s += '<div class="item-dot dot-color-' + srcIdx + '"></div>';
-    s += '<div class="item-body">';
-    s += '<div class="item-title">' + titleHighlighted + '</div>';
-
-    // Expandable detail section
-    s += '<div class="item-detail">';
-    s += '<div class="item-detail-inner">';
-    s += '<div class="item-detail-row"><span class="item-detail-label">来源：</span><span class="item-detail-value">' + escapeHtml(src) + '</span></div>';
-    if (domain) {
-      s += '<div class="item-detail-row"><span class="item-detail-label">域名：</span><span class="item-detail-value">' + escapeHtml(domain) + '</span></div>';
-    }
-    s += '<div class="item-detail-row"><span class="item-detail-label">时间：</span><span class="item-detail-value">' + escapeHtml(timeRaw) + '</span></div>';
-    s += '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener" class="btn-go" onclick="event.stopPropagation();">前往查看 &rarr;</a>';
-    s += '</div>';
-    s += '</div>';
-
-    s += '</div>';
-    s += '<div class="item-meta">';
-    s += '<span class="item-source src-color-' + srcIdx + '">' + escapeHtml(src) + '</span>';
-    s += '<span class="item-time" title="' + escapeHtml(timeRaw) + '">' + escapeHtml(time) + '</span>';
-    s += '</div>';
-    s += '</div>';
-    return s;
-  }
-
-  function bindCardEvents() {
-    var cards = document.querySelectorAll(".item-card");
-    cards.forEach(function (card) {
-      card.addEventListener("click", function (e) {
-        // Don't toggle if user clicked a link inside
-        if (e.target.closest("a")) return;
-        var idx = parseInt(this.getAttribute("data-idx"), 10);
-        toggleCard(idx);
-      });
+  /* Search filter */
+  if (searchQuery) {
+    var q = searchQuery.toLowerCase();
+    filtered = filtered.filter(function(it) {
+      return it.text.toLowerCase().indexOf(q) !== -1 ||
+             it.source.toLowerCase().indexOf(q) !== -1 ||
+             (it.platform && it.platform.toLowerCase().indexOf(q) !== -1);
     });
   }
 
-  function toggleCard(idx) {
-    var cards = document.querySelectorAll(".item-card");
-    cards.forEach(function (card) {
-      var cardIdx = parseInt(card.getAttribute("data-idx"), 10);
-      if (cardIdx === idx) {
-        card.classList.toggle("expanded");
-        if (card.classList.contains("expanded")) {
-          expandedCardId = idx;
-        } else {
-          expandedCardId = null;
-        }
-      } else {
-        card.classList.remove("expanded");
-      }
-    });
+  return filtered;
+}
+
+/* ================================================================
+   RENDERING
+   ================================================================ */
+function renderAll() {
+  renderList();
+  renderRanking();
+}
+
+function renderList() {
+  var filtered = getFiltered();
+  var total = filtered.length;
+  var totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  if (currentPage > totalPages) currentPage = totalPages;
+
+  var start = (currentPage - 1) * PAGE_SIZE;
+  var pageItems = filtered.slice(start, start + PAGE_SIZE);
+
+  var container = document.getElementById('item-list');
+
+  if (total === 0) {
+    container.innerHTML = '<div class="list-empty">暂无相关线报</div>';
+    document.getElementById('pagination').innerHTML = '';
+    return;
   }
 
-  function loadMore() {
-    var total = filteredItems.length;
-    if (displayedCount >= total) return;
+  var html = '';
+  pageItems.forEach(function(it) {
+    var char = getSourceChar(it.source);
+    var color = getSourceColor(it.source);
+    var title = highlightPrice(esc(it.text));
+    var time = formatTime(it.time);
+    var platformHtml = it.platform ? '<span class="platform-tag">' + esc(it.platform) + '</span>' : '';
 
-    var toShow = Math.min(displayedCount + PAGE_SIZE, total);
-    var $list = document.getElementById("itemList");
-    if (!$list) return;
-
-    var fragment = "";
-    for (var i = displayedCount; i < toShow; i++) {
-      fragment += renderItemCard(filteredItems[i], i);
-    }
-    $list.insertAdjacentHTML("beforeend", fragment);
-    displayedCount = toShow;
-
-    // Update counter
-    var $counter = document.getElementById("displayCounter");
-    if ($counter) $counter.textContent = "显示 " + toShow + " / " + total + " 条";
-
-    // Update/remove load-more button
-    var $btnWrap = document.querySelector(".load-more-wrap");
-    if (toShow >= total && $btnWrap) {
-      $btnWrap.remove();
-    } else if ($btnWrap) {
-      var $btn = $btnWrap.querySelector(".btn-load-more");
-      if ($btn) $btn.textContent = "加载更多 (" + (total - toShow) + " 条)";
-    }
-
-    // Rebind card events for new cards
-    bindCardEvents();
-    setupInfiniteScroll();
-  }
-
-  /* ---- Infinite Scroll ---- */
-  var observer = null;
-
-  function setupInfiniteScroll() {
-    if (observer) observer.disconnect();
-
-    var sentinel = document.getElementById("scrollSentinel");
-    if (!sentinel) return;
-
-    observer = new IntersectionObserver(function (entries) {
-      if (entries[0].isIntersecting) {
-        loadMore();
-      }
-    }, { rootMargin: "200px" });
-
-    observer.observe(sentinel);
-  }
-
-  /* ---- UI states ---- */
-  function showLoading() {
-    $mainContent.innerHTML = '<div class="loading"><div class="spinner"></div><div class="loading-text">正在加载线报数据...</div></div>';
-  }
-
-  function showError(msg) {
-    $mainContent.innerHTML =
-      '<div class="error-state">' +
-      '<div class="error-icon">&#x26A0;&#xFE0F;</div>' +
-      '<div class="error-title">数据加载失败</div>' +
-      '<div class="error-desc">' + escapeHtml(msg) + ' - 请确保 items.json 文件存在且格式正确</div>' +
-      '<button class="btn-retry" id="btnRetry">重新加载</button>' +
-      '</div>';
-    var $retry = document.getElementById("btnRetry");
-    if ($retry) {
-      $retry.addEventListener("click", function () { fetchData(); });
-    }
-  }
-
-  /* ---- Back to Top ---- */
-  window.addEventListener("scroll", function () {
-    $backToTop.classList.toggle("visible", window.scrollY > 400);
-  }, { passive: true });
-
-  $backToTop.addEventListener("click", function () {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    html += '<div class="item">' +
+      '<a href="' + escAttr(it.url) + '" target="_blank" rel="noopener">' +
+        '<span class="src-badge" style="background:' + color + '">' + esc(char) + '</span>' +
+        '<div class="item-body">' +
+          '<div class="item-title">' + title + '</div>' +
+          '<div class="item-meta">' +
+            '<span>' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' +
+              esc(time) +
+            '</span>' +
+            platformHtml +
+          '</div>' +
+        '</div>' +
+      '</a>' +
+    '</div>';
   });
 
-  /* ---- URL Hash State ---- */
-  function saveHashState() {
-    var hash = "";
-    if (searchQuery) hash = "q=" + encodeURIComponent(searchQuery);
-    history.replaceState(null, "", hash ? "#" + hash : window.location.pathname);
+  container.innerHTML = html;
+  renderPagination(totalPages);
+}
+
+function renderPagination(totalPages) {
+  var container = document.getElementById('pagination');
+  if (totalPages <= 1) {
+    container.innerHTML = '';
+    return;
   }
 
-  function restoreHashState() {
-    var hash = window.location.hash.slice(1);
-    if (!hash) return;
-    var params = {};
-    hash.split("&").forEach(function (part) {
-      var kv = part.split("=");
-      if (kv.length === 2) params[kv[0]] = decodeURIComponent(kv[1]);
-    });
-    if (params.q) {
-      // Open the search panel and set query
-      $searchPanel.classList.add("open");
-      $btnSearch.classList.add("active");
-      $searchInput.value = params.q;
-      searchQuery = params.q;
-      $searchClear.classList.add("visible");
-      applyFilters();
-    }
-  }
+  var prevClass = currentPage <= 1 ? 'page-btn disabled' : 'page-btn';
+  var nextClass = currentPage >= totalPages ? 'page-btn disabled' : 'page-btn';
 
-  /* ---- Keyboard shortcuts ---- */
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") {
-      if ($searchPanel.classList.contains("open")) {
-        $searchPanel.classList.remove("open");
-        $btnSearch.classList.remove("active");
-      }
-      if ($sourcePanel.classList.contains("open")) {
-        $sourcePanel.classList.remove("open");
-        $btnSourceFilter.classList.remove("active");
-      }
+  var selectHtml = '<select id="page-select" onchange="goToPage(this.value)">';
+  for (var i = 1; i <= totalPages; i++) {
+    selectHtml += '<option value="' + i + '"' + (i === currentPage ? ' selected' : '') + '>第 ' + i + ' 页</option>';
+  }
+  selectHtml += '</select>';
+
+  container.innerHTML =
+    '<button class="' + prevClass + '" onclick="goToPage(' + (currentPage - 1) + ')">上一页</button>' +
+    selectHtml +
+    '<button class="' + nextClass + '" onclick="goToPage(' + (currentPage + 1) + ')">下一页</button>';
+}
+
+function goToPage(p) {
+  p = parseInt(p);
+  var filtered = getFiltered();
+  var totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  if (p < 1 || p > totalPages) return;
+  currentPage = p;
+  renderList();
+  updateStatus();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+/* ================================================================
+   RANKING
+   ================================================================ */
+function renderRanking() {
+  var now = new Date();
+  var hours = {'1h': 1, '3h': 3, '6h': 6};
+  var h = hours[currentRankTab] || 1;
+  var cutoff = new Date(now.getTime() - h * 3600000);
+
+  /* Filter items within time window */
+  var recent = allItems.filter(function(it) {
+    if (!it.time) return false;
+    var t = new Date(it.time.replace(' ', 'T'));
+    return t >= cutoff;
+  });
+
+  /* Group by source */
+  var srcCount = {};
+  var srcLatest = {};
+  recent.forEach(function(it) {
+    srcCount[it.source] = (srcCount[it.source] || 0) + 1;
+    if (!srcLatest[it.source] || it.time > srcLatest[it.source]) {
+      srcLatest[it.source] = it.time;
     }
   });
 
-  /* ---- PWA: Service Worker Registration ---- */
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js");
+  var ranked = Object.keys(srcCount).map(function(name) {
+    return {name: name, count: srcCount[name], latest: srcLatest[name]};
+  }).sort(function(a, b) {
+    return b.count - a.count || (b.latest > a.latest ? 1 : -1);
+  }).slice(0, 15);
+
+  var container = document.getElementById('ranking-list');
+
+  if (ranked.length === 0) {
+    container.innerHTML = '<div class="ranking-empty">该时段暂无数据</div>';
+    return;
   }
 
-  /* ---- Start ---- */
-  fetchData();
+  var html = '';
+  ranked.forEach(function(r, i) {
+    var rankClass = 'rank-num';
+    if (i === 0) rankClass += ' top1';
+    else if (i === 1) rankClass += ' top2';
+    else if (i === 2) rankClass += ' top3';
 
-})();
+    var char = getSourceChar(r.name);
+    var color = getSourceColor(r.name);
+
+    /* Find a sample item title for this source in the time window */
+    var sampleTitle = '';
+    for (var j = 0; j < recent.length; j++) {
+      if (recent[j].source === r.name) {
+        sampleTitle = recent[j].text;
+        break;
+      }
+    }
+
+    html += '<div class="ranking-item">' +
+      '<span class="' + rankClass + '">' + (i + 1) + '</span>' +
+      '<span class="src-badge" style="background:' + color + '">' + esc(char) + '</span>' +
+      '<span class="rank-title">' + esc(sampleTitle) + '</span>' +
+      '<span class="rank-count">' + r.count + '条</span>' +
+    '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
+function switchRankTab(period) {
+  currentRankTab = period;
+  document.querySelectorAll('.ranking-tab').forEach(function(el) {
+    el.classList.toggle('active', el.getAttribute('data-period') === period);
+  });
+  renderRanking();
+}
+
+/* ================================================================
+   VIEW SWITCHING
+   ================================================================ */
+function switchView(view) {
+  currentView = view;
+
+  /* Update menu */
+  document.querySelectorAll('#menu a').forEach(function(el) {
+    el.classList.toggle('active', el.getAttribute('data-view') === view);
+  });
+  document.querySelectorAll('#view-bar .view-tab').forEach(function(el) {
+    el.classList.toggle('active', el.getAttribute('data-view') === view);
+  });
+
+  /* Show/hide sections */
+  document.getElementById('list-view').style.display = view === 'list' ? '' : 'none';
+  document.getElementById('ranking-view').style.display = view === 'ranking' ? '' : 'none';
+
+  if (view === 'ranking') renderRanking();
+}
+
+/* ================================================================
+   SEARCH
+   ================================================================ */
+function handleSearch(e) {
+  e.preventDefault();
+  searchQuery = document.getElementById('search-input').value.trim();
+  currentPage = 1;
+  renderList();
+  updateStatus();
+}
+
+/* ================================================================
+   STATUS
+   ================================================================ */
+function updateStatus() {
+  var filtered = getFiltered();
+  var el = document.getElementById('status-text');
+  var parts = [];
+
+  if (activeSource !== 'all') {
+    parts.push('来源: <span class="highlight">' + esc(activeSource) + '</span>');
+  }
+  if (searchQuery) {
+    parts.push('搜索: <span class="highlight">"' + esc(searchQuery) + '"</span>');
+  }
+  parts.push('共 ' + filtered.length + ' 条线报');
+
+  el.innerHTML = parts.join(' · ');
+}
+
+/* ================================================================
+   MOBILE CATEGORY DROPDOWN
+   ================================================================ */
+var catDropdownOpen = false;
+function toggleCatDropdown() {
+  catDropdownOpen = !catDropdownOpen;
+  var dd = document.getElementById('cat-dropdown');
+  var bar = document.getElementById('cat-toggle-bar');
+  dd.classList.toggle('open', catDropdownOpen);
+  bar.classList.toggle('open', catDropdownOpen);
+}
+function closeCatDropdown() {
+  catDropdownOpen = false;
+  document.getElementById('cat-dropdown').classList.remove('open');
+  document.getElementById('cat-toggle-bar').classList.remove('open');
+}
+
+/* ================================================================
+   BACK TO TOP
+   ================================================================ */
+window.addEventListener('scroll', function() {
+  document.getElementById('back-top').classList.toggle('show', window.scrollY > 300);
+});
+
+/* ================================================================
+   UTILITIES
+   ================================================================ */
+function esc(s) {
+  if (!s) return '';
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function escAttr(s) {
+  if (!s) return '';
+  return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+/* ================================================================
+   SERVICE WORKER
+   ================================================================ */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(function(){});
+}
+
+/* ================================================================
+   INIT
+   ================================================================ */
+loadData();
 </script>
 </body>
 </html>

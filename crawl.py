@@ -72,6 +72,56 @@ MONITOR_SITES = [
     "https://www.haodanku.com/",
 ]
 
+# URL → 短名称映射（统一来源显示名称，避免使用页面标题导致名称过长/重复）
+SOURCE_NAME_MAP = {
+    "https://axutongxue.net/": "爱Q生活",
+    "http://79tao.linejia.com/": "79淘",
+    "http://news.ixbk.net/": "线报酷",
+    "http://www.0818tuan.com/": "0818团",
+    "https://907k.cn/": "907线报",
+    "https://b1.ymxianbao.cn/": "羊毛线报",
+    "https://cjx8.com/": "超级线报",
+    "https://m.hybase.com/": "好赚网",
+    "https://news.ixbk.fun/": "线报酷",
+    "https://www.007ymd.com/": "007羊毛党",
+    "https://www.12345pro.com/": "12345线报",
+    "https://www.423down.com/": "423Down",
+    "https://www.appinn.com/": "小众软件",
+    "https://www.bacaoo.com/": "拔草哦",
+    "https://www.baicaio.com/": "白菜哦",
+    "https://www.daydayzhuan.com/": "天天赚",
+    "https://www.h6room.com/": "H6线报",
+    "https://www.huifabu.cn/": "汇发部",
+    "https://www.huodong5.com/": "活动5",
+    "https://www.ithome.com/zt/xijiayi": "IT之家",
+    "https://www.kxdao.net/forum.php?forumlist=1&mobile=2": "开心赚",
+    "https://www.lsapk.com/": "LSapk",
+    "https://www.manmanbuy.com/": "慢慢买",
+    "https://www.thosefree.com/": "免费族",
+    "https://www.wycad.com/": "网赚",
+    "https://www.yangmaodang.club/": "羊毛党",
+    "https://www.yxssp.com/": "优惠线报",
+    "https://www.zhuanyes.com/xianbao/": "专业线报",
+    "https://www.ziyuanting.com/": "资源厅",
+    "https://xianbao.icu/": "线报ICU",
+    "https://xianbaomi.com/": "线报迷",
+    "https://xzba.cc/": "新赚吧",
+    "https://yangmao.wang/": "羊毛王",
+    "https://www.iqnew.com/": "爱Q社区",
+    "https://www.51kanong.com/": "51卡农",
+    "https://v1.xianbao.net/": "线报网",
+    "http://www.xiaodigu.com/": "小嘀咕",
+    "https://www.douban.com/group/711811/": "豆瓣小组",
+    "https://www.haodanku.com/": "好单库",
+}
+
+def get_source_name(url):
+    """根据 URL 获取统一短名称"""
+    for base_url, name in SOURCE_NAME_MAP.items():
+        if url.startswith(base_url.rstrip('/')):
+            return name
+    return None
+
 # 文件存储配置
 HASH_RECORD_FILE = "hash_record.txt"
 NOTIFIED_ITEMS_FILE = "notified_items.json"  # 记录已通知过的条目URL，避免重复推送
@@ -1961,10 +2011,12 @@ def main():
                 item_url = item['url'] if isinstance(item, dict) else item
                 item_text = item['text'] if isinstance(item, dict) else str(item)
                 if item_url and not item_url.startswith('javascript:'):
+                    # 优先使用统一映射的短名称，回退到页面标题
+                    src_name = get_source_name(r.get('url', '')) or r.get('title', r['url'])
                     new_item_list.append({
                         'url': item_url,
                         'text': item_text,
-                        'source': r.get('title', r['url']),
+                        'source': src_name,
                         'time': check_time
                     })
     save_notified_items({
