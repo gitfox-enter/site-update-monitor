@@ -1707,8 +1707,6 @@ def main():
         'updated': updated_count,
         'paused': len(paused_urls),
         'new_items': len(new_urls),
-        'newly_paused': newly_paused,
-        'recovered': recovered,
         'errors': errors_detail,
         'updated_sites': updated_sites
     }
