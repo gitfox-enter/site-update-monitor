@@ -1010,6 +1010,46 @@ def check_site_update(url, old_records):
 # 邮件推送（网易Claw）
 # ============================================================
 
+def generate_email_html(round_num, all_site_results, check_time, notified=None):
+    """
+    生成邮件内容 — 纯文本格式
+    all_site_results: 列表，每个元素为 {'url':..., 'title':..., 'summary':..., 'items':..., 'status': 'updated'|'no_update'|'error'|'first', 'message':...}
+    items 格式: [{'text': '标题', 'url': '链接'}, ...]
+    notified: 已通知条目列表 [{"url":..., "text":...}, ...]，用于去重
+    排序规则：有更新的排在前面（按条目数降序），无更新的排在后面
+    返回：(主题, HTML正文, 纯文本正文, 本轮新增条目URL集合)
+    """
+    # 标准化 notified 为 list（兼容旧 set/str dict 格式）
+    if not notified:
+        notif_list = []
+    elif isinstance(notified, list):
+        notif_list = notified
+    elif isinstance(notified, dict):
+        notif_list = notified.get('items', [])
+    else:
+        notif_list = []
+
+    # 计算统计
+    updated_results = [r for r in all_site_results if r['status'] == 'updated']
+    no_update_results = [r for r in all_site_results if r['status'] in ('no_update', 'first')]
+    error_results = [r for r in all_site_results if r['status'] == 'error']
+    total = len(all_site_results)
+    updated_count = len(updated_results)
+
+    all_new_urls = set()
+    existing_urls = {item['url'] for item in notif_list}
+
+    for r in updated_results:
+        new_items, new_urls = filter_new_items(r.get('items', []), existing_urls)
+        r['items'] = new_items
+        all_new_urls.update(new_urls)
+
+    # 生成邮件主题
+    if updated_count > 0:
+        subject = f"【线报巡检】第{round_num}轮 · {updated_count}个站点有更新"
+    else:
+        subject = f"【线报巡检】第{round_num}轮 · 暂无更新"
+
     # ===== 纯文本正文 =====
     lines = []
     lines.append("站点更新监控巡检报告")
@@ -1072,100 +1112,11 @@ def check_site_update(url, old_records):
     return subject, html_body, text_body, all_new_urls
 
 
+
+
 def html_escape(text):
     """转义HTML特殊字符"""
     return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
-
-
-def generate_email_html(round_num, all_site_results, check_time, notified=None):
-    """
-    生成邮件内容 — 纯文本格式
-    all_site_results: 列表，每个元素为 {'url':..., 'title':..., 'summary':..., 'items':..., 'status': 'updated'|'no_update'|'error'|'first', 'message':...}
-    items 格式: [{'text': '标题', 'url': '链接'}, ...]
-    notified: 已通知条目列表 [{"url":..., "text":...}, ...]，用于去重
-    排序规则：有更新的排在前面（按条目数降序），无更新的排在后面
-    返回：(主题, HTML正文, 纯文本正文, 本轮新增条目URL集合)
-    """
-    if not notified:
-        notified = []
-
-    updated_results = [r for r in all_site_results if r['status'] == 'updated']
-    no_update_results = [r for r in all_site_results if r['status'] in ('no_update', 'first')]
-    error_results = [r for r in all_site_results if r['status'] == 'error']
-
-    all_new_urls = set()
-    notif_list = notified.get('items', []) if isinstance(notified, dict) else (notified if isinstance(notified, list) else [])
-    existing_urls = {item['url'] for item in notif_list}
-    for r in updated_results:
-        new_items, new_urls = filter_new_items(r.get('items', []), existing_urls)
-        r['items'] = new_items
-        all_new_urls.update(new_urls)
-
-    updated_results = [r for r in updated_results if r['items']]
-    updated_results.sort(key=lambda r: len(r.get('items', [])), reverse=True)
-
-    total = len(all_site_results)
-    updated_count = len(updated_results)
-    total_new_items = sum(len(r.get('items', [])) for r in updated_results)
-
-    if updated_count > 0:
-        subject = f"【站点更新提醒】第{round_num}轮巡检 | {updated_count}个站点 {total_new_items}条新内容"
-    else:
-        subject = f"【站点巡检报告】第{round_num}轮巡检 | 暂无更新"
-
-    lines = []
-    lines.append("站点更新监控巡检报告")
-    lines.append("")
-    lines.append(f"第 {round_num} 轮巡检  {check_time}")
-    lines.append(f"总计 {total} 个站点 | 更新 {updated_count} 个 | 无更新 {len(no_update_results)} 个 | 异常 {len(error_results)} 个")
-    lines.append("")
-
-    idx = 1
-    for r in updated_results:
-        items = r.get('items', [])
-        item_count = len(items)
-        title = r.get('title', r['url'])
-        url = r['url']
-        lines.append(f"{idx}. {title} ({url}) [{item_count}条新]")
-        for item in items:
-            item_text = item['text'] if isinstance(item, dict) else item
-            item_url = item['url'] if isinstance(item, dict) else url
-            lines.append(f"  - {item_text}")
-            lines.append(f"    {item_url}")
-        lines.append("")
-        lines.append("---")
-        lines.append("")
-        idx += 1
-
-    for r in no_update_results:
-        title = r.get('title', r['url'])
-        url = r['url']
-        lines.append(f"{idx}. {title} ({url})")
-        lines.append("  暂无新内容")
-        lines.append("")
-        lines.append("---")
-        lines.append("")
-        idx += 1
-
-    for r in error_results:
-        url = r['url']
-        lines.append(f"{idx}. {url}")
-        lines.append(f"  异常: {r['message']}")
-        lines.append("")
-        lines.append("---")
-        lines.append("")
-        idx += 1
-
-    lines.append("")
-    lines.append("GitHub Actions 站点巡检机器人 | 每1小时自动巡检 | 163邮箱推送")
-    text_body = '\n'.join(lines)
-
-    html_escaped = html_escape(text_body).replace('\n', '<br>\n')
-    html_body = ('<!DOCTYPE html>\n<html>\n<head><meta charset="utf-8"></head>\n'
-                  '<body style="font-family:\'Courier New\',Consolas,monospace;font-size:14px;line-height:1.6;padding:20px;color:#333;">\n'
-                  + html_escaped + '\n</body>\n</html>')
-
-    return subject, html_body, text_body, all_new_urls
 
 
 def send_email_smtp(subject, html_body, text_body=None):
