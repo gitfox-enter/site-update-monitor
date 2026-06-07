@@ -2,7 +2,7 @@ name: 站点更新监控
 
 on:
   schedule:
-    - cron: '0 */4 * * *'
+    - cron: '0 */1 * * *'
   workflow_dispatch:
 
 concurrency:
