@@ -1,7 +1,5 @@
-const CACHE_NAME = 'xianbao-v1';
+const CACHE_NAME = 'xianbao-v3';
 const ASSETS = [
-  '/site-update-monitor/',
-  '/site-update-monitor/index.html',
   '/site-update-monitor/public/favicon.svg'
 ];
 
@@ -22,15 +20,28 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Network first, fall back to cache
-  if (e.request.url.includes('items.json')) {
+  // Network first for HTML pages and data - always get fresh content
+  if (e.request.url.includes('items.json') ||
+      e.request.headers.get('accept')?.includes('text/html') ||
+      e.request.url.endsWith('.html') ||
+      e.request.url.endsWith('/')) {
     e.respondWith(
-      fetch(e.request).catch(() => caches.match(e.request))
+      fetch(e.request)
+        .then(res => {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
+          return res;
+        })
+        .catch(() => caches.match(e.request))
     );
     return;
   }
-  // Cache first for static assets
+  // Cache first for static assets (images, fonts, etc.)
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request))
+    caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
+      const clone = res.clone();
+      caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
+      return res;
+    }))
   );
 });
