@@ -26,7 +26,7 @@ from bs4 import BeautifulSoup
 ITEMS_DB_FILE = "items.json"
 FAST_LOG_FILE = "fast_log.jsonl"
 
-# 高频检查站点（按活跃度排序的 top 8）
+# 高频检查站点（按活跃度排序的 top 12）
 FAST_SITES = [
     {"url": "https://www.zhuanyes.com/xianbao/", "name": "专业线报"},
     {"url": "https://news.ixbk.net/", "name": "线报酷"},
@@ -36,6 +36,10 @@ FAST_SITES = [
     {"url": "https://cjx8.com/", "name": "促销吧"},
     {"url": "https://xianbao.icu/", "name": "线报ICU"},
     {"url": "https://www.baicaio.com/", "name": "拔草哦"},
+    {"url": "https://www.iqnew.com/", "name": "爱Q生活"},
+    {"url": "https://www.51kanong.com/", "name": "卡农羊毛"},
+    {"url": "https://v1.xianbao.net/", "name": "新赚吧"},
+    {"url": "http://www.xiaodigu.com/", "name": "小嘀咕"},
 ]
 
 # 爬虫配置

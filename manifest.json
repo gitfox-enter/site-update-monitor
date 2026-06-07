@@ -1,0 +1,16 @@
+{
+  "name": "线报聚合",
+  "short_name": "线报",
+  "description": "全网羊毛线报实时聚合",
+  "start_url": "/site-update-monitor/",
+  "display": "standalone",
+  "background_color": "#f5f0eb",
+  "theme_color": "#e85d04",
+  "icons": [
+    {
+      "src": "public/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

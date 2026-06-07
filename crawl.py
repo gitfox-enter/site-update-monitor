@@ -62,7 +62,15 @@ MONITOR_SITES = [
     "https://xianbao.icu/",
     "https://xianbaomi.com/",
     "https://xzba.cc/",
-    "https://yangmao.wang/",]
+    "https://yangmao.wang/",
+    # === 新增源站（来自 huifabu.cn 参考） ===
+    "https://www.iqnew.com/",
+    "https://www.51kanong.com/",
+    "https://v1.xianbao.net/",
+    "http://www.xiaodigu.com/",
+    "https://www.douban.com/group/711811/",
+    "https://www.haodanku.com/",
+]
 
 # 文件存储配置
 HASH_RECORD_FILE = "hash_record.txt"
