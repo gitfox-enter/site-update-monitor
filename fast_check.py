@@ -80,7 +80,7 @@ FAST_SITES: List[Dict[str, str]] = [
 REQUEST_TIMEOUT: int = 10
 MAX_RETRIES: int = 3                       # 3 次尝试
 RETRY_BACKOFF_BASE: float = 1.0            # 退避基数 (秒): 1, 2, 4
-RESPECT_ROBOTS_TXT: bool = True            # 6. robots.txt 合规开关
+RESPECT_ROBOTS_TXT: bool = False            # 6. robots.txt 合规开关（线报站 robots.txt 通常过严，个人监控建议关闭）
 
 USER_AGENTS: List[str] = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",

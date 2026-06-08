@@ -194,7 +194,7 @@ MAX_RETRIES = 3  # 最大重试次数
 RETRY_BASE_DELAY = 1.0  # 重试基础延迟（秒），实际延迟 = base * 2^attempt
 
 # robots.txt 合规配置
-RESPECT_ROBOTS_TXT: bool = True  # 是否遵守 robots.txt
+RESPECT_ROBOTS_TXT: bool = False  # 是否遵守 robots.txt（线报站 robots.txt 通常过严，个人监控工具建议关闭）
 
 # 随机User-Agent池
 USER_AGENTS: List[str] = [
@@ -1692,15 +1692,20 @@ def analyze_and_fix(run_result: Dict[str, Any]) -> List[Dict[str, str]]:
                 'action': '观察下轮结果，如持续高更新率可考虑过滤动态内容'
             })
 
-    # 4. 检查历史趋势：连续失败的站点
+    # 4. 检查历史趋势：连续3轮失败的站点（仅取交集，排除偶发失败）
     run_log = load_run_log()
     if len(run_log) >= 3:
-        recent_errors: Set[str] = set()
-        for log_entry in run_log[-3:]:
-            for err in log_entry.get('errors', []):
-                recent_errors.add(err['url'])
+        # 排除 robots.txt 拒绝（不算真正失败）
+        def _real_errors(errors: list) -> Set[str]:
+            return {
+                e['url'] for e in errors
+                if 'robots.txt' not in e.get('message', '')
+            }
+        error_sets = [_real_errors(entry.get('errors', [])) for entry in run_log[-3:]]
+        # 取交集：只有在最近 3 轮都失败的站点才报警
+        consecutive_failures = error_sets[0] & error_sets[1] & error_sets[2]
 
-        for url in recent_errors:
+        for url in consecutive_failures:
             issues_found.append({
                 'level': 'error',
                 'site': url,
@@ -1817,7 +1822,13 @@ def main() -> None:
         is_updated, new_hash, message, page_info = check_site_update(url, old_records)
         time.sleep(get_random_delay())
         if is_updated is None:
-            return {'url': url, 'title': url, 'summary': '', 'items': [], 'status': 'error', 'message': message, 'is_updated': None, 'new_hash': None, 'page_info': None}
+            # 区分 robots.txt 拒绝和真正失败
+            is_robots_denied = 'robots.txt' in (message or '')
+            return {
+                'url': url, 'title': url, 'summary': '', 'items': [], 
+                'status': 'robots_denied' if is_robots_denied else 'error',
+                'message': message, 'is_updated': None, 'new_hash': None, 'page_info': None
+            }
         return {
             'url': url,
             'title': page_info.get('title', url) if page_info else url,
@@ -1832,11 +1843,15 @@ def main() -> None:
 
     with ThreadPoolExecutor(max_workers=6) as executor:
         futures = {executor.submit(check_one, url, idx): (idx, url) for idx, url in enumerate(active_sites, 1)}
+        robots_denied_count = 0
         for future in as_completed(futures):
             result = future.result()
             with results_lock:
                 idx, url = futures[future]
-                if result['is_updated'] is None:
+                if result['status'] == 'robots_denied':
+                    print(f"\n[{idx}/{len(active_sites)}] [跳过] robots.txt 拒绝: {url}")
+                    robots_denied_count += 1
+                elif result['is_updated'] is None:
                     print(f"\n[{idx}/{len(active_sites)}] [失败] {result['message']}")
                     error_count += 1
                 else:
@@ -1869,7 +1884,7 @@ def main() -> None:
     total_count = len(all_site_results)
 
     print("\n" + "=" * 60)
-    print(f"[统计] 成功: {success_count} | 失败: {error_count} | 暂停: {len(paused_urls)}")
+    print(f"[统计] 成功: {success_count} | 失败: {error_count} | robots.txt跳过: {robots_denied_count} | 暂停: {len(paused_urls)}")
     print(f"[统计] 更新站点: {updated_count} 个")
 
     # 输出运行指标摘要
@@ -1935,6 +1950,7 @@ def main() -> None:
         'active': len(active_sites),
         'success': success_count,
         'error': error_count,
+        'robots_denied': robots_denied_count,
         'updated': updated_count,
         'paused': len(paused_urls),
         'new_items': len(new_urls),
