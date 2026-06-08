@@ -1,56 +1,61 @@
-# 站点哈希记录文件 - 格式: url=md5值
-# 最后更新: 2026-06-08 10:01:25
-https://xianbaomi.com/=394c381c6e1e9ea508252917d998ad88
-http://www.0818tuan.com/=53a918b8dbe78dae435c8490bdf707f9
-http://79tao.linejia.com/=56343d13638089004acb14ebbffcfc56
-https://www.daydayzhuan.com/=799efa031e2cab975a62d719b367d28d
-https://cjx8.com/=e208a588fb2d22bd2be2156234d37725
-https://907k.cn/=28cd013f15e60484b052e47f77948f1d
-https://ym2.cc/=0fae7708fad3797c923b83f1d30ddfb2
-https://b1.ymxianbao.cn/=129f952ed54d1640d35b16da50c0615a
-https://www.007ymd.com/=3dc7014430f2bcef403126bb89075cca
-http://news.ixbk.net/=f30c7298899e9ce8cef95f64df903988
-https://www.zhuanyes.com/xianbao/=d1f282826af427e509133320b414630d
-https://www.huodong5.com/=6ad4969e3044dc821b211945d6bc5a75
-https://www.yxssp.com/=4b7d0b9d7f0555cd173841c6625bd04f
-https://www.wobangzhao.com/=2181b3de255094aa279b83c1f40e37dc
-https://www.kxdao.net/forum-42-1.html=a4320a6a778cb3d2cc3b0098170ce336
-https://www.baicaio.com/=5eb75d8d76b95afa599d6d0e538d512a
-https://yangmao.wang/=477d96fb14f134922fd9c9f8935af47b
-https://www.12345pro.com/=0968e6ab3b83127e697a27a917906134
-https://news.ixbk.fun/=93a717a9dd6915120b6aa2607ae963e0
-https://www.ithome.com/zt/xijiayi=441f6bdc706e8c3a264693c8c9f8b62f
-https://free.apprcn.com/=a4b89ebfa401621f4c505f9b6c2116a1
-https://www.lsapk.com/=9b0f27d727b4e30c12b13e6f4aecb399
-https://www.ghxi.com/category/all=8df3bd925f102880472af8327073c3b0
-https://www.appinn.com/=ec20910a6b0a909721d45af7d5bb2fc4
-https://www.423down.com/=18805c352161ad29d594d9f683a97863
-https://store.steampowered.com/search/?specials=1&os=win=51c852dc5927bb1a9b01652046e471ec
-https://www.gog.com/partner/free_games=c459693218f7197e621186defdb46385
-https://store.steampowered.com/=10b24d60cf3339e6647c29761f4732ae
-https://www.ziyuanting.com/=56b1754fce62342585a758d5062264b7
-https://www.wycad.com/=bb86f336edb7a349a97887fd26b52bdf
-https://www.ddooo.com/=8fa77ca4af5a1dffd00d4cd5dd41419f
-https://www.onlinedown.net/=d73542b295b45e7970d99fe806f4ae43
-https://www.downxia.com/=bd63a4431ebf92109f60429f935bec0a
-https://www.ypojie.com/=c0ec39b83ab8aaac5b14d4ced825cdfe
-https://www.52hb.com/forum.php=b9129b7a48365265f00fec621a8ce506
-https://m.hybase.com/=3cd3c643b44842e32dd9c6009789fb0a
-https://xzba.cc/=74b68af1ce3f12e827dd6c8b77028ab1
-https://pc.qq.com/category/rank.html=4f4adcbf8c6f66dcfc8a3282ac2bf10a
-https://feed.iplaysoft.com=886cf2ec141efc161ec712a0f6c2a21c
-https://www.h6room.com/=d7bc61c0a19d0f165611bd9dcd35b8eb
-https://foxirj.com/=76e6c2a9e49a38a4c766cd75702a2d05
-https://www.huifabu.cn/=735a92140a30b6bcc70f5bf9762d9f43
-https://xianbao.icu/=bf072c8fc89cde535da6de38e92606e3
-https://www.thosefree.com/=b5fcc7d225291ee5f5df5b2026018abb
-https://www.manmanbuy.com/=a114fdee8f7d696b4624483d8f7dcb95
-https://www.bacaoo.com/=8c2e2cb2fed298a3d43cf3c634528d99
-https://www.yangmaodang.club/=88acbc35c3f8ced9425b91e4cef25712
-https://axutongxue.net/=0d7933380dae71d8a4caf1cc5d0fc84b
-https://www.iqnew.com/=4c00bd04de579e5adf1e8dc4de0e9f76
-https://www.51kanong.com/=ac969efd7c608c4e9bceb5d2d81316f4
-https://www.haodanku.com/=340cab6de5a54e6b1c6dada1a10ce2eb
-https://www.douban.com/group/711811/=9dce5b230d3f7b818c9df202e12b5edf
-https://v1.xianbao.net/=a9707c1207e6e79aec926a880d26fd00
-https://www.ghxi.com/=793eaff8b0b8b90291b9a84f4e49e1ba
+{
+  "schema_version": 2,
+  "updated_at": "2026-06-08T10:29:02.674088+08:00",
+  "records": {
+    "https://xianbaomi.com/": "394c381c6e1e9ea508252917d998ad88",
+    "http://www.0818tuan.com/": "53a918b8dbe78dae435c8490bdf707f9",
+    "http://79tao.linejia.com/": "56343d13638089004acb14ebbffcfc56",
+    "https://www.daydayzhuan.com/": "799efa031e2cab975a62d719b367d28d",
+    "https://cjx8.com/": "b41b85c6048f490d991c8d5086d522e5",
+    "https://907k.cn/": "28cd013f15e60484b052e47f77948f1d",
+    "https://ym2.cc/": "0fae7708fad3797c923b83f1d30ddfb2",
+    "https://b1.ymxianbao.cn/": "bf85adc44b9df4b57d6550a7783231da",
+    "https://www.007ymd.com/": "3dc7014430f2bcef403126bb89075cca",
+    "http://news.ixbk.net/": "f30c7298899e9ce8cef95f64df903988",
+    "https://www.zhuanyes.com/xianbao/": "6e3f2f89033b6afe3f451e51f39e3871",
+    "https://www.huodong5.com/": "6ad4969e3044dc821b211945d6bc5a75",
+    "https://www.yxssp.com/": "4b7d0b9d7f0555cd173841c6625bd04f",
+    "https://www.wobangzhao.com/": "2181b3de255094aa279b83c1f40e37dc",
+    "https://www.kxdao.net/forum-42-1.html": "a4320a6a778cb3d2cc3b0098170ce336",
+    "https://www.baicaio.com/": "6d3768b7fd679963d13de43cdf9b4977",
+    "https://yangmao.wang/": "477d96fb14f134922fd9c9f8935af47b",
+    "https://www.12345pro.com/": "0968e6ab3b83127e697a27a917906134",
+    "https://news.ixbk.fun/": "600d294ae7f6fbd0a267aa3b32d14a7c",
+    "https://www.ithome.com/zt/xijiayi": "441f6bdc706e8c3a264693c8c9f8b62f",
+    "https://free.apprcn.com/": "a4b89ebfa401621f4c505f9b6c2116a1",
+    "https://www.lsapk.com/": "9b0f27d727b4e30c12b13e6f4aecb399",
+    "https://www.ghxi.com/category/all": "8df3bd925f102880472af8327073c3b0",
+    "https://www.appinn.com/": "ec20910a6b0a909721d45af7d5bb2fc4",
+    "https://www.423down.com/": "18805c352161ad29d594d9f683a97863",
+    "https://store.steampowered.com/search/?specials": "1&os=win=51c852dc5927bb1a9b01652046e471ec",
+    "https://www.gog.com/partner/free_games": "c459693218f7197e621186defdb46385",
+    "https://store.steampowered.com/": "10b24d60cf3339e6647c29761f4732ae",
+    "https://www.ziyuanting.com/": "56b1754fce62342585a758d5062264b7",
+    "https://www.wycad.com/": "bb86f336edb7a349a97887fd26b52bdf",
+    "https://www.ddooo.com/": "8fa77ca4af5a1dffd00d4cd5dd41419f",
+    "https://www.onlinedown.net/": "d73542b295b45e7970d99fe806f4ae43",
+    "https://www.downxia.com/": "bd63a4431ebf92109f60429f935bec0a",
+    "https://www.ypojie.com/": "c0ec39b83ab8aaac5b14d4ced825cdfe",
+    "https://www.52hb.com/forum.php": "b9129b7a48365265f00fec621a8ce506",
+    "https://m.hybase.com/": "3cd3c643b44842e32dd9c6009789fb0a",
+    "https://xzba.cc/": "74b68af1ce3f12e827dd6c8b77028ab1",
+    "https://pc.qq.com/category/rank.html": "4f4adcbf8c6f66dcfc8a3282ac2bf10a",
+    "https://feed.iplaysoft.com": "886cf2ec141efc161ec712a0f6c2a21c",
+    "https://www.h6room.com/": "d7bc61c0a19d0f165611bd9dcd35b8eb",
+    "https://foxirj.com/": "76e6c2a9e49a38a4c766cd75702a2d05",
+    "https://www.huifabu.cn/": "735a92140a30b6bcc70f5bf9762d9f43",
+    "https://xianbao.icu/": "6a7dbb99c16f6d516c52e68137017d99",
+    "https://www.thosefree.com/": "b5fcc7d225291ee5f5df5b2026018abb",
+    "https://www.manmanbuy.com/": "a114fdee8f7d696b4624483d8f7dcb95",
+    "https://www.bacaoo.com/": "57cd448b1909ceb8d2babdd630364848",
+    "https://www.yangmaodang.club/": "88acbc35c3f8ced9425b91e4cef25712",
+    "https://axutongxue.net/": "0d7933380dae71d8a4caf1cc5d0fc84b",
+    "https://www.iqnew.com/": "49dc323b0db2b94f10591e2f33060fb3",
+    "https://www.51kanong.com/": "ac969efd7c608c4e9bceb5d2d81316f4",
+    "https://www.haodanku.com/": "340cab6de5a54e6b1c6dada1a10ce2eb",
+    "https://www.douban.com/group/711811/": "9dce5b230d3f7b818c9df202e12b5edf",
+    "https://v1.xianbao.net/": "6cb583451e34aa6a0a9ad76cb0ed7585",
+    "https://www.ghxi.com/": "793eaff8b0b8b90291b9a84f4e49e1ba",
+    "https://news.ixbk.net/": "8507253ec335b97f7f2b770ab3510da7"
+  }
+}
