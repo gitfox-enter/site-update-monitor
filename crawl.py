@@ -31,7 +31,8 @@ warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
 
 # 32个监控站点（新增：聚合线报/鲸线报/那些免费的砖/慢慢买/拔草哦/薅羊毛小伙伴）
 MONITOR_SITES = [
-    "https://axutongxue.net/","http://79tao.linejia.com/",
+    "https://axutongxue.net/",
+    "http://79tao.linejia.com/",
     "http://news.ixbk.net/",
     "http://www.0818tuan.com/",
     "https://907k.cn/",
@@ -63,6 +64,8 @@ MONITOR_SITES = [
     "https://xianbaomi.com/",
     "https://xzba.cc/",
     "https://yangmao.wang/",
+    # === 果核剥壳 ===
+    "https://www.ghxi.com/",
     # === 新增源站（来自 huifabu.cn 参考） ===
     "https://www.iqnew.com/",
     "https://www.51kanong.com/",
@@ -113,6 +116,7 @@ SOURCE_NAME_MAP = {
     "http://www.xiaodigu.com/": "小嘀咕",
     "https://www.douban.com/group/711811/": "豆瓣小组",
     "https://www.haodanku.com/": "好单库",
+    "https://www.ghxi.com/": "果核剥壳",
 }
 
 def get_source_name(url):
@@ -474,6 +478,36 @@ def parse_discuz_threadlist(soup):
     return '\n'.join(items[:30])
 
 
+def parse_discuz_items(soup, base_url):
+    """Discuz论坛 - 结构化条目提取"""
+    from urllib.parse import urljoin
+    items = []
+    seen = set()
+    for a in soup.select('.threadlist .t a, .tl .t a, #threadlist .t a, .threadlist tr td a.xst, .threadlist tr td a'):
+        text = a.get_text(strip=True)
+        href = a.get('href', '').strip()
+        if not text or len(text) < 3 or text in seen or '/thread-' not in href:
+            continue
+        seen.add(text)
+        if href.startswith('/'):
+            href = urljoin(base_url, href)
+        if href.startswith('http'):
+            items.append({'text': text, 'url': href})
+    if not items:
+        for tr in soup.select('.forum tbody tr, table tbody tr'):
+            for a in tr.select('a'):
+                text = a.get_text(strip=True)
+                href = a.get('href', '').strip()
+                if text and len(text) > 3 and '/thread-' in href and text not in seen:
+                    seen.add(text)
+                    if href.startswith('/'):
+                        href = urljoin(base_url, href)
+                    if href.startswith('http'):
+                        items.append({'text': text, 'url': href})
+                    break
+    return items[:30]
+
+
 def parse_yxssp(soup):
     """异星软件空间 (WordPress) - 精准提取文章列表，排除分类导航"""
     items = []
@@ -482,6 +516,24 @@ def parse_yxssp(soup):
         href = a.get('href', '')
         if text and len(text) > 5:
             items.append(f"{text} ({href})")
+
+
+def parse_yxssp_items(soup, base_url):
+    """异星软件空间 - 结构化条目提取"""
+    from urllib.parse import urljoin
+    items = []
+    seen = set()
+    for a in soup.select('.post-item h2 a, .entry-title a, .post-title a, article h2 a, article h3 a'):
+        text = a.get_text(strip=True)
+        href = a.get('href', '').strip()
+        if not text or len(text) < 5 or text in seen:
+            continue
+        seen.add(text)
+        if href.startswith('/'):
+            href = urljoin(base_url, href)
+        if href.startswith('http'):
+            items.append({'text': text, 'url': href})
+    return items[:30]
     if not items:
         for article in soup.select('article, .post'):
             h = article.select_one('h2 a, h3 a, h4 a')
@@ -880,6 +932,24 @@ def parse_ghxi(soup):
     return '\n'.join(items[:30])
 
 
+def parse_ghxi_items(soup, base_url):
+    """果核剥壳 - 结构化条目提取"""
+    from urllib.parse import urljoin
+    items = []
+    seen = set()
+    for a in soup.select('.item-content h2 a, .item-content h3 a, .post-item .entry-title a, .post-item h2 a, article h2 a'):
+        text = a.get_text(strip=True)
+        href = a.get('href', '').strip()
+        if not text or len(text) < 5 or text in seen:
+            continue
+        seen.add(text)
+        if href.startswith('/'):
+            href = urljoin(base_url, href)
+        if href.startswith('http'):
+            items.append({'text': text, 'url': href})
+    return items[:30]
+
+
 def extract_article_items(soup, base_url=''):
     """
     从页面中提取独立文章条目列表（含链接）
@@ -1033,22 +1103,19 @@ def fetch_page_content(url):
             article_items = parse_apprcn_items(soup, url)
             text = '\n'.join(item['text'] for item in article_items)
         elif 'kxdao.net' in url:
-            article_items = []
-            text = parse_discuz_threadlist(soup)
+            article_items = parse_discuz_items(soup, url)
+            text = '\n'.join(item['text'] for item in article_items)
         elif 'yxssp.com' in url:
-            article_items = []
-            text = parse_yxssp(soup)
+            article_items = parse_yxssp_items(soup, url)
+            text = '\n'.join(item['text'] for item in article_items)
         elif 'ghxi.com' in url:
-            article_items = []
-            text = parse_ghxi(soup)
+            article_items = parse_ghxi_items(soup, url)
+            text = '\n'.join(item['text'] for item in article_items)
         elif 'daydayzhuan.com' in url:
             article_items = parse_daydayzhuan_items(soup, url)
             text = '\n'.join(item['text'] for item in article_items)
         elif '007ymd.com' in url:
             article_items = parse_007ymd_items(soup, url)
-            text = '\n'.join(item['text'] for item in article_items)
-        elif 'baicaio.com' in url:
-            article_items = parse_baicaio_items_v2(soup, url)
             text = '\n'.join(item['text'] for item in article_items)
         elif 'axutongxue.net' in url:
             article_items = parse_axutongxue_items(soup, url)
