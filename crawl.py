@@ -940,21 +940,30 @@ def parse_ghxi(soup):
 
 
 def parse_ghxi_items(soup, base_url):
-    """果核剥壳 - 结构化条目提取"""
-    from urllib.parse import urljoin
+    """果核剥壳 - 通过 WordPress REST API 获取文章（站点为 Vue SPA，HTML 无法直接解析）"""
+    import html as html_mod
+    api_url = "https://www.ghxi.com/wp-json/wp/v2/posts?per_page=30"
+    headers = {
+        'User-Agent': get_random_ua(),
+        'Accept': 'application/json, */*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+    }
     items = []
-    seen = set()
-    for a in soup.select('.item-content h2 a, .item-content h3 a, .post-item .entry-title a, .post-item h2 a, article h2 a'):
-        text = a.get_text(strip=True)
-        href = a.get('href', '').strip()
-        if not text or len(text) < 5 or text in seen:
-            continue
-        seen.add(text)
-        if href.startswith('/'):
-            href = urljoin(base_url, href)
-        if href.startswith('http'):
-            items.append({'text': text, 'url': href})
-    return items[:30]
+    try:
+        resp = requests.get(api_url, headers=headers, timeout=REQUEST_TIMEOUT)
+        if resp.status_code == 200:
+            posts = resp.json()
+            for post in posts:
+                title = html_mod.unescape(post.get('title', {}).get('rendered', ''))
+                link = post.get('link', '')
+                if title and len(title) > 3 and link:
+                    items.append({'text': title, 'url': link})
+            print(f"[果核剥壳] WP API 获取到 {len(items)} 篇文章")
+        else:
+            print(f"[果核剥壳] WP API 返回 HTTP {resp.status_code}")
+    except Exception as e:
+        print(f"[果核剥壳] WP API 请求失败: {e}")
+    return items
 
 
 def extract_article_items(soup, base_url=''):
@@ -1117,7 +1126,14 @@ def fetch_page_content(url):
             text = '\n'.join(item['text'] for item in article_items)
         elif 'ghxi.com' in url:
             article_items = parse_ghxi_items(soup, url)
-            text = '\n'.join(item['text'] for item in article_items)
+            if article_items:
+                text = '\n'.join(item['text'] for item in article_items)
+            else:
+                # API 失败时回退到通用解析（SPA 可能拿不到内容）
+                article_items = extract_article_items(soup, url)
+                body = soup.find('body')
+                text = body.get_text(separator=' ', strip=True) if body else ''
+                text = ' '.join(text.split())
         elif 'daydayzhuan.com' in url:
             article_items = parse_daydayzhuan_items(soup, url)
             text = '\n'.join(item['text'] for item in article_items)
