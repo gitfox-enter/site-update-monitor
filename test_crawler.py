@@ -18,6 +18,7 @@ Run with:
   python -m unittest test_crawler.py -v
 """
 
+import asyncio
 import hashlib
 import json
 import os
@@ -28,6 +29,9 @@ import unittest
 from datetime import datetime, timezone, timedelta
 from unittest.mock import patch, MagicMock
 from urllib.parse import urlparse
+
+import aiohttp
+from aiohttp import web
 
 # ---------------------------------------------------------------------------
 # Ensure the project directory is on sys.path so we can import modules
@@ -1663,6 +1667,391 @@ class TestSQLiteDataLayer(unittest.TestCase):
         row = self.conn.execute("SELECT category FROM items WHERE url = ?", ("https://cat.com/1",)).fetchone()
         self.assertIsNotNone(row)
         self.assertEqual(row[0], "优惠券")
+
+
+# ===================================================================
+# TestProxyPool - Unit tests for common.ProxyPool proxy rotation
+# ===================================================================
+
+
+class TestProxyPool(unittest.TestCase):
+    """Tests for common.ProxyPool proxy rotation."""
+
+    def test_empty_pool_returns_none(self):
+        pool = common.ProxyPool()
+        self.assertIsNone(pool.get_proxy())
+        self.assertEqual(pool.active_count, 0)
+        self.assertEqual(pool.total_count, 0)
+
+    def test_add_and_get_proxy(self):
+        pool = common.ProxyPool()
+        pool.add_proxy("http://proxy1:8080")
+        self.assertEqual(pool.total_count, 1)
+        self.assertEqual(pool.active_count, 1)
+        self.assertEqual(pool.get_proxy(), "http://proxy1:8080")
+
+    def test_round_robin_rotation(self):
+        pool = common.ProxyPool(proxies=["http://p1:80", "http://p2:80", "http://p3:80"])
+        results = [pool.get_proxy() for _ in range(6)]
+        # Should cycle: p1, p2, p3, p1, p2, p3
+        self.assertEqual(results[0], results[3])
+        self.assertEqual(results[1], results[4])
+        self.assertEqual(results[2], results[5])
+        # All three should be different
+        self.assertEqual(len(set(results[:3])), 3)
+
+    def test_random_strategy(self):
+        pool = common.ProxyPool(proxies=["http://p1:80"], strategy="random")
+        self.assertEqual(pool.get_proxy(), "http://p1:80")
+
+    def test_failure_blacklisting(self):
+        pool = common.ProxyPool(proxies=["http://p1:80", "http://p2:80"], max_failures=3)
+        # Fail p1 three times
+        for _ in range(3):
+            pool.report_failure("http://p1:80")
+        # p1 should be blacklisted
+        self.assertEqual(pool.active_count, 1)
+        # Only p2 should be returned now
+        for _ in range(5):
+            self.assertEqual(pool.get_proxy(), "http://p2:80")
+
+    def test_success_resets_failures(self):
+        pool = common.ProxyPool(proxies=["http://p1:80"], max_failures=3)
+        pool.report_failure("http://p1:80")
+        pool.report_failure("http://p1:80")
+        pool.report_success("http://p1:80")  # Should reset
+        # Still active after 2 failures + 1 success
+        self.assertEqual(pool.active_count, 1)
+        # Two more failures should NOT blacklist (counter was reset)
+        pool.report_failure("http://p1:80")
+        pool.report_failure("http://p1:80")
+        self.assertEqual(pool.active_count, 1)
+
+    def test_all_blacklisted_returns_none(self):
+        pool = common.ProxyPool(proxies=["http://p1:80"], max_failures=1)
+        pool.report_failure("http://p1:80")
+        self.assertIsNone(pool.get_proxy())
+        self.assertEqual(pool.active_count, 0)
+
+    def test_cooldown_re_enables_proxy(self):
+        # With large cooldown, proxy stays blacklisted
+        pool = common.ProxyPool(proxies=["http://p1:80"], max_failures=1, cooldown=9999)
+        pool.report_failure("http://p1:80")  # Blacklisted
+        self.assertIsNone(pool.get_proxy())
+        # With cooldown=0, proxy is immediately re-enabled
+        pool2 = common.ProxyPool(proxies=["http://p1:80"], max_failures=1, cooldown=0)
+        pool2.report_failure("http://p1:80")
+        self.assertIsNotNone(pool2.get_proxy())  # Cooldown=0 → instant re-enable
+
+    def test_remove_proxy(self):
+        pool = common.ProxyPool(proxies=["http://p1:80", "http://p2:80"])
+        pool.remove_proxy("http://p1:80")
+        self.assertEqual(pool.total_count, 1)
+        self.assertEqual(pool.get_proxy(), "http://p2:80")
+
+    def test_load_from_env(self):
+        with patch.dict(os.environ, {"PROXY_LIST": "http://env1:80, http://env2:80"}):
+            pool = common.ProxyPool()
+            count = pool.load_from_env()
+            self.assertEqual(count, 2)
+            self.assertEqual(pool.total_count, 2)
+
+    def test_load_from_env_empty(self):
+        with patch.dict(os.environ, {}, clear=True):
+            pool = common.ProxyPool()
+            # Remove PROXY_LIST if it exists
+            os.environ.pop("PROXY_LIST", None)
+            count = pool.load_from_env()
+            self.assertEqual(count, 0)
+
+    def test_get_stats(self):
+        pool = common.ProxyPool(proxies=["http://p1:80"])
+        pool.report_success("http://p1:80")
+        stats = pool.get_stats()
+        self.assertIn("total", stats)
+        self.assertIn("active", stats)
+        self.assertEqual(stats["total"], 1)
+        self.assertEqual(stats["active"], 1)
+
+    def test_report_unknown_proxy(self):
+        pool = common.ProxyPool()
+        # Should not crash
+        pool.report_success("http://unknown:80")
+        pool.report_failure("http://unknown:80")
+
+    def test_create_proxy_pool_factory(self):
+        pool = common.create_proxy_pool()
+        self.assertIsInstance(pool, common.ProxyPool)
+
+    def test_create_proxy_pool_with_extra(self):
+        pool = common.create_proxy_pool(extra_proxies=["http://extra1:80"])
+        self.assertGreaterEqual(pool.total_count, 1)
+
+
+# ===================================================================
+# TestAsyncIntegration - Async tests using aiohttp web test server
+# ===================================================================
+
+
+class TestAsyncIntegration(unittest.TestCase):
+    """Async integration tests using a local aiohttp test server."""
+
+    def _run(self, coro):
+        """Helper to run async tests."""
+        return asyncio.run(coro)
+
+    def _create_test_app(self):
+        """Create a simple aiohttp web app for testing."""
+        app = web.Application()
+
+        async def handle_ok(request):
+            return web.Response(text="<html><head><title>Test</title></head><body>OK</body></html>",
+                              content_type="text/html")
+
+        async def handle_500(request):
+            return web.Response(status=500, text="Server Error")
+
+        async def handle_redirect(request):
+            raise web.HTTPFound("/ok")
+
+        async def handle_slow(request):
+            await asyncio.sleep(10)
+            return web.Response(text="Slow")
+
+        async def handle_ssrf(request):
+            raise web.HTTPFound("http://127.0.0.1:1/admin")
+
+        app.router.add_get("/ok", handle_ok)
+        app.router.add_get("/500", handle_500)
+        app.router.add_get("/redirect", handle_redirect)
+        app.router.add_get("/slow", handle_slow)
+        app.router.add_get("/ssrf", handle_ssrf)
+
+        return app
+
+    def test_aiohttp_session_creation(self):
+        """Test creating aiohttp session with connector settings."""
+        async def _test():
+            connector = aiohttp.TCPConnector(limit=5, limit_per_host=2, ttl_dns_cache=300)
+            async with aiohttp.ClientSession(connector=connector) as session:
+                self.assertIsNotNone(session)
+                self.assertFalse(session.closed)
+            self.assertTrue(session.closed)
+        self._run(_test())
+
+    def test_local_server_fetch_200(self):
+        """Test fetching a 200 OK page from local test server."""
+        async def _test():
+            app = self._create_test_app()
+            runner = web.AppRunner(app)
+            await runner.setup()
+            site = web.TCPSite(runner, "127.0.0.1", 0)
+            await site.start()
+            port = site._server.sockets[0].getsockname()[1]
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(f"http://127.0.0.1:{port}/ok") as resp:
+                        self.assertEqual(resp.status, 200)
+                        text = await resp.text()
+                        self.assertIn("Test", text)
+            finally:
+                await runner.cleanup()
+        self._run(_test())
+
+    def test_local_server_500_response(self):
+        """Test handling a 500 error from local server."""
+        async def _test():
+            app = self._create_test_app()
+            runner = web.AppRunner(app)
+            await runner.setup()
+            site = web.TCPSite(runner, "127.0.0.1", 0)
+            await site.start()
+            port = site._server.sockets[0].getsockname()[1]
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(f"http://127.0.0.1:{port}/500") as resp:
+                        self.assertEqual(resp.status, 500)
+            finally:
+                await runner.cleanup()
+        self._run(_test())
+
+    def test_local_server_redirect_follow(self):
+        """Test that aiohttp follows redirects."""
+        async def _test():
+            app = self._create_test_app()
+            runner = web.AppRunner(app)
+            await runner.setup()
+            site = web.TCPSite(runner, "127.0.0.1", 0)
+            await site.start()
+            port = site._server.sockets[0].getsockname()[1]
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(
+                        f"http://127.0.0.1:{port}/redirect",
+                        allow_redirects=True,
+                    ) as resp:
+                        self.assertEqual(resp.status, 200)
+                        text = await resp.text()
+                        self.assertIn("OK", text)
+            finally:
+                await runner.cleanup()
+        self._run(_test())
+
+    def test_semaphore_concurrency_limit(self):
+        """Test that Semaphore correctly limits concurrent requests."""
+        async def _test():
+            concurrent = 0
+            max_concurrent = 0
+
+            async def limited_task(semaphore):
+                nonlocal concurrent, max_concurrent
+                async with semaphore:
+                    concurrent += 1
+                    max_concurrent = max(max_concurrent, concurrent)
+                    await asyncio.sleep(0.05)
+                    concurrent -= 1
+
+            semaphore = asyncio.Semaphore(3)
+            tasks = [limited_task(semaphore) for _ in range(10)]
+            await asyncio.gather(*tasks)
+            self.assertLessEqual(max_concurrent, 3)
+            self.assertGreater(max_concurrent, 0)
+        self._run(_test())
+
+    def test_gather_with_exceptions(self):
+        """Test asyncio.gather handles individual task exceptions gracefully."""
+        async def _test():
+            async def good_task():
+                return "ok"
+
+            async def bad_task():
+                raise ValueError("test error")
+
+            results = await asyncio.gather(
+                good_task(), bad_task(), good_task(),
+                return_exceptions=True,
+            )
+            self.assertEqual(results[0], "ok")
+            self.assertIsInstance(results[1], ValueError)
+            self.assertEqual(results[2], "ok")
+        self._run(_test())
+
+    def test_aiohttp_timeout(self):
+        """Test that aiohttp timeout works correctly."""
+        async def _test():
+            app = self._create_test_app()
+            runner = web.AppRunner(app)
+            await runner.setup()
+            site = web.TCPSite(runner, "127.0.0.1", 0)
+            await site.start()
+            port = site._server.sockets[0].getsockname()[1]
+            try:
+                async with aiohttp.ClientSession() as session:
+                    with self.assertRaises(asyncio.TimeoutError):
+                        async with session.get(
+                            f"http://127.0.0.1:{port}/slow",
+                            timeout=aiohttp.ClientTimeout(total=0.5),
+                        ) as resp:
+                            await resp.text()
+            finally:
+                await runner.cleanup()
+        self._run(_test())
+
+    def test_proxy_pool_with_fetch(self):
+        """Test ProxyPool integration with aiohttp fetch (mock proxy - direct connection)."""
+        async def _test():
+            pool = common.ProxyPool(proxies=["http://fake-proxy:8080"])
+            proxy = pool.get_proxy()
+            self.assertEqual(proxy, "http://fake-proxy:8080")
+            # Simulate success
+            pool.report_success(proxy)
+            self.assertEqual(pool.active_count, 1)
+            # Get stats
+            stats = pool.get_stats()
+            self.assertEqual(stats["active"], 1)
+        self._run(_test())
+
+    def test_concurrent_proxy_rotation(self):
+        """Test that proxy rotation works correctly under concurrent access."""
+        async def _test():
+            pool = common.ProxyPool(
+                proxies=["http://p1:80", "http://p2:80", "http://p3:80"],
+                strategy="round_robin",
+            )
+            proxies_used = []
+
+            async def get_and_record():
+                p = pool.get_proxy()
+                if p:
+                    proxies_used.append(p)
+
+            await asyncio.gather(*[get_and_record() for _ in range(9)])
+            # Should have roughly equal distribution
+            from collections import Counter
+            counts = Counter(proxies_used)
+            self.assertEqual(len(counts), 3)
+            # Each proxy should be used exactly 3 times in round-robin
+            for count in counts.values():
+                self.assertEqual(count, 3)
+        self._run(_test())
+
+    def test_crawl_module_async_imports(self):
+        """Verify crawl module has required async functions."""
+        self.assertTrue(hasattr(crawl, 'fetch_page_content_async'))
+        self.assertTrue(hasattr(crawl, 'check_site_update_async'))
+        self.assertTrue(hasattr(crawl, 'check_one_async'))
+        self.assertTrue(hasattr(crawl, 'main_async'))
+        self.assertTrue(asyncio.iscoroutinefunction(crawl.fetch_page_content_async))
+        self.assertTrue(asyncio.iscoroutinefunction(crawl.check_site_update_async))
+        self.assertTrue(asyncio.iscoroutinefunction(crawl.check_one_async))
+        self.assertTrue(asyncio.iscoroutinefunction(crawl.main_async))
+
+    def test_fast_check_module_async_imports(self):
+        """Verify fast_check module has required async functions."""
+        self.assertTrue(hasattr(fast_check, '_fetch_with_retry_async'))
+        self.assertTrue(hasattr(fast_check, 'fetch_and_extract_async'))
+        self.assertTrue(asyncio.iscoroutinefunction(fast_check._fetch_with_retry_async))
+        self.assertTrue(asyncio.iscoroutinefunction(fast_check.fetch_and_extract_async))
+
+    def test_browser_profiles_integrity(self):
+        """Test that all browser profiles have required fields."""
+        for profile in crawl.BROWSER_PROFILES:
+            self.assertIn('user_agent', profile)
+            self.assertIn('accept_language', profile)
+            self.assertIn('fingerprint', profile)
+            self.assertIsInstance(profile['fingerprint'], dict)
+            # UA should be a non-empty string
+            self.assertTrue(len(profile['user_agent']) > 20)
+            # Should start with Mozilla
+            self.assertTrue(profile['user_agent'].startswith('Mozilla/5.0'))
+
+    def test_circuit_breaker_basic(self):
+        """Test CircuitBreaker basic open/close behavior."""
+        cb = crawl.CircuitBreaker(failure_threshold=3)
+        domain = "test.example.com"
+        # Not open initially
+        self.assertFalse(cb.is_open(domain))
+        # Record failures
+        cb.record_failure(domain)
+        cb.record_failure(domain)
+        self.assertFalse(cb.is_open(domain))
+        cb.record_failure(domain)  # 3rd failure -> open
+        self.assertTrue(cb.is_open(domain))
+        # Success resets it
+        cb.record_success(domain)
+        self.assertFalse(cb.is_open(domain))
+
+    def test_metrics_tracker(self):
+        """Test MetricsTracker success/failure recording."""
+        mt = crawl.MetricsTracker()
+        mt.record_success("example.com", 0.5)
+        mt.record_success("example.com", 1.5)
+        mt.record_failure("other.com")
+        summary = mt.get_summary()
+        self.assertIsInstance(summary, dict)
+        self.assertEqual(summary["success_count"], 2)
+        self.assertEqual(summary["fail_count"], 1)
+        self.assertEqual(summary["total_requests"], 3)
 
 
 # ===================================================================

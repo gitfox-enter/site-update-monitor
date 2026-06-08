@@ -21,6 +21,7 @@ Contents:
   - MD5 hashing helper
   - HTTPS auto-upgrade heuristic
   - Per-domain rate limiter
+  - Async-safe proxy pool with health tracking
 """
 
 # ============================================================
@@ -32,6 +33,7 @@ import sys
 import re
 import json
 import time
+import random
 import sqlite3
 import hashlib
 import logging
@@ -88,6 +90,9 @@ __all__ = [
     "upgrade_to_https",
     # Rate limiter
     "DomainRateLimiter",
+    # Proxy pool
+    "ProxyPool",
+    "create_proxy_pool",
     # SQLite
     "SQLITE_DB_FILE",
     "MAX_ITEMS_DB",
@@ -372,6 +377,354 @@ class DomainRateLimiter:
             if elapsed < self._min_gap:
                 time.sleep(self._min_gap - elapsed)
             self._last_request[domain] = time.time()
+
+
+# ============================================================
+# Proxy pool
+# ============================================================
+
+_ALLOWED_PROXY_SCHEMES = {"http", "https", "socks4", "socks4a", "socks5", "socks5h"}
+
+
+class ProxyPool:
+    """Async-safe proxy pool with health tracking, auto-blacklisting, and round-robin rotation.
+
+    Supports:
+      - Loading proxies from environment variable ``PROXY_LIST`` (comma-separated)
+      - Loading proxies from a JSON file (``proxy_pool.json``)
+      - Programmatic add/remove
+      - Round-robin or random selection
+      - Per-proxy failure tracking with auto-blacklisting after *max_failures*
+      - Cooldown period before re-enabling a blacklisted proxy
+      - Graceful degradation: returns ``None`` when no healthy proxies available
+
+    Thread safety is provided via :class:`threading.Lock` so the pool can
+    safely be shared across threads **and** used from synchronous code that
+    sits alongside an asyncio event loop.
+    """
+
+    PROXY_LIST_ENV: str = "PROXY_LIST"
+    PROXY_FILE: str = "proxy_pool.json"
+    DEFAULT_MAX_FAILURES: int = 5
+    DEFAULT_COOLDOWN: float = 300.0
+
+    # ------------------------------------------------------------------
+    # Initialization
+    # ------------------------------------------------------------------
+
+    def __init__(
+        self,
+        proxies: Optional[List[str]] = None,
+        max_failures: int = DEFAULT_MAX_FAILURES,
+        cooldown: float = DEFAULT_COOLDOWN,
+        strategy: str = "round_robin",
+    ) -> None:
+        if strategy not in ("round_robin", "random"):
+            raise ValueError(
+                f"Invalid strategy {strategy!r}; expected 'round_robin' or 'random'"
+            )
+
+        self._lock = threading.Lock()
+        self._proxies: Dict[str, Dict[str, Any]] = {}
+        self._rr_index: int = 0
+        self._max_failures: int = max_failures
+        self._cooldown: float = cooldown
+        self._strategy: str = strategy
+
+        if proxies:
+            for url in proxies:
+                self._add_proxy_unlocked(url)
+
+    # ------------------------------------------------------------------
+    # Internal helpers (caller must hold ``_lock``)
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _validate_proxy_url(proxy_url: str) -> bool:
+        """Return ``True`` when *proxy_url* has an acceptable URL scheme."""
+        try:
+            parsed = urlparse(proxy_url)
+            return parsed.scheme.lower() in _ALLOWED_PROXY_SCHEMES and bool(parsed.netloc)
+        except Exception:
+            return False
+
+    def _add_proxy_unlocked(self, proxy_url: str) -> None:
+        """Add *proxy_url* to the pool (lock must already be held)."""
+        proxy_url = proxy_url.strip()
+        if not proxy_url or not self._validate_proxy_url(proxy_url):
+            return
+        if proxy_url not in self._proxies:
+            self._proxies[proxy_url] = {
+                "failures": 0,
+                "blacklisted_at": 0.0,
+                "success_count": 0,
+                "total_count": 0,
+            }
+
+    def _is_active_unlocked(self, info: Dict[str, Any]) -> bool:
+        """Return ``True`` when a proxy entry is currently usable.
+
+        A blacklisted proxy is automatically re-enabled once its cooldown
+        period has elapsed.  This method mutates *info* in-place when
+        re-enabling (resets failure counter and blacklist timestamp).
+        """
+        if info["blacklisted_at"] == 0.0:
+            return True
+        # Check whether the cooldown has elapsed
+        if time.time() - info["blacklisted_at"] >= self._cooldown:
+            info["blacklisted_at"] = 0.0
+            info["failures"] = 0
+            return True
+        return False
+
+    # ------------------------------------------------------------------
+    # Loading helpers
+    # ------------------------------------------------------------------
+
+    def load_from_env(self) -> int:
+        """Load proxies from the ``PROXY_LIST`` environment variable.
+
+        The variable should contain a comma-separated list of proxy URLs.
+        Returns the number of proxies successfully loaded.
+        """
+        raw = os.environ.get(self.PROXY_LIST_ENV, "")
+        if not raw.strip():
+            return 0
+        count = 0
+        with self._lock:
+            for url in raw.split(","):
+                url = url.strip()
+                if url and self._validate_proxy_url(url) and url not in self._proxies:
+                    self._add_proxy_unlocked(url)
+                    count += 1
+        return count
+
+    def load_from_file(self, path: Optional[str] = None) -> int:
+        """Load proxies from a JSON file.
+
+        Expected format::
+
+            {"proxies": ["http://user:pass@host:port", ...]}
+
+        Returns the number of proxies successfully loaded.  Returns ``0``
+        when the file is missing or malformed.
+        """
+        filepath = path or self.PROXY_FILE
+        try:
+            with open(filepath, "r", encoding="utf-8") as fh:
+                data = json.load(fh)
+        except (FileNotFoundError, json.JSONDecodeError, OSError):
+            return 0
+        if not isinstance(data, dict):
+            return 0
+        proxy_list = data.get("proxies", [])
+        if not isinstance(proxy_list, list):
+            return 0
+        count = 0
+        with self._lock:
+            for url in proxy_list:
+                if isinstance(url, str):
+                    url = url.strip()
+                    if url and self._validate_proxy_url(url) and url not in self._proxies:
+                        self._add_proxy_unlocked(url)
+                        count += 1
+        return count
+
+    # ------------------------------------------------------------------
+    # Programmatic add / remove
+    # ------------------------------------------------------------------
+
+    def add_proxy(self, proxy_url: str) -> None:
+        """Add a proxy to the pool.
+
+        Silently ignores duplicates and invalid URLs.
+        """
+        with self._lock:
+            self._add_proxy_unlocked(proxy_url)
+
+    def remove_proxy(self, proxy_url: str) -> None:
+        """Remove a proxy from the pool.
+
+        Raises :class:`KeyError` when *proxy_url* is not in the pool.
+        """
+        with self._lock:
+            if proxy_url not in self._proxies:
+                raise KeyError(f"Proxy not found in pool: {proxy_url!r}")
+            del self._proxies[proxy_url]
+            # Guard the round-robin index against shrinking pool sizes
+            if self._proxies and self._rr_index >= len(self._proxies):
+                self._rr_index = 0
+
+    # ------------------------------------------------------------------
+    # Proxy selection
+    # ------------------------------------------------------------------
+
+    def get_proxy(self) -> Optional[str]:
+        """Return the next healthy proxy URL, or ``None`` if the pool is empty.
+
+        Blacklisted proxies whose cooldown has elapsed are automatically
+        re-enabled and become eligible for selection again.  When every
+        proxy in the pool is currently blacklisted, ``None`` is returned
+        so the caller can gracefully degrade to a direct connection.
+        """
+        with self._lock:
+            if not self._proxies:
+                return None
+
+            # Re-enable any proxies whose cooldown has elapsed
+            for info in self._proxies.values():
+                if info["blacklisted_at"] != 0.0:
+                    self._is_active_unlocked(info)
+
+            # Build the candidate list (active, non-blacklisted proxies)
+            active: List[str] = [
+                url for url, info in self._proxies.items()
+                if info["blacklisted_at"] == 0.0
+            ]
+            if not active:
+                return None
+
+            if self._strategy == "random":
+                return random.choice(active)
+
+            # Round-robin selection
+            idx = self._rr_index % len(active)
+            self._rr_index = idx + 1
+            return active[idx]
+
+    # ------------------------------------------------------------------
+    # Health reporting
+    # ------------------------------------------------------------------
+
+    def report_success(self, proxy_url: str) -> None:
+        """Report a successful request through *proxy_url*.
+
+        Resets the consecutive failure counter to ``0`` and increments the
+        success and total request counters.
+        """
+        with self._lock:
+            info = self._proxies.get(proxy_url)
+            if info is not None:
+                info["failures"] = 0
+                info["success_count"] += 1
+                info["total_count"] += 1
+
+    def report_failure(self, proxy_url: str) -> None:
+        """Report a failed request through *proxy_url*.
+
+        Increments the consecutive failure counter.  When the counter
+        reaches *max_failures* the proxy is blacklisted and will not be
+        returned by :meth:`get_proxy` until its cooldown elapses.
+        """
+        with self._lock:
+            info = self._proxies.get(proxy_url)
+            if info is not None:
+                info["failures"] += 1
+                info["total_count"] += 1
+                if info["failures"] >= self._max_failures:
+                    info["blacklisted_at"] = time.time()
+
+    # ------------------------------------------------------------------
+    # Properties and statistics
+    # ------------------------------------------------------------------
+
+    @property
+    def active_count(self) -> int:
+        """Number of currently active (non-blacklisted) proxies.
+
+        Proxies whose cooldown has elapsed are counted as active.
+        """
+        with self._lock:
+            count = 0
+            for info in self._proxies.values():
+                if self._is_active_unlocked(info):
+                    count += 1
+            return count
+
+    @property
+    def total_count(self) -> int:
+        """Total number of proxies in the pool (including blacklisted ones)."""
+        with self._lock:
+            return len(self._proxies)
+
+    def get_stats(self) -> Dict[str, Any]:
+        """Return a snapshot of pool statistics.
+
+        The returned dict contains:
+
+        - ``total``: total proxies in the pool
+        - ``active``: currently usable proxies
+        - ``blacklisted``: currently blacklisted proxies
+        - ``strategy``: the selection strategy in use
+        - ``max_failures``: failure threshold for blacklisting
+        - ``cooldown``: cooldown period in seconds
+        - ``proxies``: per-proxy breakdown (failures, success_count,
+          total_count, blacklisted)
+        """
+        with self._lock:
+            active = 0
+            blacklisted = 0
+            proxy_details: Dict[str, Dict[str, Any]] = {}
+            for url, info in self._proxies.items():
+                is_active = self._is_active_unlocked(info)
+                if is_active:
+                    active += 1
+                else:
+                    blacklisted += 1
+                proxy_details[url] = {
+                    "failures": info["failures"],
+                    "success_count": info["success_count"],
+                    "total_count": info["total_count"],
+                    "blacklisted": not is_active,
+                }
+            return {
+                "total": len(self._proxies),
+                "active": active,
+                "blacklisted": blacklisted,
+                "strategy": self._strategy,
+                "max_failures": self._max_failures,
+                "cooldown": self._cooldown,
+                "proxies": proxy_details,
+            }
+
+    # ------------------------------------------------------------------
+    # Dunder helpers
+    # ------------------------------------------------------------------
+
+    def __repr__(self) -> str:
+        return (
+            f"ProxyPool(total={self.total_count}, active={self.active_count}, "
+            f"strategy={self._strategy!r})"
+        )
+
+    def __len__(self) -> int:
+        return self.total_count
+
+    def __contains__(self, proxy_url: str) -> bool:
+        with self._lock:
+            return proxy_url in self._proxies
+
+
+def create_proxy_pool(extra_proxies: Optional[List[str]] = None) -> ProxyPool:
+    """Factory: create a :class:`ProxyPool`, loading from env/file if available.
+
+    Loading order:
+
+    1. Proxies from the ``PROXY_LIST`` environment variable.
+    2. Proxies from ``proxy_pool.json`` (if the file exists).
+    3. Any *extra_proxies* passed programmatically.
+
+    The pool is returned regardless of how many (or few) proxies were
+    loaded -- it may even be empty, in which case :meth:`ProxyPool.get_proxy`
+    will gracefully return ``None``.
+    """
+    pool = ProxyPool()
+    pool.load_from_env()
+    pool.load_from_file()
+    if extra_proxies:
+        for url in extra_proxies:
+            pool.add_proxy(url)
+    return pool
 
 
 # ============================================================

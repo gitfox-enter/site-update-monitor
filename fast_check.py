@@ -52,6 +52,8 @@ from common import (
     sqlite_export_json,
     SQLITE_DB_FILE,
     MAX_ITEMS_DB,
+    ProxyPool,
+    create_proxy_pool,
 )
 
 # ============================================================
@@ -71,6 +73,9 @@ logger.addHandler(_handler)
 # ============================================================
 
 FAST_LOG_FILE: str = "fast_log.jsonl"
+
+# 代理池（初始化后全局可用，None 表示直连模式）
+_proxy_pool: Optional[ProxyPool] = None
 
 # 高频检查站点（按活跃度排序的 top 12）
 FAST_SITES: List[Dict[str, str]] = [
@@ -264,11 +269,12 @@ async def _fetch_with_retry_async(
     max_retries: int = MAX_RETRIES,
 ) -> Tuple[Optional[aiohttp.ClientResponse], Optional[bytes]]:
     """
-    Async exponential backoff fetch using aiohttp.
+    Async exponential backoff fetch using aiohttp with proxy pool support.
     Attempts: max_retries (default 3), backoff: 1s, 2s, 4s.
     Returns (response, body) on completion, or (None, None) on total failure.
     """
     last_exc: Optional[Exception] = None
+    active_proxy = _proxy_pool.get_proxy() if _proxy_pool else None
     for attempt in range(max_retries):
         start = time.monotonic()
         try:
@@ -277,31 +283,41 @@ async def _fetch_with_retry_async(
                 headers=headers,
                 timeout=aiohttp.ClientTimeout(total=timeout),
                 allow_redirects=True,
+                proxy=active_proxy,
             ) as resp:
                 elapsed = time.monotonic() - start
                 if resp.status == 200:
                     # Read the body before returning (aiohttp needs this within context)
                     body = await resp.read()
                     metrics.record_success(elapsed)
+                    if active_proxy and _proxy_pool:
+                        _proxy_pool.report_success(active_proxy)
                     return resp, body
                 # Server error: retryable
                 if resp.status >= 500 and attempt < max_retries - 1:
                     backoff = RETRY_BACKOFF_BASE * (2 ** attempt)
+                    if active_proxy and _proxy_pool:
+                        _proxy_pool.report_failure(active_proxy)
                     logger.debug(
                         "  %s 返回 HTTP %d，%.1fs 后重试 (%d/%d)",
                         url, resp.status, backoff, attempt + 1, max_retries,
                     )
                     metrics.record_failure(elapsed)
                     await asyncio.sleep(backoff)
+                    active_proxy = _proxy_pool.get_proxy() if _proxy_pool else None
                     continue
                 # Client error (4xx): not retryable
                 metrics.record_failure(elapsed)
+                if active_proxy and _proxy_pool:
+                    _proxy_pool.report_failure(active_proxy)
                 body = await resp.read()
                 return resp, body
         except asyncio.TimeoutError as exc:
             elapsed = time.monotonic() - start
             last_exc = exc
             metrics.record_failure(elapsed)
+            if active_proxy and _proxy_pool:
+                _proxy_pool.report_failure(active_proxy)
             if attempt < max_retries - 1:
                 backoff = RETRY_BACKOFF_BASE * (2 ** attempt)
                 logger.debug(
@@ -309,10 +325,13 @@ async def _fetch_with_retry_async(
                     url, backoff, attempt + 1, max_retries,
                 )
                 await asyncio.sleep(backoff)
+                active_proxy = _proxy_pool.get_proxy() if _proxy_pool else None
         except aiohttp.ClientError as exc:
             elapsed = time.monotonic() - start
             last_exc = exc
             metrics.record_failure(elapsed)
+            if active_proxy and _proxy_pool:
+                _proxy_pool.report_failure(active_proxy)
             if attempt < max_retries - 1:
                 backoff = RETRY_BACKOFF_BASE * (2 ** attempt)
                 logger.debug(
@@ -320,6 +339,7 @@ async def _fetch_with_retry_async(
                     url, type(exc).__name__, backoff, attempt + 1, max_retries,
                 )
                 await asyncio.sleep(backoff)
+                active_proxy = _proxy_pool.get_proxy() if _proxy_pool else None
 
     # All retries exhausted
     logger.warning("  %s 全部 %d 次重试失败: %s", url, max_retries, last_exc)
@@ -439,9 +459,18 @@ async def fetch_and_extract_async(
 # ============================================================
 
 async def main() -> None:
+    global _proxy_pool
     logger.info("=" * 50)
     logger.info("[快速检查] 开始 %s", get_beijing_time().strftime("%Y-%m-%d %H:%M:%S"))
     logger.info("=" * 50)
+
+    # 初始化代理池（从环境变量 / 配置文件加载，无可用代理则直连）
+    _proxy_pool = create_proxy_pool()
+    if _proxy_pool.total_count > 0:
+        logger.info("[代理池] 已加载 %d 个代理 (%d 活跃)",
+                    _proxy_pool.total_count, _proxy_pool.active_count)
+    else:
+        logger.info("[代理池] 无可用代理，使用直连模式")
 
     # 1. Git pull to get latest data
     try:

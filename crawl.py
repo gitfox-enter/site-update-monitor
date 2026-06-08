@@ -44,6 +44,7 @@ from common import (
     init_sqlite, sqlite_insert_items, sqlite_get_recent_items,
     sqlite_get_existing_urls, sqlite_export_json, sqlite_load_hash_records,
     sqlite_save_hash_records, SQLITE_DB_FILE, MAX_ITEMS_DB,
+    ProxyPool, create_proxy_pool,
 )
 
 # 忽略 BeautifulSoup 的 XML 当 HTML 解析警告
@@ -210,6 +211,9 @@ RETRY_BASE_DELAY = 1.0  # 重试基础延迟（秒），实际延迟 = base * 2^
 
 # robots.txt 合规配置
 RESPECT_ROBOTS_TXT: bool = False  # 是否遵守 robots.txt（线报站 robots.txt 通常过严，个人监控工具建议关闭）
+
+# 代理池（初始化后全局可用，None 表示直连模式）
+_proxy_pool: Optional[ProxyPool] = None
 
 # 统一浏览器配置文件池（UA + 指纹 + 语言 一一对应，防止 Firefox UA 搭配 Chrome sec-ch-ua 头）
 BROWSER_PROFILES: List[Dict[str, Any]] = [
@@ -1674,6 +1678,7 @@ async def fetch_page_content_async(
 
     response = None
     elapsed = 0.0
+    active_proxy = _proxy_pool.get_proxy() if _proxy_pool else None
 
     for attempt in range(MAX_RETRIES):
         try:
@@ -1683,6 +1688,7 @@ async def fetch_page_content_async(
                 headers=headers,
                 timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT),
                 allow_redirects=True,
+                proxy=active_proxy,
             ) as resp:
                 elapsed = time.time() - start_time
 
@@ -1703,22 +1709,29 @@ async def fetch_page_content_async(
                         content=content_bytes,
                         encoding=response_encoding,
                     )
+                    if active_proxy and _proxy_pool:
+                        _proxy_pool.report_success(active_proxy)
                     break
                 elif resp.status == 304:
                     circuit_breaker.record_success(domain)
+                    if active_proxy and _proxy_pool:
+                        _proxy_pool.report_success(active_proxy)
                     return False, "304 页面未变更"
                 elif resp.status in (403, 500, 502, 503, 504):
+                    if active_proxy and _proxy_pool:
+                        _proxy_pool.report_failure(active_proxy)
                     if attempt < MAX_RETRIES - 1:
                         delay = RETRY_BASE_DELAY * (2 ** attempt) + random.uniform(0, 0.5)
                         logger.info("重试请求 HTTP %d -> 第 %d/%d 次，延迟 %.1fs",
                                     resp.status, attempt + 2, MAX_RETRIES, delay,
                                     extra={'site': url, 'event': 'retry', 'status_code': resp.status})
                         await asyncio.sleep(delay)
-                        # Rotate profile for retry
+                        # Rotate profile and proxy for retry
                         profile = get_random_profile()
                         headers['User-Agent'] = profile['user_agent']
                         headers['Accept-Language'] = profile['accept_language']
                         headers.update(profile.get('fingerprint', {}))
+                        active_proxy = _proxy_pool.get_proxy() if _proxy_pool else None
                         continue
                 else:
                     # Other status codes: don't retry
@@ -1736,20 +1749,27 @@ async def fetch_page_content_async(
         except asyncio.TimeoutError:
             circuit_breaker.record_failure(domain)
             metrics.record_failure(domain)
+            if active_proxy and _proxy_pool:
+                _proxy_pool.report_failure(active_proxy)
             if attempt < MAX_RETRIES - 1:
                 delay = RETRY_BASE_DELAY * (2 ** attempt) + random.uniform(0, 0.5)
                 await asyncio.sleep(delay)
+                active_proxy = _proxy_pool.get_proxy() if _proxy_pool else None
                 continue
             logger.info("请求超时", extra={'site': url, 'event': 'timeout'})
             return False, "请求超时"
         except aiohttp.ClientError as e:
             circuit_breaker.record_failure(domain)
             metrics.record_failure(domain)
+            if active_proxy and _proxy_pool:
+                _proxy_pool.report_failure(active_proxy)
             logger.info("连接失败", extra={'site': url, 'event': 'connection_error'})
             return False, f"连接失败: {str(e)[:50]}"
         except Exception as e:
             circuit_breaker.record_failure(domain)
             metrics.record_failure(domain)
+            if active_proxy and _proxy_pool:
+                _proxy_pool.report_failure(active_proxy)
             return False, f"请求异常: {str(e)[:50]}"
 
     if response is None:
@@ -2211,6 +2231,7 @@ async def check_one_async(
 
 async def main_async() -> None:
     """主监控流程 (async version using aiohttp + SQLite)."""
+    global _proxy_pool
     logger.info("GitHub Actions 多站点更新监控系统 v3.0 (async)")
 
     # 获取当前时间和轮次
@@ -2220,6 +2241,14 @@ async def main_async() -> None:
 
     logger.info("北京时间: %s", check_time)
     logger.info("当日第 %d 轮巡检", round_num)
+
+    # 初始化代理池（从环境变量 / 配置文件加载，无可用代理则直连）
+    _proxy_pool = create_proxy_pool()
+    if _proxy_pool.total_count > 0:
+        logger.info("代理池已加载: %d 个代理 (%d 活跃)",
+                    _proxy_pool.total_count, _proxy_pool.active_count)
+    else:
+        logger.info("代理池为空，使用直连模式 (设置 PROXY_LIST 环境变量启用代理)")
 
     # 加载黑名单
     blacklist_domains: List[str] = load_blacklist()
