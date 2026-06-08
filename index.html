@@ -76,10 +76,13 @@
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 body{font-family:var(--font);background:var(--bg-alt);color:var(--text);min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased;padding-bottom:env(safe-area-inset-bottom)}
 a{color:inherit;text-decoration:none}
-button{font-family:inherit;border:none;background:none;cursor:pointer;padding:0;margin:0;font-size:inherit;color:inherit}
+button{font-family:inherit;border:none;background:none;cursor:pointer;padding:0;margin:0;font-size:inherit;color:inherit;touch-action:manipulation}
+a{touch-action:manipulation}
 /* Skip link for accessibility */
 #skip-link{position:absolute;top:-100%;left:16px;z-index:9999;padding:8px 16px;background:var(--primary);color:#fff;border-radius:0 0 var(--radius) var(--radius);font-size:14px;font-weight:600;text-decoration:none;transition:top .2s}
 #skip-link:focus{top:0}
+/* Visually hidden but accessible */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 /* Focus styles for accessibility */
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 
@@ -105,6 +108,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   white-space:nowrap;
   flex-shrink:0;
   letter-spacing:-0.5px;
+  margin:0;
+  line-height:1;
 }
 .header-divider{width:1px;height:24px;background:var(--border);flex-shrink:0}
 #search-form{
@@ -277,6 +282,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .kbd-hint{position:fixed;bottom:24px;left:24px;font-size:11px;color:var(--text-muted);opacity:0;transition:opacity .3s;pointer-events:none;z-index:50}
 .kbd-hint.show{opacity:.6}
 .kbd-hint kbd{display:inline-block;padding:1px 6px;background:var(--bg);border:1px solid var(--border);border-radius:3px;font-family:inherit;font-size:10px;margin:0 2px}
+/* PWA Install Banner */
+#install-banner{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 16px;background:var(--primary);color:#fff;font-size:13px;z-index:200;animation:slideUp .3s ease}
+#install-banner button{padding:4px 14px;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer}
+#install-banner button[aria-label*="确认"]{background:#fff;color:var(--primary)}
+#install-banner button[aria-label*="关闭"]{background:transparent;color:rgba(255,255,255,.7);font-size:16px;padding:4px 8px}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .item{
   border-bottom:1px solid var(--border-light);
   transition:background .1s;
@@ -580,11 +591,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 <!-- ===== HEADER ===== -->
 <header id="header" role="banner">
   <button id="icon-menu" onclick="toggleCatDropdown()" aria-label="打开来源分类菜单">&#9776;</button>
-  <a id="logo" href="/" aria-label="线报聚合首页">⚡ 线报聚合</a>
+  <h1 id="logo"><a href="/" aria-label="线报聚合首页">⚡ 线报聚合</a></h1>
   <div class="header-divider" aria-hidden="true"></div>
   <form id="search-form" onsubmit="handleSearch(event)" role="search" aria-label="搜索线报">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input id="search-input" type="text" autocomplete="off" placeholder="请输入关键词.." aria-label="搜索关键词">
+    <input id="search-input" type="search" autocomplete="off" placeholder="请输入关键词 (按 / 聚焦).." aria-label="搜索关键词" aria-describedby="search-desc">
+    <span id="search-desc" class="sr-only">输入关键词后按回车搜索线报</span>
     <button type="submit" id="search-btn" aria-label="执行搜索">搜 索</button>
   </form>
   <nav id="menu" role="navigation" aria-label="主导航">
@@ -617,6 +629,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 
     <!-- List View -->
     <section id="list-view" aria-label="线报列表">
+      <h2 class="sr-only">线报列表</h2>
       <div id="status-bar" role="status" aria-live="polite">
         <span id="status-text" aria-busy="true">
           <div class="skeleton-item"><div class="skeleton-badge"></div><div class="skeleton-body"><div class="skeleton-line w80"></div><div class="skeleton-line w40"></div></div></div>
@@ -633,6 +646,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 
     <!-- Ranking View -->
     <section id="ranking-view" style="display:none" aria-label="热门排行">
+      <h2 class="sr-only">热门排行</h2>
       <div id="ranking-section">
         <div class="ranking-tabs" role="tablist" aria-label="排行时间范围">
           <button class="ranking-tab active" data-period="1h" onclick="switchRankTab('1h')" role="tab" aria-selected="true">一小时排行</button>
@@ -1254,6 +1268,63 @@ if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   style.textContent = '*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}';
   document.head.appendChild(style);
 }
+
+/* ================================================================
+   PWA INSTALL PROMPT
+   ================================================================ */
+var deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  deferredPrompt = e;
+  /* Show install button after 10 seconds */
+  setTimeout(showInstallBanner, 10000);
+});
+function showInstallBanner() {
+  if (!deferredPrompt) return;
+  if (document.getElementById('install-banner')) return;
+  var banner = document.createElement('div');
+  banner.id = 'install-banner';
+  banner.setAttribute('role', 'dialog');
+  banner.setAttribute('aria-label', '安装线报聚合到主屏幕');
+  banner.innerHTML =
+    '<span>安装到主屏幕，获取实时线报</span>' +
+    '<button onclick="installApp()" aria-label="确认安装">安装</button>' +
+    '<button onclick="dismissInstall()" aria-label="关闭安装提示">&times;</button>';
+  document.body.appendChild(banner);
+}
+function installApp() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(function(r) { deferredPrompt = null; });
+  dismissInstall();
+}
+function dismissInstall() {
+  var b = document.getElementById('install-banner');
+  if (b) b.remove();
+  deferredPrompt = null;
+}
+
+/* ================================================================
+   TOUCH GESTURES (swipe to switch views)
+   ================================================================ */
+var touchStartX = 0;
+var touchStartY = 0;
+document.addEventListener('touchstart', function(e) {
+  touchStartX = e.changedTouches[0].screenX;
+  touchStartY = e.changedTouches[0].screenY;
+}, { passive: true });
+document.addEventListener('touchend', function(e) {
+  var dx = e.changedTouches[0].screenX - touchStartX;
+  var dy = e.changedTouches[0].screenY - touchStartY;
+  /* Only trigger on horizontal swipes (>80px) that aren't mostly vertical */
+  if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+    if (dx < 0 && currentView === 'list') {
+      switchView('ranking');
+    } else if (dx > 0 && currentView === 'ranking') {
+      switchView('list');
+    }
+  }
+}, { passive: true });
 
 /* ================================================================
    SERVICE WORKER

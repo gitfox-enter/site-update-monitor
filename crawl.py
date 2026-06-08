@@ -138,6 +138,7 @@ ITEMS_DB_FILE = "items.json"  # 全量线报数据库（持久化累积，供前
 # 自动移除/恢复配置
 MAX_CONSECUTIVE_FAILURES = 3  # 连续失败 N 轮后自动暂停
 RECOVERY_CHECK_INTERVAL = 6  # 每 N 轮尝试恢复一次暂停站点
+MAX_ITEMS_DB = 1500  # items.json 最多保留条目数（控制文件体积，~84KB gzip）
 
 # 爬虫配置
 REQUEST_TIMEOUT = 15  # 单个站点超时时间（秒）
@@ -427,6 +428,12 @@ def merge_items_into_db(new_item_list, check_time):
     # 新条目插到头部
     if fresh_items:
         db['items'] = fresh_items + db['items']
+
+    # 超出上限时裁剪（保留最新条目）
+    if len(db['items']) > MAX_ITEMS_DB:
+        removed = len(db['items']) - MAX_ITEMS_DB
+        db['items'] = db['items'][:MAX_ITEMS_DB]
+        print(f"[数据库] 裁剪旧条目: 移除 {removed} 条，保留最新 {MAX_ITEMS_DB} 条")
 
     db['updated_at'] = check_time
     save_items_db(db)
