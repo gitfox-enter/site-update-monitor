@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-快速增量检查器 - 高频抓取 top 站点，追加新线报到 items.json
+快速增量检查器 - 高频抓取 top 站点，追加新线报到 SQLite (monitor.db)
 设计目标：30-60 秒内完成，适合 GitHub Actions 每 5 分钟运行一次
 
 增强功能:
-  - requests.Session 连接池与 Cookie 持久化
+  - aiohttp 异步并发抓取 (Semaphore 限流)
   - 指数退避重试 (3 次: 1s, 2s, 4s)
+  - SQLite 持久化 (替代 items.json 读写)
   - 结构化日志 (Python logging)
   - 完整类型标注
   - robots.txt 合规检查 (按域名缓存)
@@ -19,23 +20,39 @@
 # 1. 所有导入集中在顶部
 # ============================================================
 
+import asyncio
+import aiohttp
 import os
 import re
 import sys
 import time
 import json
 import random
-import hashlib
 import logging
 import subprocess
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import urllib.request
 from datetime import datetime, timezone, timedelta
 from typing import Any, Dict, List, Optional, Set, Tuple
 from urllib.parse import urlparse, urljoin
 from urllib.robotparser import RobotFileParser
 
-import requests
 from bs4 import BeautifulSoup
+
+from common import (
+    JsonFormatter,
+    get_beijing_time,
+    auto_categorize,
+    sanitize_href,
+    sanitize_text,
+    is_junk,
+    init_sqlite,
+    sqlite_insert_items,
+    sqlite_get_recent_items,
+    sqlite_get_existing_urls,
+    sqlite_export_json,
+    SQLITE_DB_FILE,
+    MAX_ITEMS_DB,
+)
 
 # ============================================================
 # 4. 结构化日志
@@ -46,26 +63,6 @@ logger.setLevel(logging.DEBUG)
 
 _handler = logging.StreamHandler(sys.stdout)
 _handler.setLevel(logging.INFO)
-class JsonFormatter(logging.Formatter):
-    """将日志记录格式化为 JSON 字符串，便于结构化日志收集与分析。"""
-
-    def format(self, record: logging.LogRecord) -> str:
-        log_entry = {
-            'timestamp': datetime.fromtimestamp(record.created, tz=timezone(timedelta(hours=8))).isoformat(),
-            'level': record.levelname,
-            'logger': record.name,
-            'message': record.getMessage(),
-        }
-        if record.exc_info and record.exc_info[1]:
-            log_entry['exception'] = str(record.exc_info[1])
-        # 附加额外字段
-        for key in ('site', 'status_code', 'response_time', 'event'):
-            val = getattr(record, key, None)
-            if val is not None:
-                log_entry[key] = val
-        return json.dumps(log_entry, ensure_ascii=False)
-
-
 _handler.setFormatter(JsonFormatter())
 logger.addHandler(_handler)
 
@@ -73,7 +70,6 @@ logger.addHandler(_handler)
 # 配置
 # ============================================================
 
-ITEMS_DB_FILE: str = "items.json"
 FAST_LOG_FILE: str = "fast_log.jsonl"
 
 # 高频检查站点（按活跃度排序的 top 12）
@@ -96,7 +92,7 @@ FAST_SITES: List[Dict[str, str]] = [
 REQUEST_TIMEOUT: int = 10
 MAX_RETRIES: int = 3                       # 3 次尝试
 RETRY_BACKOFF_BASE: float = 1.0            # 退避基数 (秒): 1, 2, 4
-RESPECT_ROBOTS_TXT: bool = False            # 6. robots.txt 合规开关（线报站 robots.txt 通常过严，个人监控建议关闭）
+RESPECT_ROBOTS_TXT: bool = False            # robots.txt 合规开关（线报站 robots.txt 通常过严，个人监控建议关闭）
 
 BROWSER_PROFILES: List[Dict[str, Any]] = [
     {
@@ -166,36 +162,6 @@ def get_random_profile() -> Dict[str, Any]:
     """随机返回一组一致的浏览器配置（UA + 指纹 + 语言匹配）"""
     return random.choice(BROWSER_PROFILES)
 
-# 关键词自动分类
-CATEGORY_KEYWORDS: Dict[str, List[str]] = {
-    "京东": ["京东", "jd.com", "jd", "京豆", "京享"],
-    "淘宝": ["淘宝", "天猫", "tmall", "taobao", "淘金币"],
-    "拼多多": ["拼多多", "pdd", "拼多"],
-    "外卖": ["外卖", "美团", "饿了么", "美团外卖"],
-    "红包": ["红包", "虹包", "鸿包", "必中红包"],
-    "优惠券": ["优惠券", "券", "满减", "消费券", "领券"],
-}
-
-# 过滤词
-JUNK_PATTERNS: List[str] = [
-    "安卓软件", "办公软件", "安全软件", "查看详情", "直达链接", "阅读全文",
-    "继续阅读", "更多", "首页", "登录", "注册", "搜索", "javascript:",
-    "关于我们", "联系我们", "免责声明", "版权声明", "友情链接",
-]
-
-# ============================================================
-# 2. requests.Session 连接池
-# ============================================================
-
-_session: requests.Session = requests.Session()
-# 设置连接池大小以匹配并发 worker 数
-_adapter = requests.adapters.HTTPAdapter(
-    pool_connections=12,
-    pool_maxsize=12,
-    max_retries=0,  # 我们自己控制重试
-)
-_session.mount("http://", _adapter)
-_session.mount("https://", _adapter)
 
 # ============================================================
 # 6. robots.txt 缓存 (按域名)
@@ -213,16 +179,16 @@ def _get_robots_parser(scheme_host: str) -> RobotFileParser:
     rp = RobotFileParser()
     robots_url = f"{scheme_host}/robots.txt"
     try:
-        # 使用 Session 抓取 robots.txt，享受超时与连接池
-        resp = _session.get(robots_url, timeout=5, headers={"User-Agent": "*"})
-        if resp.status_code == 200:
-            rp.parse(resp.text.splitlines())
-        elif resp.status_code in (401, 403):
-            # 401/403 表示全部禁止
-            rp.parse(["User-agent: *", "Disallow: /"])
-        else:
-            # 404 等表示无限制
-            _robots_fetch_failures.add(scheme_host)
+        # 使用 urllib 抓取 robots.txt（同步、简单、一次性调用）
+        req = urllib.request.Request(robots_url, headers={"User-Agent": "*"})
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            body = resp.read().decode("utf-8", errors="replace")
+            if resp.status == 200:
+                rp.parse(body.splitlines())
+            elif resp.status in (401, 403):
+                rp.parse(["User-agent: *", "Disallow: /"])
+            else:
+                _robots_fetch_failures.add(scheme_host)
     except Exception:
         _robots_fetch_failures.add(scheme_host)
         # 获取失败时默认允许抓取（宽容策略）
@@ -257,7 +223,6 @@ class Metrics:
         self.success_count: int = 0
         self.fail_count: int = 0
         self._total_response_time: float = 0.0
-        self._lock: Any = None  # 单线程写入，无需锁
 
     def record_success(self, elapsed: float) -> None:
         self.request_count += 1
@@ -288,131 +253,52 @@ metrics = Metrics()
 
 
 # ============================================================
-# 9. 输入清洗
+# 3. 指数退避重试 (async) + aiohttp
 # ============================================================
 
-# 预编译正则：匹配 javascript: 协议（忽略大小写与前置空白）
-_JS_HREF_RE = re.compile(r"^\s*javascript\s*:", re.IGNORECASE)
-# 控制字符与零宽字符
-_CONTROL_CHAR_RE = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f\u200b\u200c\u200d\ufeff]")
-
-
-def sanitize_href(href: str) -> str:
-    """清洗 href：去除前后空白、过滤 javascript: 等危险协议"""
-    href = href.strip()
-    if _JS_HREF_RE.match(href):
-        return ""
-    return href
-
-
-def sanitize_text(text: str) -> str:
-    """清洗文本：去除控制字符、零宽字符，合并连续空白"""
-    text = _CONTROL_CHAR_RE.sub("", text)
-    text = " ".join(text.split())
-    return text
-
-
-# ============================================================
-# 工具函数
-# ============================================================
-
-def get_beijing_time() -> datetime:
-    return datetime.now(timezone(timedelta(hours=8)))
-
-
-def auto_categorize(text: str) -> Optional[str]:
-    for cat, keywords in CATEGORY_KEYWORDS.items():
-        for kw in keywords:
-            if kw in text:
-                return cat
-    return None
-
-
-def is_junk(text: str) -> bool:
-    if len(text) < 5:
-        return True
-    if text.isdigit():
-        return True
-    clean = text.replace(" ", "")
-    for jp in JUNK_PATTERNS:
-        if clean == jp:
-            return True
-    return False
-
-
-# ============================================================
-# 数据层
-# ============================================================
-
-def load_items_db() -> Dict[str, Any]:
-    if os.path.exists(ITEMS_DB_FILE):
-        try:
-            with open(ITEMS_DB_FILE, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            if isinstance(data, dict) and "items" in data:
-                return data
-        except Exception:
-            pass
-    return {"items": [], "updated_at": ""}
-
-
-def save_items_db(db: Dict[str, Any]) -> bool:
-    tmp_file = ITEMS_DB_FILE + '.tmp'
-    try:
-        with open(tmp_file, "w", encoding="utf-8") as f:
-            json.dump(db, f, ensure_ascii=False, separators=(",", ":"))
-        os.replace(tmp_file, ITEMS_DB_FILE)
-        return True
-    except Exception as e:
-        logger.error("保存失败: %s", e)
-        if os.path.exists(tmp_file):
-            os.remove(tmp_file)
-        return False
-
-
-# ============================================================
-# 3. 指数退避重试 + 2. Session 连接池 + 7. Referer 头
-# ============================================================
-
-def _fetch_with_retry(
+async def _fetch_with_retry_async(
+    session: aiohttp.ClientSession,
     url: str,
     headers: Dict[str, str],
     timeout: int = REQUEST_TIMEOUT,
     max_retries: int = MAX_RETRIES,
-) -> Optional[requests.Response]:
+) -> Tuple[Optional[aiohttp.ClientResponse], Optional[bytes]]:
     """
-    使用指数退避策略发送 GET 请求。
-    尝试次数: max_retries (默认 3)，退避间隔: 1s, 2s, 4s
-    成功返回 Response，全部失败返回 None。
+    Async exponential backoff fetch using aiohttp.
+    Attempts: max_retries (default 3), backoff: 1s, 2s, 4s.
+    Returns (response, body) on completion, or (None, None) on total failure.
     """
     last_exc: Optional[Exception] = None
     for attempt in range(max_retries):
         start = time.monotonic()
         try:
-            resp = _session.get(
+            async with session.get(
                 url,
                 headers=headers,
-                timeout=timeout,
+                timeout=aiohttp.ClientTimeout(total=timeout),
                 allow_redirects=True,
-            )
-            elapsed = time.monotonic() - start
-            if resp.status_code == 200:
-                metrics.record_success(elapsed)
-                return resp
-            # 非 200 但属于服务器错误时可重试
-            if resp.status_code >= 500 and attempt < max_retries - 1:
-                backoff = RETRY_BACKOFF_BASE * (2 ** attempt)
-                logger.debug(
-                    "  %s 返回 HTTP %d，%.1fs 后重试 (%d/%d)",
-                    url, resp.status_code, backoff, attempt + 1, max_retries,
-                )
+            ) as resp:
+                elapsed = time.monotonic() - start
+                if resp.status == 200:
+                    # Read the body before returning (aiohttp needs this within context)
+                    body = await resp.read()
+                    metrics.record_success(elapsed)
+                    return resp, body
+                # Server error: retryable
+                if resp.status >= 500 and attempt < max_retries - 1:
+                    backoff = RETRY_BACKOFF_BASE * (2 ** attempt)
+                    logger.debug(
+                        "  %s 返回 HTTP %d，%.1fs 后重试 (%d/%d)",
+                        url, resp.status, backoff, attempt + 1, max_retries,
+                    )
+                    metrics.record_failure(elapsed)
+                    await asyncio.sleep(backoff)
+                    continue
+                # Client error (4xx): not retryable
                 metrics.record_failure(elapsed)
-                time.sleep(backoff)
-                continue
-            # 客户端错误 (4xx) 不重试
-            metrics.record_failure(elapsed)
-            return resp
-        except requests.exceptions.Timeout as exc:
+                body = await resp.read()
+                return resp, body
+        except asyncio.TimeoutError as exc:
             elapsed = time.monotonic() - start
             last_exc = exc
             metrics.record_failure(elapsed)
@@ -422,8 +308,8 @@ def _fetch_with_retry(
                     "  %s 超时，%.1fs 后重试 (%d/%d)",
                     url, backoff, attempt + 1, max_retries,
                 )
-                time.sleep(backoff)
-        except requests.exceptions.RequestException as exc:
+                await asyncio.sleep(backoff)
+        except aiohttp.ClientError as exc:
             elapsed = time.monotonic() - start
             last_exc = exc
             metrics.record_failure(elapsed)
@@ -433,131 +319,131 @@ def _fetch_with_retry(
                     "  %s 请求异常 (%s)，%.1fs 后重试 (%d/%d)",
                     url, type(exc).__name__, backoff, attempt + 1, max_retries,
                 )
-                time.sleep(backoff)
+                await asyncio.sleep(backoff)
 
-    # 全部重试耗尽
+    # All retries exhausted
     logger.warning("  %s 全部 %d 次重试失败: %s", url, max_retries, last_exc)
-    return None
+    return None, None
 
 
 # ============================================================
-# 抓取 & 解析
+# 抓取 & 解析 (async)
 # ============================================================
 
-def fetch_and_extract(
+async def fetch_and_extract_async(
     site: Dict[str, str],
+    session: aiohttp.ClientSession,
+    semaphore: asyncio.Semaphore,
 ) -> Tuple[str, str, List[Dict[str, Any]], Optional[str]]:
-    """抓取单个站点并提取线报条目"""
-    url: str = site["url"]
-    name: str = site["name"]
-    profile = get_random_profile()
-    ua: str = profile['user_agent']
+    """Async fetch and extract items from a site."""
+    async with semaphore:
+        await asyncio.sleep(random.uniform(0.3, 0.8))  # Inter-request delay
 
-    # 5. Request delay between sites
-    time.sleep(random.uniform(0.3, 0.8))
+        url = site["url"]
+        name = site["name"]
+        profile = get_random_profile()
 
-    # 6. robots.txt 合规检查
-    if not is_allowed_by_robots(url, ua):
-        logger.info("  [robots.txt 拒绝] %s: %s", name, url)
-        return name, url, [], "robots.txt 拒绝"
+        # robots.txt check
+        if not is_allowed_by_robots(url):
+            logger.info("  [robots.txt 拒绝] %s: %s", name, url)
+            return name, url, [], "robots.txt 拒绝"
 
-    # 7. Referer 头 - 使用站点首页作为 Referer
-    parsed_url = urlparse(url)
-    referer: str = f"{parsed_url.scheme}://{parsed_url.netloc}/"
+        # Referer header - use site homepage
+        parsed_url = urlparse(url)
+        referer = f"{parsed_url.scheme}://{parsed_url.netloc}/"
 
-    headers: Dict[str, str] = {
-        "User-Agent": profile['user_agent'],
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": profile['accept_language'],
-        "Accept-Encoding": "gzip, deflate",
-        "Referer": referer,
-    }
-    headers.update(profile['fingerprint'])
+        headers: Dict[str, str] = {
+            "User-Agent": profile['user_agent'],
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": profile['accept_language'],
+            "Accept-Encoding": "gzip, deflate",
+            "Referer": referer,
+        }
+        headers.update(profile.get('fingerprint', {}))
 
-    # 3. 带指数退避的请求
-    resp = _fetch_with_retry(url, headers)
+        result = await _fetch_with_retry_async(session, url, headers)
+        if result[0] is None:
+            return name, url, [], f"重试 {MAX_RETRIES} 次后仍失败"
 
-    if resp is None:
-        return name, url, [], f"重试 {MAX_RETRIES} 次后仍失败"
+        resp, body = result
 
-    # 6. SSRF Protection - block private/internal IP addresses
-    if resp is not None:
-        final_host = urlparse(resp.url).hostname or ''
+        # SSRF Protection - block private/internal IP addresses
+        final_host = urlparse(str(resp.url)).hostname or ''
         if final_host.startswith(('127.', '10.', '172.16.', '192.168.', '169.254.', '0.')):
             return name, url, [], f"SSRF blocked: {final_host}"
 
-    # 7. Response size limit - 10MB
-    if len(resp.content) > 10 * 1024 * 1024:
-        return name, url, [], "Response too large"
+        if resp.status != 200:
+            return name, url, [], f"HTTP {resp.status}"
 
-    try:
-        resp.encoding = resp.apparent_encoding or "utf-8"
-        if resp.status_code != 200:
-            return name, url, [], f"HTTP {resp.status_code}"
+        # Response size limit - 10MB
+        if len(body) > 10 * 1024 * 1024:
+            return name, url, [], "Response too large"
 
-        soup = BeautifulSoup(resp.text, "html.parser")
+        try:
+            # Parse HTML
+            soup = BeautifulSoup(body, 'html.parser')
 
-        # 移除干扰元素
-        for tag in soup(["script", "style", "nav", "footer", "header", "aside", "iframe"]):
-            tag.decompose()
+            # Remove noise elements
+            for tag in soup(["script", "style", "nav", "footer", "header", "aside", "iframe"]):
+                tag.decompose()
 
-        body = soup.find("body")
-        if not body:
-            return name, url, [], "无 body"
+            body_tag = soup.find("body")
+            if not body_tag:
+                return name, url, [], "无 body"
 
-        items: List[Dict[str, Any]] = []
-        seen: Set[str] = set()
+            items: List[Dict[str, Any]] = []
+            seen: Set[str] = set()
 
-        # 提取 <a> 标签中的链接条目
-        for a_tag in body.find_all("a", href=True):
-            raw_text: str = a_tag.get_text(strip=True)
-            if not raw_text:
-                continue
+            # Extract <a> tag link entries
+            for a_tag in body_tag.find_all("a", href=True):
+                raw_text: str = a_tag.get_text(strip=True)
+                if not raw_text:
+                    continue
 
-            # 9. 文本清洗
-            text = sanitize_text(raw_text)
-            if not text or is_junk(text):
-                continue
-            if len(text) > 120:
-                continue
-            if text in seen:
-                continue
+                # Text sanitization
+                text = sanitize_text(raw_text)
+                if not text or is_junk(text):
+                    continue
+                if len(text) > 120:
+                    continue
+                if text in seen:
+                    continue
 
-            # 9. href 清洗（javascript: 等）
-            raw_href: str = a_tag["href"].strip()
-            href = sanitize_href(raw_href)
-            if not href:
-                continue
-            if href.startswith("#"):
-                continue
-            if href.startswith("/") or not href.startswith("http"):
-                href = urljoin(url, href)
+                # href sanitization (javascript: etc.)
+                raw_href: str = a_tag["href"].strip()
+                href = sanitize_href(raw_href)
+                if not href:
+                    continue
+                if href.startswith("#"):
+                    continue
+                if href.startswith("/") or not href.startswith("http"):
+                    href = urljoin(url, href)
 
-            seen.add(text)
-            items.append({
-                "url": href,
-                "text": text,
-                "source": name,
-                "time": get_beijing_time().strftime("%Y-%m-%d %H:%M:%S"),
-                "category": auto_categorize(text),
-            })
+                seen.add(text)
+                items.append({
+                    "url": href,
+                    "text": text,
+                    "source": name,
+                    "time": get_beijing_time().strftime("%Y-%m-%d %H:%M:%S"),
+                    "category": auto_categorize(text),
+                })
 
-        return name, url, items, None
+            return name, url, items, None
 
-    except Exception as e:
-        return name, url, [], str(e)[:80]
+        except Exception as e:
+            return name, url, [], str(e)[:80]
 
 
 # ============================================================
-# 主流程
+# 主流程 (async)
 # ============================================================
 
-def main() -> None:
+async def main() -> None:
     logger.info("=" * 50)
     logger.info("[快速检查] 开始 %s", get_beijing_time().strftime("%Y-%m-%d %H:%M:%S"))
     logger.info("=" * 50)
 
-    # 1. 先 git pull 获取最新数据
+    # 1. Git pull to get latest data
     try:
         subprocess.run(
             ["git", "pull", "--rebase", "--strategy-option=theirs", "origin", "main"],
@@ -568,58 +454,61 @@ def main() -> None:
     except Exception as e:
         logger.warning("[Git] 拉取失败（继续）: %s", e)
 
-    # 2. 加载现有数据库
-    db = load_items_db()
-    existing_urls: Set[str] = set(item["url"] for item in db["items"])
-    logger.info("[数据] 现有 %d 条线报", len(db["items"]))
+    # 2. Initialize SQLite and load existing URLs
+    db_conn = init_sqlite()
+    existing_urls: Set[str] = sqlite_get_existing_urls(db_conn)
+    logger.info("[数据] 现有 %d 条线报", len(existing_urls))
 
-    # 3. 并发抓取 top 站点
+    # 3. Concurrent async fetch
+    connector = aiohttp.TCPConnector(limit=12, ttl_dns_cache=300)
+    async with aiohttp.ClientSession(connector=connector) as session:
+        semaphore = asyncio.Semaphore(4)
+        tasks = [
+            fetch_and_extract_async(site, session, semaphore)
+            for site in FAST_SITES
+        ]
+        results = await asyncio.gather(*tasks)
+
+    # 4. Process results
     all_new_items: List[Dict[str, Any]] = []
-    with ThreadPoolExecutor(max_workers=4) as executor:
-        futures = {executor.submit(fetch_and_extract, site): site for site in FAST_SITES}
-        for future in as_completed(futures):
-            site = futures[future]
-            name, url, items, error = future.result()
-            if error:
-                logger.warning("  [失败] %s: %s", name, error)
-                continue
+    for name, url, items, error in results:
+        if error:
+            logger.warning("  [失败] %s: %s", name, error)
+            continue
 
-            # 过滤已存在的
-            fresh = [it for it in items if it["url"] not in existing_urls]
-            if fresh:
-                logger.info(
-                    "  [新增] %s: %d 条新线报 (共提取 %d 条)",
-                    name, len(fresh), len(items),
-                )
-                all_new_items.extend(fresh)
-                for it in fresh:
-                    existing_urls.add(it["url"])
-            else:
-                logger.info(
-                    "  [正常] %s: 无新内容 (提取 %d 条)",
-                    name, len(items),
-                )
+        # Filter out already-existing items
+        fresh = [it for it in items if it["url"] not in existing_urls]
+        if fresh:
+            logger.info(
+                "  [新增] %s: %d 条新线报 (共提取 %d 条)",
+                name, len(fresh), len(items),
+            )
+            all_new_items.extend(fresh)
+            for it in fresh:
+                existing_urls.add(it["url"])
+        else:
+            logger.info(
+                "  [正常] %s: 无新内容 (提取 %d 条)",
+                name, len(items),
+            )
 
-    # 4. 合并到数据库
-    MAX_ITEMS_DB = 1500
+    # 5. Save to SQLite
     if all_new_items:
-        db["items"] = all_new_items + db["items"]
-        if len(db["items"]) > MAX_ITEMS_DB:
-            db["items"] = db["items"][:MAX_ITEMS_DB]
-        db["updated_at"] = get_beijing_time().strftime("%Y-%m-%d %H:%M:%S")
-        save_items_db(db)
-        logger.info("[结果] 新增 %d 条，总计 %d 条", len(all_new_items), len(db["items"]))
+        added = sqlite_insert_items(db_conn, all_new_items)
+        logger.info("[结果] 新增 %d 条", added)
     else:
-        logger.info("[结果] 无新增，保持 %d 条", len(db["items"]))
+        logger.info("[结果] 无新增")
 
-    # 8. 输出指标摘要
+    # 6. Export items.json for frontend
+    sqlite_export_json(db_conn)
+
+    # 7. Metrics
     logger.info("[指标] %s", metrics.summary())
 
-    # 5. 记录运行日志
+    # 8. Log entry
     log_entry: Dict[str, Any] = {
         "time": get_beijing_time().strftime("%Y-%m-%d %H:%M:%S"),
         "new_items": len(all_new_items),
-        "total": len(db["items"]),
         "sites_checked": len(FAST_SITES),
         "metrics": {
             "requests": metrics.request_count,
@@ -645,11 +534,11 @@ def main() -> None:
     except Exception:
         pass
 
-    # 6. Git 提交
+    # 9. Git commit
     if all_new_items:
         try:
             subprocess.run(
-                ["git", "add", ITEMS_DB_FILE, FAST_LOG_FILE],
+                ["git", "add", "items.json", SQLITE_DB_FILE, FAST_LOG_FILE],
                 capture_output=True,
                 timeout=10,
             )
@@ -663,7 +552,7 @@ def main() -> None:
                 timeout=10,
             )
             if result.returncode == 0:
-                # 推送（带重试）
+                # Push with retry
                 for attempt in range(3):
                     push_result = subprocess.run(
                         ["git", "push", "origin", "main"],
@@ -686,8 +575,12 @@ def main() -> None:
         except Exception as e:
             logger.error("[Git] 提交失败: %s", e)
 
+    db_conn.close()
     logger.info("=" * 50)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("用户中断")

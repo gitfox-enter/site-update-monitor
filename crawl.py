@@ -22,13 +22,16 @@ import logging
 import subprocess
 import threading
 import warnings
+import asyncio
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone, timedelta
+from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Set, Tuple
 from urllib.parse import urljoin, urlparse
 from urllib.robotparser import RobotFileParser
 
+import aiohttp
 import requests
 from bs4 import BeautifulSoup, XMLParsedAsHTMLWarning
 
@@ -38,6 +41,9 @@ from common import (
     build_source_name_index, get_source_name as _get_source_name_by_index,
     calculate_md5, upgrade_to_https, DomainRateLimiter, sanitize_href,
     sanitize_text, is_junk, ITEMS_DB_FILE, BLACKLIST_FILE,
+    init_sqlite, sqlite_insert_items, sqlite_get_recent_items,
+    sqlite_get_existing_urls, sqlite_export_json, sqlite_load_hash_records,
+    sqlite_save_hash_records, SQLITE_DB_FILE, MAX_ITEMS_DB,
 )
 
 # 忽略 BeautifulSoup 的 XML 当 HTML 解析警告
@@ -1621,6 +1627,224 @@ def fetch_page_content(url: str) -> Tuple[bool, Any]:
         return False, f"未知错误: {str(e)[:50]}"
 
 
+# Legacy sync version - use fetch_page_content_async instead
+# (kept for backward compatibility and tests)
+
+
+async def fetch_page_content_async(
+    url: str,
+    session: aiohttp.ClientSession,
+    old_records: Dict[str, str],
+) -> Tuple[bool, Any]:
+    """Async version of fetch_page_content using aiohttp.
+
+    Returns the same tuple format: (success: bool, content: dict/str).
+    """
+    # URL scheme validation: only allow http/https
+    if not url.startswith(('http://', 'https://')):
+        return False, f"Invalid URL scheme: {url[:50]}"
+
+    parsed = urlparse(url)
+    domain = parsed.hostname or parsed.netloc
+
+    # Circuit breaker check
+    if circuit_breaker.is_open(domain):
+        logger.info("熔断器打开，跳过该域名", extra={'site': domain, 'event': 'circuit_breaker_open'})
+        return False, "熔断器已打开（连续失败过多）"
+
+    # robots.txt check
+    if not is_allowed_by_robots(url):
+        return False, "robots.txt 禁止爬取"
+
+    # Per-domain rate limiting
+    rate_limiter.wait(domain)
+
+    profile = get_random_profile()
+    headers: Dict[str, str] = {
+        'User-Agent': profile['user_agent'],
+        'Accept-Language': profile['accept_language'],
+        'Referer': get_referer(url),
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate',
+    }
+    headers.update(profile.get('fingerprint', {}))
+    headers.update(get_conditional_headers(url))
+
+    logger.info("爬取 %s", url, extra={'site': url, 'event': 'crawl_start'})
+
+    response = None
+    elapsed = 0.0
+
+    for attempt in range(MAX_RETRIES):
+        try:
+            start_time = time.time()
+            async with session.get(
+                url,
+                headers=headers,
+                timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT),
+                allow_redirects=True,
+            ) as resp:
+                elapsed = time.time() - start_time
+
+                # SSRF protection: check final URL after redirects
+                final_host = urlparse(str(resp.url)).hostname or ''
+                if final_host.startswith(('127.', '10.', '172.16.', '192.168.', '169.254.', '0.', '::1', 'localhost')):
+                    return False, f"SSRF blocked: {final_host}"
+
+                if resp.status == 200:
+                    # Read response body while context manager is open
+                    content_bytes = await resp.read()
+                    response_headers = {k: v for k, v in resp.headers.items()}
+                    response_encoding = resp.get_encoding() or 'utf-8'
+                    response_status = resp.status
+                    response = SimpleNamespace(
+                        status=response_status,
+                        headers=response_headers,
+                        content=content_bytes,
+                        encoding=response_encoding,
+                    )
+                    break
+                elif resp.status == 304:
+                    circuit_breaker.record_success(domain)
+                    return False, "304 页面未变更"
+                elif resp.status in (403, 500, 502, 503, 504):
+                    if attempt < MAX_RETRIES - 1:
+                        delay = RETRY_BASE_DELAY * (2 ** attempt) + random.uniform(0, 0.5)
+                        logger.info("重试请求 HTTP %d -> 第 %d/%d 次，延迟 %.1fs",
+                                    resp.status, attempt + 2, MAX_RETRIES, delay,
+                                    extra={'site': url, 'event': 'retry', 'status_code': resp.status})
+                        await asyncio.sleep(delay)
+                        # Rotate profile for retry
+                        profile = get_random_profile()
+                        headers['User-Agent'] = profile['user_agent']
+                        headers['Accept-Language'] = profile['accept_language']
+                        headers.update(profile.get('fingerprint', {}))
+                        continue
+                else:
+                    # Other status codes: don't retry
+                    response_status = resp.status
+                    content_bytes = await resp.read()
+                    response_headers = {k: v for k, v in resp.headers.items()}
+                    response = SimpleNamespace(
+                        status=response_status,
+                        headers=response_headers,
+                        content=content_bytes,
+                        encoding=resp.get_encoding() or 'utf-8',
+                    )
+                    break
+
+        except asyncio.TimeoutError:
+            circuit_breaker.record_failure(domain)
+            metrics.record_failure(domain)
+            if attempt < MAX_RETRIES - 1:
+                delay = RETRY_BASE_DELAY * (2 ** attempt) + random.uniform(0, 0.5)
+                await asyncio.sleep(delay)
+                continue
+            logger.info("请求超时", extra={'site': url, 'event': 'timeout'})
+            return False, "请求超时"
+        except aiohttp.ClientError as e:
+            circuit_breaker.record_failure(domain)
+            metrics.record_failure(domain)
+            logger.info("连接失败", extra={'site': url, 'event': 'connection_error'})
+            return False, f"连接失败: {str(e)[:50]}"
+        except Exception as e:
+            circuit_breaker.record_failure(domain)
+            metrics.record_failure(domain)
+            return False, f"请求异常: {str(e)[:50]}"
+
+    if response is None:
+        return False, "请求未发出"
+
+    # Response size limit (10MB)
+    MAX_RESPONSE_SIZE = 10 * 1024 * 1024
+    content_length = response.headers.get('Content-Length')
+    if content_length and int(content_length) > MAX_RESPONSE_SIZE:
+        return False, f"Response too large: {content_length} bytes"
+    if len(response.content) > MAX_RESPONSE_SIZE:
+        return False, f"Response body too large: {len(response.content)} bytes"
+
+    # Update conditional cache using SimpleNamespace wrapper
+    update_conditional_cache(url, SimpleNamespace(headers=response.headers))
+
+    if response.status != 200:
+        circuit_breaker.record_failure(domain)
+        metrics.record_failure(domain)
+        logger.info("HTTP 请求失败", extra={
+            'site': url, 'event': 'http_error',
+            'status_code': response.status,
+        })
+        return False, f"HTTP {response.status}"
+
+    circuit_breaker.record_success(domain)
+    metrics.record_success(domain, elapsed)
+
+    # Parse HTML with BeautifulSoup
+    soup = BeautifulSoup(response.content, 'html.parser')
+    if not soup.original_encoding:
+        encoding = response.encoding or 'utf-8'
+        if encoding.lower() in ['gb2312', 'gbk', 'gb18030']:
+            encoding = 'gbk'
+        content = response.content.decode(encoding, errors='ignore')
+        soup = BeautifulSoup(content, 'html.parser')
+
+    title_tag = soup.find('title')
+    title = title_tag.get_text(strip=True) if title_tag else url
+
+    # === Site-specific parser dispatch (same logic as sync version) ===
+    parser_pair = _match_parser(url)
+
+    # Special handling: RSS/Atom Feed
+    if 'feed.iplaysoft.com' in url or url.endswith('.xml'):
+        article_items = parse_rss_feed(response.content, url)
+        text = '\n'.join(item['text'] for item in article_items)
+    elif 'ghxi.com' in url:
+        # ghxi special: prefer WP API, fallback to generic
+        article_items = parse_ghxi_items(soup, url)
+        if article_items:
+            text = '\n'.join(item['text'] for item in article_items)
+        else:
+            article_items = extract_article_items(soup, url)
+            body = soup.find('body')
+            text = body.get_text(separator=' ', strip=True) if body else ''
+            text = ' '.join(text.split())
+    elif parser_pair is not None:
+        items_parser, text_parser = parser_pair
+        article_items = items_parser(soup, url)
+        if text_parser is not None:
+            text = text_parser(soup)
+        else:
+            text = '\n'.join(item['text'] for item in article_items)
+    else:
+        # Generic extraction
+        article_items = extract_article_items(soup, url)
+        for tag in soup(['script', 'style', 'nav', 'footer', 'header', 'aside']):
+            tag.decompose()
+        body = soup.find('body')
+        if body:
+            text = body.get_text(separator=' ', strip=True)
+        else:
+            text = soup.get_text(separator=' ', strip=True)
+        text = ' '.join(text.split())
+
+    if not text:
+        return False, "页面正文为空"
+
+    summary = text[:300] + '...' if len(text) > 300 else text
+
+    logger.info("爬取成功", extra={
+        'site': url, 'event': 'crawl_success',
+        'response_time': round(elapsed, 3),
+    })
+
+    return True, {
+        'text': text,
+        'title': title,
+        'summary': summary,
+        'items': article_items,
+        'response_time': round(elapsed, 3),
+    }
+
+
 def check_site_update(url: str, old_records: Dict[str, str]) -> Tuple[Optional[bool], Optional[str], str, Optional[Dict[str, Any]]]:
     """
     检查单个站点是否有更新
@@ -1659,6 +1883,42 @@ def check_site_update(url: str, old_records: Dict[str, str]) -> Tuple[Optional[b
         return True, new_hash, "内容已更新", page_info
     else:
         # 无更新
+        return False, new_hash, "无更新", page_info
+
+
+async def check_site_update_async(
+    url: str,
+    old_records: Dict[str, str],
+    session: aiohttp.ClientSession,
+) -> Tuple[Optional[bool], Optional[str], str, Optional[Dict[str, Any]]]:
+    """Async version of check_site_update."""
+    success, result = await fetch_page_content_async(url, session, old_records)
+
+    if not success:
+        return None, None, result, None
+
+    text = result['text']
+    page_info = {
+        'url': url,
+        'title': result['title'],
+        'summary': result['summary'],
+        'items': result['items'],
+    }
+
+    article_items = result.get('items', [])
+    if article_items:
+        items_text = json.dumps([{'t': item['text'], 'u': item['url']} for item in article_items],
+                                ensure_ascii=False, sort_keys=True)
+        new_hash = calculate_md5(items_text)
+    else:
+        new_hash = calculate_md5(text)
+    old_hash = old_records.get(url)
+
+    if old_hash is None:
+        return False, new_hash, "首次监控", page_info
+    elif old_hash != new_hash:
+        return True, new_hash, "内容已更新", page_info
+    else:
         return False, new_hash, "无更新", page_info
 
 
@@ -1899,85 +2159,42 @@ def save_paused_sites(paused: Dict[str, Any]) -> None:
 
 
 def main() -> None:
-    """主监控流程"""
-    logger.info("GitHub Actions 多站点更新监控系统 v2.0")
+    """Legacy sync main - kept for backward compatibility. Use main() (async) instead."""
+    logger.info("GitHub Actions 多站点更新监控系统 v2.0 (legacy sync mode)")
+    # Delegate to async version
+    asyncio.run(main_async())
 
-    # 获取当前时间和轮次
-    now = get_beijing_time()
-    round_num = get_current_round()
-    check_time = now.strftime('%Y-%m-%d %H:%M:%S')
 
-    logger.info("北京时间: %s", check_time)
-    logger.info("当日第 %d 轮巡检", round_num)
+async def check_one_async(
+    url: str,
+    idx: int,
+    session: aiohttp.ClientSession,
+    old_records: Dict[str, str],
+    semaphore: asyncio.Semaphore,
+) -> Dict[str, Any]:
+    """Check one site asynchronously."""
+    async with semaphore:
+        # Random delay before request (anti-ban)
+        await asyncio.sleep(get_random_delay())
 
-    # 加载黑名单（用户讨厌/付费墙/反爬/无法访问/纯工具页）
-    blacklist_domains: List[str] = load_blacklist()
+        # Graceful shutdown check
+        if _shutdown_requested:
+            return {
+                'url': url, 'title': url, 'summary': '', 'items': [],
+                'status': 'skipped', 'message': '优雅退出',
+                'is_updated': None, 'new_hash': None, 'page_info': None,
+            }
 
-    # 过滤黑名单站点
-    filtered_by_blacklist = [url for url in MONITOR_SITES if is_blacklisted(url, blacklist_domains)]
-    monitor_sites = [url for url in MONITOR_SITES if not is_blacklisted(url, blacklist_domains)]
-    if filtered_by_blacklist:
-        logger.info("黑名单过滤 %d 个站点: %s", len(filtered_by_blacklist), ', '.join(filtered_by_blacklist))
+        is_updated, new_hash, message, page_info = await check_site_update_async(
+            url, old_records, session
+        )
 
-    # 加载暂停站点（连续失败被自动移除的）
-    paused = load_paused_sites()
-    paused_urls = set(paused.keys())
-
-    # 实际监控列表 = 配置列表 - 黑名单 - 暂停站点（HTTP 自动升级 HTTPS）
-    active_sites = [upgrade_to_https(url) for url in monitor_sites if url not in paused_urls]
-    logger.info("监控站点数: %d (活跃) + %d (黑名单) + %d (暂停)",
-                len(active_sites), len(blacklist_domains), len(paused_urls))
-    if paused_urls:
-        logger.info("暂停站点: %s", ', '.join(paused_urls))
-
-    # 加载历史哈希记录
-    old_records = load_hash_records()
-    logger.info("已加载哈希记录: %d 条", len(old_records))
-
-    # 加载已通知过的条目URL（去重用）
-    notified = load_notified_items()
-    logger.info("已加载历史条目: %d 条", len(notified.get('items', [])))
-
-    # Run log rotation: keep only the last 30 entries
-    run_log = load_run_log()
-    if len(run_log) > 30:
-        run_log = run_log[-30:]
-        # Rewrite trimmed log atomically
-        tmp_file = RUN_LOG_FILE + '.tmp'
-        try:
-            with open(tmp_file, 'w', encoding='utf-8') as f:
-                for entry in run_log:
-                    f.write(json.dumps(entry, ensure_ascii=False) + '\n')
-            os.replace(tmp_file, RUN_LOG_FILE)
-        except Exception:
-            pass
-
-    # 检查所有活跃站点更新
-    all_site_results: List[Dict[str, Any]] = []  # 存储所有站点状态（含标题、摘要）
-    new_records = old_records.copy()
-    success_count = 0
-    error_count = 0
-    updated_count = 0
-    response_times: List[float] = []
-
-    # Shuffle site order to avoid deterministic crawl patterns (reduces ban risk)
-    random.shuffle(active_sites)
-
-    # 并发抓取（max_workers=6，每个站点自带随机延迟防止封禁）
-    results_lock = threading.Lock()
-
-    def check_one(url: str, idx: int) -> Dict[str, Any]:
-        parsed = urlparse(url)
-        rate_limiter.wait(parsed.hostname or '')
-        is_updated, new_hash, message, page_info = check_site_update(url, old_records)
-        time.sleep(get_random_delay())
         if is_updated is None:
-            # 区分 robots.txt 拒绝和真正失败
             is_robots_denied = 'robots.txt' in (message or '')
             return {
-                'url': url, 'title': url, 'summary': '', 'items': [], 
+                'url': url, 'title': url, 'summary': '', 'items': [],
                 'status': 'robots_denied' if is_robots_denied else 'error',
-                'message': message, 'is_updated': None, 'new_hash': None, 'page_info': None
+                'message': message, 'is_updated': None, 'new_hash': None, 'page_info': None,
             }
         return {
             'url': url,
@@ -1988,54 +2205,141 @@ def main() -> None:
             'message': message,
             'is_updated': is_updated,
             'new_hash': new_hash,
-            'page_info': page_info
+            'page_info': page_info,
         }
 
-    with ThreadPoolExecutor(max_workers=6) as executor:
-        futures = {executor.submit(check_one, url, idx): (idx, url) for idx, url in enumerate(active_sites, 1)}
-        robots_denied_count = 0
-        for future in as_completed(futures):
-            if _shutdown_requested:
-                logger.info("优雅退出：跳过剩余站点")
-                break
-            result = future.result()
-            with results_lock:
-                idx, url = futures[future]
-                if result['status'] == 'robots_denied':
-                    logger.info("[%d/%d] robots.txt 拒绝: %s", idx, len(active_sites), url,
-                                extra={'site': url, 'event': 'crawl_result'})
-                    robots_denied_count += 1
-                elif result['is_updated'] is None:
-                    logger.info("[%d/%d] 失败: %s", idx, len(active_sites), result['message'],
-                                extra={'site': url, 'event': 'crawl_result'})
-                    error_count += 1
-                else:
-                    if result['is_updated']:
-                        logger.info("[%d/%d] 更新: %s", idx, len(active_sites), result['message'],
-                                    extra={'site': url, 'event': 'crawl_result'})
-                        updated_count += 1
-                    else:
-                        logger.info("[%d/%d] 正常: %s", idx, len(active_sites), result['message'],
-                                    extra={'site': url, 'event': 'crawl_result'})
-                    success_count += 1
-                    new_records[result['url']] = result['new_hash']
-                all_site_results.append({
-                    'url': result['url'],
-                    'title': result['title'],
-                    'summary': result['summary'],
-                    'items': result['items'],
-                    'status': result['status'],
-                    'message': result['message']
-                })
 
-    # 添加暂停站点到结果列表（标记为 paused）
+async def main_async() -> None:
+    """主监控流程 (async version using aiohttp + SQLite)."""
+    logger.info("GitHub Actions 多站点更新监控系统 v3.0 (async)")
+
+    # 获取当前时间和轮次
+    now = get_beijing_time()
+    round_num = get_current_round()
+    check_time = now.strftime('%Y-%m-%d %H:%M:%S')
+
+    logger.info("北京时间: %s", check_time)
+    logger.info("当日第 %d 轮巡检", round_num)
+
+    # 加载黑名单
+    blacklist_domains: List[str] = load_blacklist()
+
+    # 过滤黑名单站点
+    filtered_by_blacklist = [url for url in MONITOR_SITES if is_blacklisted(url, blacklist_domains)]
+    monitor_sites = [url for url in MONITOR_SITES if not is_blacklisted(url, blacklist_domains)]
+    if filtered_by_blacklist:
+        logger.info("黑名单过滤 %d 个站点: %s", len(filtered_by_blacklist), ', '.join(filtered_by_blacklist))
+
+    # 加载暂停站点
+    paused = load_paused_sites()
+    paused_urls = set(paused.keys())
+
+    # 实际监控列表
+    active_sites = [upgrade_to_https(url) for url in monitor_sites if url not in paused_urls]
+    logger.info("监控站点数: %d (活跃) + %d (黑名单) + %d (暂停)",
+                len(active_sites), len(blacklist_domains), len(paused_urls))
+    if paused_urls:
+        logger.info("暂停站点: %s", ', '.join(paused_urls))
+
+    # 加载已通知过的条目URL（去重用）
+    notified = load_notified_items()
+    logger.info("已加载历史条目: %d 条", len(notified.get('items', [])))
+
+    # Run log rotation: keep only the last 30 entries
+    run_log = load_run_log()
+    if len(run_log) > 30:
+        run_log = run_log[-30:]
+        tmp_file = RUN_LOG_FILE + '.tmp'
+        try:
+            with open(tmp_file, 'w', encoding='utf-8') as f:
+                for entry in run_log:
+                    f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+            os.replace(tmp_file, RUN_LOG_FILE)
+        except Exception:
+            pass
+
+    # Shuffle site order to avoid deterministic crawl patterns
+    random.shuffle(active_sites)
+
+    # Initialize SQLite and load hash records
+    db_conn = init_sqlite()
+    old_records = sqlite_load_hash_records(db_conn)
+    logger.info("已加载哈希记录 (SQLite): %d 条", len(old_records))
+
+    # Create aiohttp session with connection pooling
+    connector = aiohttp.TCPConnector(
+        limit=10,
+        limit_per_host=2,
+        ttl_dns_cache=300,
+    )
+    async with aiohttp.ClientSession(connector=connector) as session:
+        # Concurrent crawling with semaphore
+        semaphore = asyncio.Semaphore(6)
+        tasks = [
+            check_one_async(url, idx, session, old_records, semaphore)
+            for idx, url in enumerate(active_sites, 1)
+        ]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    # Process results
+    all_site_results: List[Dict[str, Any]] = []
+    new_records = old_records.copy()
+    success_count = 0
+    error_count = 0
+    updated_count = 0
+    robots_denied_count = 0
+
+    for idx, result in enumerate(results, 1):
+        url = active_sites[idx - 1]
+
+        # Handle exceptions from gather
+        if isinstance(result, Exception):
+            error_count += 1
+            all_site_results.append({
+                'url': url, 'title': url, 'summary': '',
+                'status': 'error', 'message': str(result)[:80],
+            })
+            continue
+
+        if _shutdown_requested:
+            logger.info("优雅退出：跳过剩余站点")
+            break
+
+        if result['status'] == 'robots_denied':
+            logger.info("[%d/%d] robots.txt 拒绝: %s", idx, len(active_sites), url,
+                        extra={'site': url, 'event': 'crawl_result'})
+            robots_denied_count += 1
+        elif result['is_updated'] is None:
+            logger.info("[%d/%d] 失败: %s", idx, len(active_sites), result['message'],
+                        extra={'site': url, 'event': 'crawl_result'})
+            error_count += 1
+        else:
+            if result['is_updated']:
+                logger.info("[%d/%d] 更新: %s", idx, len(active_sites), result['message'],
+                            extra={'site': url, 'event': 'crawl_result'})
+                updated_count += 1
+            else:
+                logger.info("[%d/%d] 正常: %s", idx, len(active_sites), result['message'],
+                            extra={'site': url, 'event': 'crawl_result'})
+            success_count += 1
+            new_records[result['url']] = result['new_hash']
+        all_site_results.append({
+            'url': result['url'],
+            'title': result['title'],
+            'summary': result['summary'],
+            'items': result['items'],
+            'status': result['status'],
+            'message': result['message'],
+        })
+
+    # 添加暂停站点到结果列表
     for url in paused_urls:
         all_site_results.append({
             'url': url,
             'title': url,
             'summary': '',
             'status': 'paused',
-            'message': paused[url].get('reason', '已暂停')
+            'message': paused[url].get('reason', '已暂停'),
         })
 
     total_count = len(all_site_results)
@@ -2055,10 +2359,13 @@ def main() -> None:
     if open_circuits:
         logger.warning("已熔断域名: %s", ', '.join(open_circuits.keys()))
 
-    # 总是更新哈希文件
+    # Save hash records to SQLite
+    sqlite_save_hash_records(db_conn, new_records)
+
+    # Also save to JSON file for backward compat
     save_hash_records(new_records)
 
-    # 构建完整条目字典（URL + 正文 + 来源 + 时间）
+    # 构建完整条目字典
     new_item_list: List[Dict[str, str]] = []
     for r in all_site_results:
         if r['status'] == 'updated':
@@ -2066,23 +2373,25 @@ def main() -> None:
                 item_url = item['url'] if isinstance(item, dict) else item
                 item_text = item['text'] if isinstance(item, dict) else str(item)
                 if item_url and not item_url.startswith('javascript:'):
-                    # 优先使用统一映射的短名称，回退到页面标题
                     src_name = get_source_name(r.get('url', '')) or r.get('title', r['url'])
                     new_item_list.append({
                         'url': item_url,
                         'text': item_text,
                         'source': src_name,
-                        'time': check_time
+                        'time': check_time,
                     })
     save_notified_items({
         'items': new_item_list,
-        'updated_at': check_time
+        'updated_at': check_time,
     })
 
-    # 将新线报合并到全量数据库（持久化，按URL去重）
-    merge_items_into_db(new_item_list, check_time)
+    # Insert new items to SQLite
+    if new_item_list:
+        added = sqlite_insert_items(db_conn, new_item_list, check_time)
+        logger.info("SQLite 新增 %d 条线报", added)
 
-    # index.html 现在是静态 SPA，从 items.json 加载数据，无需每次重新生成
+    # Export items.json for frontend SPA
+    sqlite_export_json(db_conn)
 
     # 计算本轮新增URL数
     existing_urls_set = set(item['url'] for item in (notified.get('items', []) if isinstance(notified, dict) else []))
@@ -2096,7 +2405,7 @@ def main() -> None:
     errors_detail = [{'url': r['url'], 'message': r.get('message', '')} for r in all_site_results if r['status'] == 'error']
     updated_sites = [r['url'] for r in all_site_results if r['status'] == 'updated']
 
-    # 记录本轮运行日志（含暂停/恢复信息）
+    # 记录本轮运行日志
     run_entry = {
         'round': round_num,
         'check_time': check_time,
@@ -2121,8 +2430,11 @@ def main() -> None:
         'updated': updated_count,
         'total': total_count,
         'errors': errors_detail,
-        'updated_sites': updated_sites
+        'updated_sites': updated_sites,
     })
+
+    # Close SQLite connection
+    db_conn.close()
 
     logger.info("本轮巡检结束")
 
@@ -2148,7 +2460,7 @@ signal.signal(signal.SIGINT, _handle_signal)
 
 if __name__ == "__main__":
     try:
-        main()
+        asyncio.run(main_async())
     except KeyboardInterrupt:
         logger.info("用户手动停止")
         sys.exit(0)

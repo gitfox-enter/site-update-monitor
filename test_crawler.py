@@ -21,6 +21,7 @@ Run with:
 import hashlib
 import json
 import os
+import shutil
 import sys
 import tempfile
 import unittest
@@ -37,6 +38,7 @@ if PROJECT_DIR not in sys.path:
     sys.path.insert(0, PROJECT_DIR)
 
 import crawl
+import common
 import fast_check
 
 # Reusable BeautifulSoup import (used throughout tests)
@@ -1556,16 +1558,111 @@ class TestCategoryKeywordsCoverage(unittest.TestCase):
     """Verify CATEGORY_KEYWORDS structure is consistent between crawl and fast_check."""
 
     def test_same_categories_in_both_modules(self):
+        """Both crawl and fast_check use CATEGORY_KEYWORDS from common.py."""
+        import common
         crawl_cats = set(crawl.CATEGORY_KEYWORDS.keys())
-        fc_cats = set(fast_check.CATEGORY_KEYWORDS.keys())
+        common_cats = set(common.CATEGORY_KEYWORDS.keys())
         self.assertEqual(
-            crawl_cats, fc_cats,
-            "CATEGORY_KEYWORDS categories differ between crawl.py and fast_check.py",
+            crawl_cats, common_cats,
+            "CATEGORY_KEYWORDS categories differ between crawl.py and common.py",
         )
 
     def test_keywords_are_non_empty(self):
         for cat, keywords in crawl.CATEGORY_KEYWORDS.items():
             self.assertGreater(len(keywords), 0, f"Category '{cat}' has no keywords")
+
+
+# ===================================================================
+# SQLITE DATA LAYER TESTS
+# ===================================================================
+
+class TestSQLiteDataLayer(unittest.TestCase):
+    """Tests for SQLite-based data persistence in common.py."""
+
+    def setUp(self):
+        self._tmpdir = tempfile.mkdtemp()
+        self._orig_cwd = os.getcwd()
+        os.chdir(self._tmpdir)
+        self.db_path = os.path.join(self._tmpdir, "test.db")
+        self.conn = common.init_sqlite(self.db_path)
+
+    def tearDown(self):
+        self.conn.close()
+        os.chdir(self._orig_cwd)
+        shutil.rmtree(self._tmpdir, ignore_errors=True)
+
+    def test_init_creates_tables(self):
+        tables = self.conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
+        table_names = {t[0] for t in tables}
+        self.assertIn("items", table_names)
+        self.assertIn("hash_records", table_names)
+        self.assertIn("meta", table_names)
+
+    def test_insert_and_retrieve_items(self):
+        items = [
+            {"url": "https://example.com/1", "text": "测试条目一", "source": "测试源", "time": "2026-01-01"},
+            {"url": "https://example.com/2", "text": "测试条目二", "source": "测试源", "time": "2026-01-02"},
+        ]
+        added = common.sqlite_insert_items(self.conn, items)
+        self.assertEqual(added, 2)
+        retrieved = common.sqlite_get_recent_items(self.conn)
+        self.assertEqual(len(retrieved), 2)
+
+    def test_dedup_on_insert(self):
+        items = [{"url": "https://example.com/dup", "text": "重复测试", "source": "src"}]
+        common.sqlite_insert_items(self.conn, items)
+        common.sqlite_insert_items(self.conn, items)  # Duplicate
+        retrieved = common.sqlite_get_recent_items(self.conn)
+        self.assertEqual(len(retrieved), 1)
+
+    def test_get_existing_urls(self):
+        items = [
+            {"url": "https://a.com/1", "text": "A1"},
+            {"url": "https://b.com/2", "text": "B2"},
+        ]
+        common.sqlite_insert_items(self.conn, items)
+        urls = common.sqlite_get_existing_urls(self.conn)
+        self.assertEqual(urls, {"https://a.com/1", "https://b.com/2"})
+
+    def test_hash_records_roundtrip(self):
+        records = {"https://site1.com/": "abc123", "https://site2.com/": "def456"}
+        common.sqlite_save_hash_records(self.conn, records)
+        loaded = common.sqlite_load_hash_records(self.conn)
+        self.assertEqual(loaded, records)
+
+    def test_meta_get_set(self):
+        common.sqlite_set_meta(self.conn, "version", "2.0")
+        val = common.sqlite_get_meta(self.conn, "version")
+        self.assertEqual(val, "2.0")
+
+    def test_meta_default(self):
+        val = common.sqlite_get_meta(self.conn, "nonexistent", "default")
+        self.assertEqual(val, "default")
+
+    def test_export_json(self):
+        items = [{"url": "https://export.com/1", "text": "导出测试", "source": "src"}]
+        common.sqlite_insert_items(self.conn, items)
+        json_path = os.path.join(self._tmpdir, "items.json")
+        result = common.sqlite_export_json(self.conn, json_path)
+        self.assertTrue(result)
+        with open(json_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        self.assertEqual(len(data["items"]), 1)
+        self.assertIn("updated_at", data)
+
+    def test_max_items_enforcement(self):
+        # Insert more than MAX_ITEMS_DB items
+        items = [{"url": f"https://bulk.com/{i}", "text": f"Bulk item {i}"} for i in range(common.MAX_ITEMS_DB + 100)]
+        common.sqlite_insert_items(self.conn, items)
+        count = self.conn.execute("SELECT COUNT(*) FROM items").fetchone()[0]
+        self.assertLessEqual(count, common.MAX_ITEMS_DB)
+
+    def test_auto_categorize_on_insert(self):
+        items = [{"url": "https://cat.com/1", "text": "领大额优惠券活动", "source": "src"}]
+        common.sqlite_insert_items(self.conn, items)
+        row = self.conn.execute("SELECT category FROM items WHERE url = ?", ("https://cat.com/1",)).fetchone()
+        self.assertIsNotNone(row)
+        self.assertEqual(row[0], "优惠券")
 
 
 # ===================================================================
