@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 GitHub Actions 多站点更新监控系统
-功能：爬取33个站点 -> MD5比对检测更新 -> 数据持久化到 items.json
+功能：爬取47个站点 -> MD5比对检测更新 -> 数据持久化到 items.json
 时间：每小时执行一次
 时区：Asia/Shanghai（北京时间）
 """
@@ -71,7 +71,7 @@ logger.addHandler(_handler)
 # 配置区域
 # ============================================================
 
-# 32个监控站点（新增：聚合线报/鲸线报/那些免费的砖/慢慢买/拔草哦/薅羊毛小伙伴）
+# 47个监控站点（新增：薅羊毛/我不找/反斗限免/佛系软件/多多软件/华军软件/异次元RSS）
 MONITOR_SITES: List[str] = [
     "https://axutongxue.net/",
     "http://79tao.linejia.com/",
@@ -93,7 +93,7 @@ MONITOR_SITES: List[str] = [
     "https://www.huifabu.cn/",
     "https://www.huodong5.com/",
     "https://www.ithome.com/zt/xijiayi",
-    "https://www.kxdao.net/forum.php?forumlist=1&mobile=2",
+    "https://www.kxdao.net/forum-42-1.html",
     "https://www.lsapk.com/",
     "https://www.manmanbuy.com/",
     "https://www.thosefree.com/",
@@ -115,6 +115,14 @@ MONITOR_SITES: List[str] = [
     "http://www.xiaodigu.com/",
     "https://www.douban.com/group/711811/",
     "https://www.haodanku.com/",
+    # === 新增源站（用户补充） ===
+    "https://www.ym2.cc/",
+    "https://www.wobangzhao.com/",
+    "https://free.apprcn.com/",
+    "https://www.foxirj.com/",
+    "https://www.ddooo.com/",
+    "https://www.onlinedown.net/",
+    "https://feed.iplaysoft.com/",
 ]
 
 # URL -> 短名称映射（统一来源显示名称，避免使用页面标题导致名称过长/重复）
@@ -139,7 +147,7 @@ SOURCE_NAME_MAP: Dict[str, str] = {
     "https://www.huifabu.cn/": "汇发部",
     "https://www.huodong5.com/": "活动5",
     "https://www.ithome.com/zt/xijiayi": "IT之家",
-    "https://www.kxdao.net/forum.php?forumlist=1&mobile=2": "开心赚",
+    "https://www.kxdao.net/forum-42-1.html": "开心赚",
     "https://www.lsapk.com/": "LSapk",
     "https://www.manmanbuy.com/": "慢慢买",
     "https://www.thosefree.com/": "免费族",
@@ -159,6 +167,13 @@ SOURCE_NAME_MAP: Dict[str, str] = {
     "https://www.douban.com/group/711811/": "豆瓣小组",
     "https://www.haodanku.com/": "好单库",
     "https://www.ghxi.com/": "果核剥壳",
+    "https://www.ym2.cc/": "薅羊毛",
+    "https://www.wobangzhao.com/": "我不找",
+    "https://free.apprcn.com/": "反斗限免",
+    "https://www.foxirj.com/": "佛系软件",
+    "https://www.ddooo.com/": "多多软件",
+    "https://www.onlinedown.net/": "华军软件",
+    "https://feed.iplaysoft.com/": "异次元RSS",
 }
 
 
@@ -196,70 +211,68 @@ RETRY_BASE_DELAY = 1.0  # 重试基础延迟（秒），实际延迟 = base * 2^
 # robots.txt 合规配置
 RESPECT_ROBOTS_TXT: bool = False  # 是否遵守 robots.txt（线报站 robots.txt 通常过严，个人监控工具建议关闭）
 
-# 随机User-Agent池
-USER_AGENTS: List[str] = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15",
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edg/120.0.0.0 Safari/537.36",
-]
-
-# 浏览器指纹池（与 UA 配合随机化，增加反爬抗性）
-BROWSER_FINGERPRINTS: List[Dict[str, str]] = [
+# 统一浏览器配置文件池（UA + 指纹 + 语言 一一对应，防止 Firefox UA 搭配 Chrome sec-ch-ua 头）
+BROWSER_PROFILES: List[Dict[str, Any]] = [
     {
-        'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Windows"',
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'fingerprint': {
+            'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+        },
+        'accept_language': 'zh-CN,zh;q=0.9,en;q=0.8',
     },
     {
-        'sec-ch-ua': '"Not/A_Brand";v="8", "Chromium";v="125", "Google Chrome";v="125"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Windows"',
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+        'fingerprint': {
+            'sec-ch-ua': '"Not/A_Brand";v="8", "Chromium";v="125", "Google Chrome";v="125"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+        },
+        'accept_language': 'zh-CN,zh;q=0.9',
     },
     {
-        'sec-ch-ua': '"Not A Brand";v="99", "Google Chrome";v="119", "Chromium";v="119"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"macOS"',
+        'user_agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'fingerprint': {
+            'sec-ch-ua': '"Not A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"macOS"',
+        },
+        'accept_language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
     },
     {
-        'sec-ch-ua': '"Not A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"macOS"',
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0',
+        'fingerprint': {},  # Firefox does not send sec-ch-ua headers
+        'accept_language': 'zh-CN,zh;q=0.9,en;q=0.8',
     },
     {
-        'sec-ch-ua': '"Not_A Brand";v="8", "Firefox";v="121"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Windows"',
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0',
+        'fingerprint': {},  # Firefox does not send sec-ch-ua headers
+        'accept_language': 'zh-TW,zh-CN;q=0.9,zh;q=0.8,en;q=0.7',
     },
     {
-        'sec-ch-ua': '"Not)A;Brand";v="99", "Firefox";v="127"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Windows"',
+        'user_agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15',
+        'fingerprint': {},  # Safari does not send sec-ch-ua headers
+        'accept_language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
     },
     {
-        'sec-ch-ua': '"Chromium";v="120", "Not A Brand";v="24", "Google Chrome";v="120"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Linux"',
+        'user_agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'fingerprint': {
+            'sec-ch-ua': '"Chromium";v="120", "Not A Brand";v="24", "Google Chrome";v="120"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Linux"',
+        },
+        'accept_language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7',
     },
     {
-        'sec-ch-ua': '"Not A Brand";v="8", "Chromium";v="120", "Microsoft Edge";v="120"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Windows"',
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edg/120.0.0.0 Safari/537.36',
+        'fingerprint': {
+            'sec-ch-ua': '"Not A Brand";v="8", "Chromium";v="120", "Microsoft Edge";v="120"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+        },
+        'accept_language': 'zh-CN,zh;q=0.9,en;q=0.8',
     },
-]
-
-# Accept-Language 随机池
-ACCEPT_LANGUAGES: List[str] = [
-    'zh-CN,zh;q=0.9,en;q=0.8',
-    'zh-CN,zh;q=0.9',
-    'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-    'zh-TW,zh-CN;q=0.9,zh;q=0.8,en;q=0.7',
-    'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7',
 ]
 
 
@@ -500,19 +513,24 @@ def get_current_round() -> int:
         return 6
 
 
+def get_random_profile() -> Dict[str, Any]:
+    """随机返回一组一致的浏览器配置（UA + 指纹 + 语言匹配）"""
+    return random.choice(BROWSER_PROFILES)
+
+
 def get_random_ua() -> str:
-    """随机返回一个User-Agent"""
-    return random.choice(USER_AGENTS)
+    """随机返回一个User-Agent（从 BROWSER_PROFILES 中选取，保持一致性）"""
+    return random.choice(BROWSER_PROFILES)['user_agent']
 
 
 def get_random_fingerprint() -> Dict[str, str]:
-    """随机返回一组浏览器指纹头部"""
-    return random.choice(BROWSER_FINGERPRINTS)
+    """随机返回一组浏览器指纹头部（从 BROWSER_PROFILES 中选取，保持一致性）"""
+    return random.choice(BROWSER_PROFILES)['fingerprint']
 
 
 def get_random_accept_language() -> str:
-    """随机返回一个Accept-Language"""
-    return random.choice(ACCEPT_LANGUAGES)
+    """随机返回一个Accept-Language（从 BROWSER_PROFILES 中选取，保持一致性）"""
+    return random.choice(BROWSER_PROFILES)['accept_language']
 
 
 def get_random_delay() -> float:
@@ -556,17 +574,22 @@ def save_hash_records(records: Dict[str, str]) -> bool:
     """
     保存哈希记录到文件
     格式：url=md5值（每行一个）
+    使用原子写入：先写 .tmp 再 os.replace 防止写入中断导致文件损坏
     """
+    tmp_file = HASH_RECORD_FILE + '.tmp'
     try:
-        with open(HASH_RECORD_FILE, 'w', encoding='utf-8') as f:
+        with open(tmp_file, 'w', encoding='utf-8') as f:
             f.write("# 站点哈希记录文件 - 格式: url=md5值\n")
             f.write("# 最后更新: {}\n".format(get_beijing_time().strftime('%Y-%m-%d %H:%M:%S')))
             for url, md5_hash in records.items():
                 f.write(f"{url}={md5_hash}\n")
+        os.replace(tmp_file, HASH_RECORD_FILE)
         print(f"[信息] 哈希文件已更新: {HASH_RECORD_FILE}")
         return True
     except Exception as e:
         print(f"[错误] 保存哈希文件失败: {e}")
+        if os.path.exists(tmp_file):
+            os.remove(tmp_file)
         return False
 
 
@@ -596,14 +619,18 @@ def load_notified_items() -> Dict[str, Any]:
 
 
 def save_notified_items(item_dict: Dict[str, Any]) -> bool:
-    """保存已通知条目URL集合到文件"""
+    """保存已通知条目URL集合到文件（原子写入）"""
+    tmp_file = NOTIFIED_ITEMS_FILE + '.tmp'
     try:
-        with open(NOTIFIED_ITEMS_FILE, 'w', encoding='utf-8') as f:
+        with open(tmp_file, 'w', encoding='utf-8') as f:
             json.dump(item_dict, f, ensure_ascii=False, indent=2)
+        os.replace(tmp_file, NOTIFIED_ITEMS_FILE)
         print(f"[信息] 已通知条目记录已更新: {NOTIFIED_ITEMS_FILE} ({len(item_dict.get('items', []))} 条)")
         return True
     except Exception as e:
         print(f"[错误] 保存已通知条目失败: {e}")
+        if os.path.exists(tmp_file):
+            os.remove(tmp_file)
         return False
 
 
@@ -660,14 +687,18 @@ def load_items_db() -> Dict[str, Any]:
 
 
 def save_items_db(db: Dict[str, Any]) -> bool:
-    """保存全量线报数据库"""
+    """保存全量线报数据库（原子写入）"""
+    tmp_file = ITEMS_DB_FILE + '.tmp'
     try:
-        with open(ITEMS_DB_FILE, 'w', encoding='utf-8') as f:
+        with open(tmp_file, 'w', encoding='utf-8') as f:
             json.dump(db, f, ensure_ascii=False, separators=(',', ':'))
+        os.replace(tmp_file, ITEMS_DB_FILE)
         print(f"[信息] 线报数据库已更新: {ITEMS_DB_FILE} ({len(db['items'])} 条)")
         return True
     except Exception as e:
         print(f"[错误] 保存线报数据库失败: {e}")
+        if os.path.exists(tmp_file):
+            os.remove(tmp_file)
         return False
 
 
@@ -1191,6 +1222,139 @@ def parse_ghxi_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str]]
     return items
 
 
+def parse_ym2cc_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str]]:
+    """
+    薅羊毛 (ym2.cc) - WordPress 站点，提取 /ymxb/ 路径的文章链接。
+    选择器：a[href*="/ymxb/"]
+    """
+    items: List[Dict[str, str]] = []
+    seen: Set[str] = set()
+    for a in soup.select('a[href*="/ymxb/"]'):
+        href = a.get('href', '').strip()
+        text = a.get_text(strip=True)
+        if not text or len(text) < 4 or len(text) > 120:
+            continue
+        if text in seen:
+            continue
+        skip_words = ['首页', '关于', '联系', '留言', '搜索', '登录', '注册']
+        if text in skip_words:
+            continue
+        seen.add(text)
+        if href.startswith('/'):
+            href = urljoin(base_url, href)
+        items.append({'text': text, 'url': href})
+    return items[:30]
+
+
+def parse_wobangzhao_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str]]:
+    """
+    我不找 (wobangzhao.com) - Discuz X 论坛，提取帖子列表。
+    选择器：a[href*="thread-"][href$="-1-1.html"]（Discuz 标准帖子链接格式）
+    """
+    items: List[Dict[str, str]] = []
+    seen: Set[str] = set()
+    # Discuz 标准帖子链接：thread-{fid}-{page}-{tid}.html 或 forum.php?mod=viewthread
+    for a in soup.select('a[href*="thread-"]'):
+        href = a.get('href', '').strip()
+        text = a.get_text(strip=True)
+        if not text or len(text) < 4 or len(text) > 120:
+            continue
+        if text in seen:
+            continue
+        # 过滤非帖子链接（版块链接、分页链接等）
+        skip_words = ['版块', '主题', '帖子', '更多', '下一页', '上一页', '返回列表']
+        if any(w in text for w in skip_words):
+            continue
+        seen.add(text)
+        if href.startswith('/'):
+            href = urljoin(base_url, href)
+        items.append({'text': text, 'url': href})
+    # 备选：forum.php?mod=viewthread 格式
+    if not items:
+        for a in soup.select('a.xst, a[href*="mod=viewthread"]'):
+            href = a.get('href', '').strip()
+            text = a.get_text(strip=True)
+            if not text or len(text) < 4 or text in seen:
+                continue
+            seen.add(text)
+            if href.startswith('/'):
+                href = urljoin(base_url, href)
+            items.append({'text': text, 'url': href})
+    return items[:30]
+
+
+def parse_foxirj_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str]]:
+    """
+    佛系软件 (foxirj.com) - WordPress CoreNext 主题，提取文章列表。
+    选择器：div.post-item h2 a, .entry-title a
+    """
+    items: List[Dict[str, str]] = []
+    seen: Set[str] = set()
+    for a in soup.select('div.post-item h2 a, .entry-title a, article h2 a, .post-title a'):
+        href = a.get('href', '').strip()
+        text = a.get_text(strip=True)
+        if not text or len(text) < 3 or len(text) > 120:
+            continue
+        if text in seen:
+            continue
+        skip_words = ['首页', '关于', '联系', '留言', '搜索', '登录', '注册', '分类', '标签']
+        if text in skip_words:
+            continue
+        seen.add(text)
+        if href.startswith('/'):
+            href = urljoin(base_url, href)
+        items.append({'text': text, 'url': href})
+    return items[:30]
+
+
+def parse_ddooo_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str]]:
+    """
+    多多软件 (ddooo.com) - 自定义 CMS，提取 /softdown/{id}.htm 链接。
+    选择器：a[href*="/softdown/"]
+    """
+    items: List[Dict[str, str]] = []
+    seen: Set[str] = set()
+    for a in soup.select('a[href*="/softdown/"]'):
+        href = a.get('href', '').strip()
+        text = a.get_text(strip=True)
+        if not text or len(text) < 3 or len(text) > 120:
+            continue
+        if text in seen:
+            continue
+        skip_words = ['首页', '下载', '排行', '分类', '搜索', '更多', '下一页', '上一页']
+        if text in skip_words:
+            continue
+        seen.add(text)
+        if href.startswith('/'):
+            href = urljoin(base_url, href)
+        items.append({'text': text, 'url': href})
+    return items[:30]
+
+
+def parse_onlinedown_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str]]:
+    """
+    华军软件 (onlinedown.net) - 自定义 CMS，提取 /article/{id}.htm 链接。
+    选择器：a[href*="/article/"], .article-item a
+    """
+    items: List[Dict[str, str]] = []
+    seen: Set[str] = set()
+    for a in soup.select('a[href*="/article/"], .article-item a, .news-list a'):
+        href = a.get('href', '').strip()
+        text = a.get_text(strip=True)
+        if not text or len(text) < 3 or len(text) > 120:
+            continue
+        if text in seen:
+            continue
+        skip_words = ['首页', '下载', '排行', '分类', '搜索', '更多', '下一页', '上一页', '返回顶部']
+        if text in skip_words:
+            continue
+        seen.add(text)
+        if href.startswith('/'):
+            href = urljoin(base_url, href)
+        items.append({'text': text, 'url': href})
+    return items[:30]
+
+
 def extract_article_items(soup: BeautifulSoup, base_url: str = '') -> List[Dict[str, str]]:
     """
     从页面中提取独立文章条目列表（含链接）
@@ -1271,6 +1435,12 @@ PARSER_REGISTRY: Dict[str, Tuple[Any, Optional[Any]]] = {
     '007ymd.com':        (parse_007ymd_items,         None),
     'axutongxue.net':    (parse_axutongxue_items,    None),
     'manmanbuy.com':     (parse_manmanbuy_items,      None),
+    # === 新增站点解析器 ===
+    'ym2.cc':            (parse_ym2cc_items,          None),
+    'wobangzhao.com':    (parse_wobangzhao_items,     None),
+    'foxirj.com':        (parse_foxirj_items,         None),
+    'ddooo.com':         (parse_ddooo_items,          None),
+    'onlinedown.net':    (parse_onlinedown_items,     None),
 }
 
 
@@ -1299,6 +1469,10 @@ def fetch_page_content(url: str) -> Tuple[bool, Any]:
     - 熔断器自动跳过连续失败域名
     - robots.txt 合规检查
     """
+    # URL scheme validation: only allow http/https
+    if not url.startswith(('http://', 'https://')):
+        return False, f"Invalid URL scheme: {url[:50]}"
+
     parsed = urlparse(url)
     domain = parsed.hostname or parsed.netloc
 
@@ -1338,9 +1512,10 @@ def fetch_page_content(url: str) -> Tuple[bool, Any]:
         elapsed: float = 0.0
 
         for attempt in range(MAX_RETRIES):
-            ua = get_random_ua()
-            fingerprint = get_random_fingerprint()
-            accept_lang = get_random_accept_language()
+            profile = get_random_profile()
+            ua = profile['user_agent']
+            fingerprint = profile['fingerprint']
+            accept_lang = profile['accept_language']
 
             start_time = time.time()
             response = make_request(ua, fingerprint, accept_lang)
@@ -1391,6 +1566,21 @@ def fetch_page_content(url: str) -> Tuple[bool, Any]:
         # 请求成功，重置熔断器
         circuit_breaker.record_success(domain)
         metrics.record_success(domain, elapsed)
+
+        # SSRF protection: validate final URL is not internal (after redirects)
+        final_url = response.url
+        parsed_final = urlparse(final_url)
+        hostname = parsed_final.hostname or ''
+        if hostname.startswith(('127.', '10.', '172.16.', '192.168.', '169.254.', '0.', '::1', 'localhost')):
+            return False, f"SSRF blocked: redirect to internal address {hostname}"
+
+        # Response size limit (10MB)
+        MAX_RESPONSE_SIZE = 10 * 1024 * 1024  # 10MB
+        content_length = response.headers.get('Content-Length')
+        if content_length and int(content_length) > MAX_RESPONSE_SIZE:
+            return False, f"Response too large: {content_length} bytes"
+        if len(response.content) > MAX_RESPONSE_SIZE:
+            return False, f"Response body too large: {len(response.content)} bytes"
 
         # 让 BeautifulSoup 直接用字节流自动检测编码（避免 requests 默认 ISO-8859-1 导致中文乱码）
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -1512,7 +1702,15 @@ def check_site_update(url: str, old_records: Dict[str, str]) -> Tuple[Optional[b
         'items': result['items']
     }
 
-    new_hash = calculate_md5(text)
+    # Hash the article items list (titles+urls) instead of full body text.
+    # This prevents false positives from timestamps, ads, or dynamic widgets.
+    article_items = result.get('items', [])
+    if article_items:
+        items_text = json.dumps([{'t': item['text'], 'u': item['url']} for item in article_items],
+                                ensure_ascii=False, sort_keys=True)
+        new_hash = calculate_md5(items_text)
+    else:
+        new_hash = calculate_md5(text)
     old_hash = old_records.get(url)
 
     if old_hash is None:
@@ -1601,12 +1799,23 @@ def load_run_log() -> List[Dict[str, Any]]:
 
 
 def append_run_log(entry: Dict[str, Any]) -> None:
-    """追加一条运行日志"""
+    """追加一条运行日志（原子写入，保留最近 30 条）"""
+    tmp_file = RUN_LOG_FILE + '.tmp'
     try:
-        with open(RUN_LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+        # Load existing entries to support rotation
+        log = load_run_log()
+        log.append(entry)
+        # Keep only last 30 entries
+        if len(log) > 30:
+            log = log[-30:]
+        with open(tmp_file, 'w', encoding='utf-8') as f:
+            for e in log:
+                f.write(json.dumps(e, ensure_ascii=False) + '\n')
+        os.replace(tmp_file, RUN_LOG_FILE)
     except Exception as e:
         print(f"[警告] 运行日志写入失败: {e}")
+        if os.path.exists(tmp_file):
+            os.remove(tmp_file)
 
 
 def analyze_and_fix(run_result: Dict[str, Any]) -> List[Dict[str, str]]:
@@ -1741,12 +1950,16 @@ def load_paused_sites() -> Dict[str, Any]:
 
 
 def save_paused_sites(paused: Dict[str, Any]) -> None:
-    """保存暂停站点"""
+    """保存暂停站点（原子写入）"""
+    tmp_file = PAUSED_SITES_FILE + '.tmp'
     try:
-        with open(PAUSED_SITES_FILE, 'w', encoding='utf-8') as f:
+        with open(tmp_file, 'w', encoding='utf-8') as f:
             json.dump(paused, f, ensure_ascii=False, indent=2)
+        os.replace(tmp_file, PAUSED_SITES_FILE)
     except Exception as e:
         print(f"[警告] 暂停站点保存失败: {e}")
+        if os.path.exists(tmp_file):
+            os.remove(tmp_file)
 
 
 def main() -> None:
@@ -1807,6 +2020,20 @@ def main() -> None:
     notified = load_notified_items()
     print(f"[信息] 已加载历史条目: {len(notified.get('items', []))} 条")
 
+    # Run log rotation: keep only the last 30 entries
+    run_log = load_run_log()
+    if len(run_log) > 30:
+        run_log = run_log[-30:]
+        # Rewrite trimmed log atomically
+        tmp_file = RUN_LOG_FILE + '.tmp'
+        try:
+            with open(tmp_file, 'w', encoding='utf-8') as f:
+                for entry in run_log:
+                    f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+            os.replace(tmp_file, RUN_LOG_FILE)
+        except Exception:
+            pass
+
     # 检查所有活跃站点更新
     all_site_results: List[Dict[str, Any]] = []  # 存储所有站点状态（含标题、摘要）
     new_records = old_records.copy()
@@ -1814,6 +2041,9 @@ def main() -> None:
     error_count = 0
     updated_count = 0
     response_times: List[float] = []
+
+    # Shuffle site order to avoid deterministic crawl patterns (reduces ban risk)
+    random.shuffle(active_sites)
 
     # 并发抓取（max_workers=6，每个站点自带随机延迟防止封禁）
     results_lock = threading.Lock()

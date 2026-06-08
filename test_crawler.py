@@ -263,10 +263,10 @@ class TestGetSourceName(unittest.TestCase):
             "豆瓣小组",
         )
 
-    def test_url_with_query_params(self):
+    def test_url_with_forum_path(self):
         self.assertEqual(
             crawl.get_source_name(
-                "https://www.kxdao.net/forum.php?forumlist=1&mobile=2"
+                "https://www.kxdao.net/forum-42-1.html"
             ),
             "开心赚",
         )
@@ -1070,6 +1070,136 @@ class TestParseBaicaioItemsV2(unittest.TestCase):
         soup = make_soup(html)
         items = crawl.parse_baicaio_items_v2(soup, "https://www.baicaio.com/")
         self.assertLessEqual(len(items), 20)
+
+
+class TestNewSiteParsers(unittest.TestCase):
+    """Tests for newly added site-specific parsers."""
+
+    def test_parse_ym2cc_items_basic(self):
+        html = """<html><body>
+        <a href="/ymxb/12345.html">最新薅羊毛活动分享</a>
+        <a href="/ymxb/12346.html">京东优惠券领取方法</a>
+        <a href="/about/">关于我们</a>
+        </body></html>"""
+        soup = make_soup(html)
+        items = crawl.parse_ym2cc_items(soup, "https://www.ym2.cc/")
+        self.assertEqual(len(items), 2)
+        self.assertEqual(items[0]['text'], '最新薅羊毛活动分享')
+        self.assertIn('/ymxb/12345.html', items[0]['url'])
+
+    def test_parse_ym2cc_items_skip_short(self):
+        html = '<html><body><a href="/ymxb/1.html">短</a></body></html>'
+        soup = make_soup(html)
+        items = crawl.parse_ym2cc_items(soup, "https://www.ym2.cc/")
+        self.assertEqual(len(items), 0)
+
+    def test_parse_ym2cc_items_dedup(self):
+        html = """<html><body>
+        <a href="/ymxb/1.html">重复标题测试文章</a>
+        <a href="/ymxb/2.html">重复标题测试文章</a>
+        </body></html>"""
+        soup = make_soup(html)
+        items = crawl.parse_ym2cc_items(soup, "https://www.ym2.cc/")
+        self.assertEqual(len(items), 1)
+
+    def test_parse_wobangzhao_items_basic(self):
+        html = """<html><body>
+        <a href="thread-123-1-1.html">免费领优惠券活动分享</a>
+        <a href="thread-456-1-1.html">京东白条优惠活动</a>
+        <a href="thread-789-1-1.html">版块</a>
+        </body></html>"""
+        soup = make_soup(html)
+        items = crawl.parse_wobangzhao_items(soup, "https://www.wobangzhao.com/")
+        self.assertEqual(len(items), 2)
+        self.assertEqual(items[0]['text'], '免费领优惠券活动分享')
+
+    def test_parse_wobangzhao_items_fallback(self):
+        html = """<html><body>
+        <a class="xst" href="forum.php?mod=viewthread&tid=100">好帖推荐</a>
+        </body></html>"""
+        soup = make_soup(html)
+        items = crawl.parse_wobangzhao_items(soup, "https://www.wobangzhao.com/")
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]['text'], '好帖推荐')
+
+    def test_parse_foxirj_items_basic(self):
+        html = """<html><body>
+        <div class="post-item"><h2><a href="/photoshop-2024.html">Photoshop 2024 绿色版</a></h2></div>
+        <div class="post-item"><h2><a href="/office-365.html">Office 365 激活工具</a></h2></div>
+        <h2><a href="/about/">关于</a></h2>
+        </body></html>"""
+        soup = make_soup(html)
+        items = crawl.parse_foxirj_items(soup, "https://www.foxirj.com/")
+        # "关于" should be filtered by skip_words
+        self.assertGreaterEqual(len(items), 2)
+
+    def test_parse_foxirj_items_absolute_url(self):
+        html = """<html><body>
+        <article><h2><a href="/test-article.html">测试文章标题足够长</a></h2></article>
+        </body></html>"""
+        soup = make_soup(html)
+        items = crawl.parse_foxirj_items(soup, "https://www.foxirj.com/")
+        self.assertEqual(len(items), 1)
+        self.assertTrue(items[0]['url'].startswith('https://'))
+
+    def test_parse_ddooo_items_basic(self):
+        html = """<html><body>
+        <a href="/softdown/12345.htm">微信下载</a>
+        <a href="/softdown/12346.htm">QQ浏览器下载</a>
+        <a href="/softdown/12347.htm">首页</a>
+        </body></html>"""
+        soup = make_soup(html)
+        items = crawl.parse_ddooo_items(soup, "https://www.ddooo.com/")
+        self.assertEqual(len(items), 2)
+        self.assertIn('/softdown/', items[0]['url'])
+
+    def test_parse_ddooo_items_relative_url(self):
+        html = '<html><body><a href="/softdown/99.htm">好用工具下载最新版</a></body></html>'
+        soup = make_soup(html)
+        items = crawl.parse_ddooo_items(soup, "https://www.ddooo.com/")
+        self.assertEqual(len(items), 1)
+        self.assertTrue(items[0]['url'].startswith('https://www.ddooo.com'))
+
+    def test_parse_onlinedown_items_basic(self):
+        html = """<html><body>
+        <a href="/article/12345.htm">如何清理电脑垃圾</a>
+        <a href="/article/12346.htm">Win11 更新教程</a>
+        <a href="/article/12347.htm">首页</a>
+        </body></html>"""
+        soup = make_soup(html)
+        items = crawl.parse_onlinedown_items(soup, "https://www.onlinedown.net/")
+        self.assertEqual(len(items), 2)
+        self.assertIn('/article/', items[0]['url'])
+
+    def test_parse_onlinedown_items_max_limit(self):
+        links = "".join(
+            f'<a href="/article/{i}.htm">文章标题内容测试编号 {i} 足够长度</a>'
+            for i in range(50)
+        )
+        html = f"<html><body>{links}</body></html>"
+        soup = make_soup(html)
+        items = crawl.parse_onlinedown_items(soup, "https://www.onlinedown.net/")
+        self.assertLessEqual(len(items), 30)
+
+    def test_parser_registry_has_new_entries(self):
+        """Verify all new parsers are registered."""
+        new_domains = ['ym2.cc', 'wobangzhao.com', 'foxirj.com', 'ddooo.com', 'onlinedown.net']
+        for domain in new_domains:
+            self.assertIn(domain, crawl.PARSER_REGISTRY, f"{domain} not in PARSER_REGISTRY")
+
+    def test_match_parser_new_sites(self):
+        """Verify _match_parser correctly resolves new site parsers."""
+        test_cases = [
+            ("https://www.ym2.cc/ymxb/123.html", 'parse_ym2cc_items'),
+            ("https://www.wobangzhao.com/thread-1-1-1.html", 'parse_wobangzhao_items'),
+            ("https://www.foxirj.com/test.html", 'parse_foxirj_items'),
+            ("https://www.ddooo.com/softdown/1.htm", 'parse_ddooo_items'),
+            ("https://www.onlinedown.net/article/1.htm", 'parse_onlinedown_items'),
+        ]
+        for url, expected_func_name in test_cases:
+            pair = crawl._match_parser(url)
+            self.assertIsNotNone(pair, f"No parser matched for {url}")
+            self.assertEqual(pair[0].__name__, expected_func_name, f"Wrong parser for {url}")
 
 
 # ===================================================================

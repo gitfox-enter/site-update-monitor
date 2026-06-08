@@ -52,12 +52,6 @@
       "added": "2026-06-04"
     },
     {
-      "domain": "onlinedown.net",
-      "reason": "用户确认为流氓软件下载站",
-      "category": "spam_download",
-      "added": "2026-06-04"
-    },
-    {
       "domain": "crsky.com",
       "reason": "返回403反爬",
       "category": "anti_crawl",

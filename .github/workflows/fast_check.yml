@@ -13,6 +13,7 @@ concurrency:
 jobs:
   fast-check:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       TZ: Asia/Shanghai
     permissions:
@@ -38,6 +39,9 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+
+      - name: Run tests
+        run: python -m pytest test_crawler.py -v --tb=short
 
       - name: 运行快速检查
         run: python fast_check.py
