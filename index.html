@@ -1114,21 +1114,6 @@ function dismissInstall() {
 /* ================================================================
    TOUCH GESTURES (swipe to switch views)
    ================================================================ */
-var touchStartX = 0;
-var touchStartY = 0;
-document.addEventListener('touchstart', function(e) {
-  touchStartX = e.changedTouches[0].screenX;
-  touchStartY = e.changedTouches[0].screenY;
-}, { passive: true });
-document.addEventListener('touchend', function(e) {
-  var dx = e.changedTouches[0].screenX - touchStartX;
-  var dy = e.changedTouches[0].screenY - touchStartY;
-  /* Only trigger on horizontal swipes (>80px) that aren't mostly vertical */
-  if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-    if (dx < 0 && currentView === 'list') {
-      }
-}, { passive: true });
-
 /* ================================================================
    SERVICE WORKER
    ================================================================ */
