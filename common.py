@@ -52,7 +52,7 @@ BLACKLIST_FILE: str = "blacklist.json"
 
 SQLITE_DB_FILE: str = "monitor.db"
 
-MAX_ITEMS_DB: int = 1500
+MAX_ITEMS_DB: int = 5000
 
 # ============================================================
 # Public API
