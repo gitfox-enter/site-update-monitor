@@ -529,11 +529,25 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   <!-- Content -->
   <main id="content" role="main" aria-label="线报内容" tabindex="-1">
     <!-- View bar (mobile only) -->
-    <nav id="view-bar" role="navigation" aria-label="视图切换">
-      <button class="view-tab active" data-view="list" onclick="switchView('list')" aria-current="page">首页</button>
-      </nav>
 
     <!-- List View -->
+    <section id="list-view" aria-label="线报列表">
+      <h2 class="sr-only">线报列表</h2>
+      <div id="status-bar" role="status" aria-live="polite">
+        <span id="status-text" aria-busy="true">
+          <div class="skeleton-item"><div class="skeleton-badge"></div><div class="skeleton-body"><div class="skeleton-line w80"></div><div class="skeleton-line w40"></div></div></div>
+          <div class="skeleton-item"><div class="skeleton-badge"></div><div class="skeleton-body"><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div>
+          <div class="skeleton-item"><div class="skeleton-badge"></div><div class="skeleton-body"><div class="skeleton-line w80"></div><div class="skeleton-line w40"></div></div></div>
+          <div class="skeleton-item"><div class="skeleton-badge"></div><div class="skeleton-body"><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div>
+          <div class="skeleton-item"><div class="skeleton-badge"></div><div class="skeleton-body"><div class="skeleton-line w80"></div><div class="skeleton-line w40"></div></div></div>
+        </span>
+        <span id="last-update"></span>
+      </div>
+      <div class="list-wrap" id="item-list" role="list" aria-label="线报条目列表"></div>
+      <nav id="pagination" role="navigation" aria-label="分页导航"></nav>
+    </section>
+
+    
 
   </main>
 </div>
