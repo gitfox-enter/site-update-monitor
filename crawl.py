@@ -252,11 +252,6 @@ DEAD_SITES: Dict[str, Dict[str, str]] = {
     },
 }
 
-# SSL 证书有问题的站点（跳过 SSL 验证继续爬取）
-SSL_SKIP_DOMAINS: Set[str] = {
-    'foxirj.com',         # 证书过期但站点可访问
-}
-
 
 def is_dead_site(url: str) -> Optional[str]:
     """检查 URL 是否在死站黑名单中，返回原因或 None。"""
@@ -3468,9 +3463,6 @@ async def fetch_page_content_async(
     elapsed = 0.0
     active_proxy = _proxy_pool.get_proxy() if _proxy_pool else None
 
-    # SSL 跳过：证书有问题的域名
-    skip_ssl = any(domain in (parsed.hostname or '') for domain in SSL_SKIP_DOMAINS)
-
     for attempt in range(MAX_RETRIES):
         try:
             start_time = time.time()
@@ -3480,7 +3472,6 @@ async def fetch_page_content_async(
                 timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT),
                 allow_redirects=True,
                 proxy=active_proxy,
-                ssl=False if skip_ssl else None,
             ) as resp:
                 elapsed = time.time() - start_time
 
@@ -4105,11 +4096,12 @@ async def main_async() -> None:
     old_records = sqlite_load_hash_records(db_conn)
     logger.info("已加载哈希记录 (SQLite): %d 条", len(old_records))
 
-    # Create aiohttp session with connection pooling
+    # Create aiohttp session with connection pooling (ssl=False: 全局跳过SSL验证，不惜代价抓内容)
     connector = aiohttp.TCPConnector(
         limit=10,
         limit_per_host=2,
         ttl_dns_cache=300,
+        ssl=False,
     )
     async with aiohttp.ClientSession(connector=connector) as session:
         # Concurrent crawling with semaphore

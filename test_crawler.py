@@ -3216,9 +3216,8 @@ class TestDeadSites(unittest.TestCase):
             self.assertIn('confirmed_at', info, msg=f"{url} missing confirmed_at")
             self.assertIn('test_result', info, msg=f"{url} missing test_result")
 
-    def test_ssl_skip_domains(self):
-        """SSL过期站点应在 SSL_SKIP_DOMAINS 中，不在死站中。"""
-        self.assertIn('foxirj.com', crawl.SSL_SKIP_DOMAINS)
+    def test_foxirj_not_dead(self):
+        """foxirj.com SSL过期但可访问，不应在死站中（全局SSL跳过已启用）。"""
         self.assertIsNone(crawl.is_dead_site("https://www.foxirj.com/"))
 
 
