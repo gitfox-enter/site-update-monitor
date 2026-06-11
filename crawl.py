@@ -206,7 +206,7 @@ PAUSED_SITES_FILE = "paused_sites.json"  # 因连续失败被暂停的站点
 # 自动移除/恢复配置
 MAX_CONSECUTIVE_FAILURES = 3  # 连续失败 N 轮后自动暂停
 RECOVERY_CHECK_INTERVAL = 6  # 每 N 轮尝试恢复一次暂停站点
-MAX_ITEMS_DB = 5000  # items.json 最多保留条目数（与 common.py 保持一致）
+MAX_ITEMS_DB = 2000  # items.json 最多保留条目数（与 common.py 保持一致）
 
 # 爬虫配置
 REQUEST_TIMEOUT = 15  # 单个站点超时时间（秒）
