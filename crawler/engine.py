@@ -7,6 +7,7 @@ import signal
 import subprocess
 import sys
 import time
+import random
 import asyncio
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -30,7 +31,8 @@ from common import (
     ProxyPool, create_proxy_pool,
 )
 from crawler.config import JS_RENDER_SITES, MAX_CONSECUTIVE_FAILURES, MAX_RETRIES, PAUSED_SITES_FILE, REQUEST_TIMEOUT, RETRY_BASE_DELAY, RUN_LOG_FILE, MONITOR_SITES
-from crawler.storage import get_current_round, load_notified_items, save_notified_items, filter_new_items, merge_items_into_db
+from crawler.storage import get_current_round, load_notified_items, save_notified_items, filter_new_items, merge_items_into_db, save_hash_records
+from crawler.network import MetricsTracker, metrics, CircuitBreaker, circuit_breaker
 
 # Playwright: optional dependency for JS-rendered sites
 try:
@@ -736,7 +738,8 @@ def save_paused_sites(paused: Dict[str, Any]) -> None:
 
 def export_crawl_status(all_site_results, new_item_list, db_conn, metrics_summary):
     """Export crawl_status.json for the health dashboard."""
-    from common import CRAWL_STATUS_FILE, sqlite_get_recent_items, get_source_name
+    from common import CRAWL_STATUS_FILE, sqlite_get_recent_items
+    from crawler.config import get_source_name
     sites = []
     for r in all_site_results:
         entry = {

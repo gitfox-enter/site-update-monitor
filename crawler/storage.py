@@ -17,6 +17,7 @@ from common import (
     sqlite_save_hash_records, SQLITE_DB_FILE, MAX_ITEMS_DB,
     ProxyPool, create_proxy_pool,
 )
+from crawler.config import NOTIFIED_ITEMS_FILE, HASH_RECORD_FILE
 
 logger = logging.getLogger('crawl')
 
