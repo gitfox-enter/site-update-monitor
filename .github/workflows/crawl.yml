@@ -48,7 +48,7 @@ jobs:
           set +e
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add items.json monitor.db hash_record.txt notified_items.json run_log.jsonl paused_sites.json failed_sites.json 2>/dev/null || true
+          git add items.json hash_record.txt notified_items.json paused_sites.json failed_sites.json 2>/dev/null || true
           git status
           if git diff --staged --quiet 2>/dev/null; then
             echo "No changes to commit"
