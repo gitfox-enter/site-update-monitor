@@ -2,7 +2,7 @@
 """Crawler configuration: sites, paths, retry config, browser profiles, dead sites."""
 
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Set
 from urllib.parse import urlparse
 from common import build_source_name_index
 
