@@ -30,7 +30,7 @@ jobs:
       - name: Prepare site
         run: |
           mkdir -p _site/public
-          cp index.html offline.html sw.js manifest.json items.json _site/
+          cp index.html offline.html sw.js manifest.json items.json items_latest.json _site/
           cp -r public/ _site/public/
       - name: Setup Pages
         uses: actions/configure-pages@v4
