@@ -22,5 +22,6 @@
       "sizes": "any",
       "type": "image/svg+xml"
     }
-  ]
+  ],
+  "permissions": ["notifications"]
 }
