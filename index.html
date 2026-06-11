@@ -28,7 +28,7 @@
 <!-- Canonical -->
 <link rel="canonical" href="./">
 <link rel="preconnect" href="https://gitfox-enter.github.io" crossorigin>
-<link rel="preload" href="items.json" as="fetch" fetchpriority="high" crossorigin>
+<link rel="preload" href="items_latest.json" as="fetch" fetchpriority="high" crossorigin>
 <!-- Icons -->
 <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
 <link rel="apple-touch-icon" href="public/icon-192.png">
@@ -790,7 +790,8 @@ function cleanTitle(text) {
 function loadData() {
   document.getElementById('item-list').innerHTML = '<div class="loading">加载中</div>';
 
-  fetch('items.json?t=' + Date.now(), { priority: 'high' })
+  // Load latest 500 items first for instant display
+  fetch('items_latest.json?t=' + Date.now(), { priority: 'high' })
     .then(function(r) { return r.json(); })
     .then(function(data) {
       var rawItems = data.items || [];
@@ -832,6 +833,23 @@ function loadData() {
 
       buildSidebar();
       buildMobileDropdown();
+
+      // Load full items.json in background for complete archive
+      fetch('items.json?t=' + Date.now()).then(function(r) { return r.json(); }).then(function(fullData) {
+        var fullItems = fullData.items || [];
+        if (fullItems.length > allItems.length) {
+          allItems = fullItems.map(function(it) {
+            return { url: it.url || '', text: (it.text || '').trim(), source: normalizeSource(it.source), rawSource: it.source || '', time: it.time || '', category: it.category || null, platform: detectPlatform(it) };
+          });
+          // Rebuild sidebar with full source list
+          var srcMap2 = {};
+          allItems.forEach(function(it) { srcMap2[it.source] = (srcMap2[it.source] || 0) + 1; });
+          sources = Object.keys(srcMap2).map(function(name) { return { name: name, count: srcMap2[name], color: getSourceColor(name) }; }).sort(function(a, b) { return b.count - a.count; });
+          buildSidebar();
+          buildMobileDropdown();
+          renderItems();
+        }
+      }).catch(function() { /* full load failed, latest is enough */ });
       renderAll();
       updateStatus();
     })
