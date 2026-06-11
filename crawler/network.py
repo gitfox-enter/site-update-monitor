@@ -6,7 +6,7 @@ import random
 import threading
 import time
 import urllib.robotparser
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 import requests
 
