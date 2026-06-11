@@ -38,6 +38,7 @@ def _load_sites_from_yaml() -> List[str]:
             "https://www.ym2.cc/", "https://www.wobangzhao.com/", "https://free.apprcn.com/",
             "https://www.foxirj.com/", "https://www.ddooo.com/", "https://www.onlinedown.net/",
             "https://feed.iplaysoft.com/",
+            "https://10000yun.com/score-freebies",
         ]
 
 MONITOR_SITES: List[str] = _load_sites_from_yaml()
