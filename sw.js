@@ -1,8 +1,9 @@
-const CACHE_NAME = 'xianbao-v6';
+const CACHE_NAME = 'xianbao-v7';
 const BASE = new URL('.', self.location.href).pathname.replace(/\/$/, '');
 const ASSETS = [
   BASE + '/public/favicon.svg',
-  BASE + '/offline.html'
+  BASE + '/offline.html',
+  BASE + '/redirect.html'
 ];
 const POLL_INTERVAL = 5 * 60 * 1000; // 5 minutes
 const NOTIFICATION_TAG = 'xianbao-update';

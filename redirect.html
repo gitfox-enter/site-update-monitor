@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Refresh" content="10;url=__REDIRECT_URL__">
+<title>正在离开线报聚合 - 安全跳转</title>
+<meta name="theme-color" content="#1976d2">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#1976d2;
+  --primary-hover:#1565c0;
+  --bg:#f7f8fa;
+  --card-bg:#fff;
+  --text:#333;
+  --text-sec:#666;
+  --text-muted:#999;
+  --border:#e8e8e8;
+  --radius:12px;
+  --warn:#e53935;
+  --warn-bg:#fff5f5;
+  --warn-border:#ffcdd2;
+  --safe:#43a047;
+  --safe-bg:#f1f8e9;
+  --safe-border:#c8e6c9;
+  --caution:#ff8f00;
+  --caution-bg:#fff8e1;
+  --caution-border:#ffecb3;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#1a1a2e;
+    --card-bg:#16213e;
+    --text:#e0e0e0;
+    --text-sec:#aaa;
+    --text-muted:#777;
+    --border:#2a2a4a;
+    --warn-bg:#2a1a1a;
+    --warn-border:#5a2a2a;
+    --safe-bg:#1a2e1a;
+    --safe-border:#3a4a3a;
+    --caution-bg:#2e2a1a;
+    --caution-border:#4a3a2a;
+  }
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+.container{
+  max-width:520px;
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+/* Main redirect card */
+.card{
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:28px 24px;
+  box-shadow:0 2px 12px rgba(0,0,0,.06);
+}
+.card-icon{
+  font-size:40px;
+  text-align:center;
+  margin-bottom:16px;
+}
+.card-title{
+  font-size:18px;
+  font-weight:700;
+  text-align:center;
+  margin-bottom:12px;
+  color:var(--text);
+}
+.card-subtitle{
+  font-size:14px;
+  text-align:center;
+  color:var(--text-sec);
+  margin-bottom:20px;
+  line-height:1.5;
+}
+/* Domain display */
+.domain-box{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 16px;
+  border-radius:8px;
+  margin-bottom:16px;
+  font-size:14px;
+  line-height:1.5;
+}
+.domain-box .domain-icon{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+  flex-shrink:0;
+}
+.domain-box .domain-text{
+  flex:1;min-width:0;
+}
+.domain-box .domain-name{
+  font-weight:600;
+  font-size:15px;
+  word-break:break-all;
+}
+.domain-box .domain-hint{
+  font-size:12px;
+  margin-top:2px;
+}
+.domain-safe{
+  background:var(--safe-bg);
+  border:1px solid var(--safe-border);
+}
+.domain-safe .domain-icon{background:var(--safe);color:#fff}
+.domain-safe .domain-hint{color:var(--safe)}
+.domain-caution{
+  background:var(--caution-bg);
+  border:1px solid var(--caution-border);
+}
+.domain-caution .domain-icon{background:var(--caution);color:#fff}
+.domain-caution .domain-hint{color:var(--caution)}
+.domain-unknown{
+  background:var(--warn-bg);
+  border:1px solid var(--warn-border);
+}
+.domain-unknown .domain-icon{background:var(--warn);color:#fff}
+.domain-unknown .domain-hint{color:var(--warn)}
+/* Countdown & buttons */
+.btn-group{
+  display:flex;
+  gap:10px;
+  margin-top:16px;
+}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:12px 20px;
+  font-size:15px;
+  font-weight:600;
+  border-radius:8px;
+  cursor:pointer;
+  transition:all .15s;
+  border:none;
+  font-family:var(--font);
+  text-decoration:none;
+}
+.btn-primary{
+  background:var(--primary);
+  color:#fff;
+  flex:1;
+}
+.btn-primary:hover:not(.disabled){background:var(--primary-hover)}
+.btn-primary.disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+.btn-secondary{
+  background:var(--card-bg);
+  color:var(--text-sec);
+  border:1px solid var(--border);
+  flex:1;
+}
+.btn-secondary:hover{border-color:var(--primary);color:var(--primary)}
+.countdown-text{
+  font-size:13px;
+  color:var(--text-muted);
+  text-align:center;
+  margin-bottom:8px;
+}
+/* Disclaimer card */
+.disclaimer{
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px 24px;
+  box-shadow:0 2px 12px rgba(0,0,0,.06);
+}
+.disclaimer-title{
+  font-size:14px;
+  font-weight:700;
+  margin-bottom:10px;
+  color:var(--text);
+}
+.disclaimer-text{
+  font-size:12px;
+  line-height:1.7;
+  color:var(--text-sec);
+}
+.disclaimer-text ul{
+  list-style:none;
+  padding:0;
+  margin:8px 0;
+}
+.disclaimer-text li{
+  padding:4px 0;
+  position:relative;
+  padding-left:20px;
+}
+.disclaimer-text li::before{
+  content:"⚠️";
+  position:absolute;
+  left:0;
+  font-size:12px;
+}
+.disclaimer-text .emphasis{
+  color:var(--warn);
+  font-weight:600;
+}
+/* Bookmark tip */
+.bookmark-tip{
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px 24px;
+  box-shadow:0 2px 12px rgba(0,0,0,.06);
+  text-align:center;
+}
+.bookmark-tip .tip-icon{font-size:24px;margin-bottom:8px}
+.bookmark-tip .tip-text{font-size:13px;color:var(--text-sec);line-height:1.5}
+.bookmark-tip .tip-text strong{color:var(--primary)}
+.bookmark-tip .tip-kbd{
+  display:inline-block;
+  padding:2px 8px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:4px;
+  font-family:inherit;
+  font-size:12px;
+  margin:0 2px;
+}
+/* Toast */
+.toast{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%) translateY(-100%);
+  background:var(--primary);
+  color:#fff;
+  padding:12px 24px;
+  border-radius:8px;
+  font-size:14px;
+  font-weight:500;
+  z-index:999;
+  opacity:0;
+  transition:all .3s;
+  white-space:nowrap;
+  box-shadow:0 4px 12px rgba(0,0,0,.2);
+}
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+@media(max-width:600px){
+  .card{padding:20px 16px}
+  .card-title{font-size:16px}
+  .btn-group{flex-direction:column}
+  .btn{padding:10px 16px;font-size:14px}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Main redirect card -->
+  <div class="card">
+    <div class="card-icon">⚠️</div>
+    <div class="card-title">您正在离开线报聚合</div>
+    <div class="card-subtitle">即将跳转到外部网站，请注意安全</div>
+    
+    <!-- Domain safety indicator -->
+    <div id="domain-box" class="domain-box domain-unknown">
+      <div class="domain-icon" id="domain-icon">❓</div>
+      <div class="domain-text">
+        <div class="domain-name" id="domain-name">未知域名</div>
+        <div class="domain-hint" id="domain-hint">无法判断该网站安全性，请谨慎访问</div>
+      </div>
+    </div>
+
+    <!-- Countdown -->
+    <div class="countdown-text" id="countdown-text">安全跳转倒计时：<strong id="countdown-num">3</strong> 秒</div>
+
+    <!-- Buttons -->
+    <div class="btn-group">
+      <button class="btn btn-primary disabled" id="btn-continue" onclick="goToUrl()">继续访问</button>
+      <a class="btn btn-secondary" href="./" id="btn-home">返回首页</a>
+    </div>
+  </div>
+
+  <!-- Disclaimer -->
+  <div class="disclaimer">
+    <div class="disclaimer-title">📋 免责声明</div>
+    <div class="disclaimer-text">
+      本站「线报聚合」通过自动化程序从互联网抓取信息链接，仅提供网址导航服务，不存储、不展示任何第三方网页内容。
+      <ul>
+        <li>我们对跳转后网页的<strong>内容真实性、安全性</strong>不承担任何责任</li>
+        <li>请警惕<strong>电信网络诈骗、钓鱼网站、虚假促销</strong>等风险</li>
+        <li>不要在陌生网站输入<strong>密码、银行卡号、验证码</strong>等敏感信息</li>
+        <li>如发现可疑内容，请及时向公安机关举报</li>
+      </ul>
+      <span class="emphasis">网络安全人人有责，请保护好自己和家人的财产安全。</span>
+    </div>
+  </div>
+
+  <!-- Bookmark tip -->
+  <div class="bookmark-tip">
+    <div class="tip-icon">⭐</div>
+    <div class="tip-text">
+      觉得本站有用？按 <span class="tip-kbd">Ctrl</span>+<span class="tip-kbd">D</span>（Mac: <span class="tip-kbd">⌘</span>+<span class="tip-kbd">D</span>）收藏本站<br>
+      或 <a href="./" style="color:var(--primary);font-weight:600">返回首页安装 PWA</a> 获取第一时间线报推送
+    </div>
+  </div>
+</div>
+
+<!-- Toast for bookmark shortcut -->
+<div class="toast" id="toast"></div>
+
+<script>
+(function() {
+  // Parse target URL from query string
+  var params = new URLSearchParams(window.location.search);
+  var targetUrl = params.get('url') || '';
+  var itemTitle = params.get('title') || '';
+  
+  // If no URL provided, redirect home
+  if (!targetUrl) {
+    window.location.href = './';
+    return;
+  }
+
+  // Replace meta refresh URL
+  var metaRefresh = document.querySelector('meta[http-equiv="Refresh"]');
+  if (metaRefresh) {
+    metaRefresh.setAttribute('content', '10;url=' + targetUrl);
+  }
+
+  // Extract domain for safety check
+  var domain = '';
+  try {
+    domain = new URL(targetUrl).hostname;
+  } catch(e) {
+    domain = targetUrl;
+  }
+
+  // Known safe domains
+  var SAFE_DOMAINS = [
+    'douban.com', 'www.douban.com', 'm.douban.com',
+    'jd.com', 'www.jd.com', 'm.jd.com', 'item.jd.com',
+    'taobao.com', 'www.taobao.com', 'm.taobao.com', 'item.taobao.com',
+    'tmall.com', 'www.tmall.com',
+    'pinduoduo.com', 'mobile.yangkeduo.com',
+    'bilibili.com', 'www.bilibili.com', 'm.bilibili.com',
+    'zhihu.com', 'www.zhihu.com',
+    'weibo.com', 'm.weibo.cn',
+    'douyin.com',
+    'vip.com', 'www.vip.com',
+    'suning.com',
+    'iqnew.com', 'www.iqnew.com',
+    'ithome.com', 'www.ithome.com',
+    'xia众软件.com', 'www.appinn.com',
+    'daydayzhuan.com', 'www.daydayzhuan.com',
+    'meituan.com', 'www.meituan.com',
+    'ele.me', 'www.ele.me',
+    '163.com', 'www.163.com',
+    'qq.com', 'www.qq.com',
+    'baidu.com', 'www.baidu.com',
+    'github.com', 'www.github.com',
+    'zhihu.com'
+  ];
+
+  // Suspicious patterns
+  var SUSPICIOUS_PATTERNS = [
+    /\.tk$/i, /\.ml$/i, /\.ga$/i, /\.cf$/i, /\.gq$/i,
+    /-\d{4,}\./i,  // domains with long numbers
+    /^(?!([a-z0-9-]+\.)+[a-z]{2,}).*$/i  // unusual TLD
+  ];
+
+  // Determine safety level
+  var safetyLevel = 'unknown';
+  var safetyIcon = '❓';
+  var safetyHint = '无法判断该网站安全性，请谨慎访问';
+  
+  // Check if domain or parent domain is in safe list
+  var isSafe = false;
+  for (var i = 0; i < SAFE_DOMAINS.length; i++) {
+    if (domain === SAFE_DOMAINS[i] || domain.endsWith('.' + SAFE_DOMAINS[i].split('.').slice(-2).join('.'))) {
+      isSafe = true;
+      break;
+    }
+  }
+  
+  if (isSafe) {
+    safetyLevel = 'safe';
+    safetyIcon = '✅';
+    safetyHint = '该网站属于知名平台，但仍需注意个人信息安全';
+  } else {
+    // Check suspicious patterns
+    for (var j = 0; j < SUSPICIOUS_PATTERNS.length; j++) {
+      if (SUSPICIOUS_PATTERNS[j].test(domain)) {
+        safetyLevel = 'caution';
+        safetyIcon = '⚠️';
+        safetyHint = '该域名较为少见，请特别注意辨别真伪';
+        break;
+      }
+    }
+    // If domain has common TLD like .com/.cn/.net, downgrade from unknown to caution
+    if (safetyLevel === 'unknown' && /\.(com|cn|net|org|io|cc|info|me)$/i.test(domain)) {
+      safetyLevel = 'caution';
+      safetyIcon = '⚠️';
+      safetyHint = '请确认该网站是否为您预期的目标站点';
+    }
+  }
+
+  // Update domain display
+  var domainBox = document.getElementById('domain-box');
+  domainBox.className = 'domain-box domain-' + safetyLevel;
+  document.getElementById('domain-icon').textContent = safetyIcon;
+  document.getElementById('domain-name').textContent = domain;
+  document.getElementById('domain-hint').textContent = safetyHint;
+
+  // Countdown
+  var countdown = 3;
+  var countdownNum = document.getElementById('countdown-num');
+  var countdownText = document.getElementById('countdown-text');
+  var btnContinue = document.getElementById('btn-continue');
+
+  function tick() {
+    countdown--;
+    countdownNum.textContent = countdown;
+    if (countdown <= 0) {
+      countdownText.textContent = '已准备就绪，点击按钮即可跳转';
+      countdownNum.textContent = '';
+      btnContinue.classList.remove('disabled');
+      btnContinue.textContent = '继续访问 →';
+      return;
+    }
+    setTimeout(tick, 1000);
+  }
+  setTimeout(tick, 1000);
+
+  // Go to URL
+  function goToUrl() {
+    window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    // Show toast suggesting to bookmark
+    showToast('⭐ 按 Ctrl+D 收藏线报聚合，方便下次查看');
+  }
+
+  // Toast
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 4000);
+  }
+
+  // Keyboard shortcut: Ctrl+D / Cmd+D → bookmark prompt
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+      e.preventDefault();
+      showToast('⭐ 请在浏览器书签栏中将线报聚合加入收藏，方便随时查看线报！');
+    }
+  });
+
+  // Update page title with item title if available
+  if (itemTitle) {
+    document.title = '正在离开线报聚合 → ' + itemTitle.substring(0, 40);
+  }
+
+})();
+</script>
+</body>
+</html>

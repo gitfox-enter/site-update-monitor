@@ -1,11 +1,13 @@
 {
-  "name": "线报聚合",
+  "name": "线报聚合 - 全网羊毛线报实时聚合导航",
   "short_name": "线报聚合",
-  "description": "全网羊毛线报实时聚合",
+  "description": "自动聚合全网羊毛线报、优惠信息、活动促销，实时更新一键跳转，支持PWA推送通知",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1976d2",
+  "orientation": "any",
+  "categories": ["utilities", "shopping", "news"],
   "icons": [
     {
       "src": "public/icon-192.png",
@@ -23,5 +25,17 @@
       "type": "image/svg+xml"
     }
   ],
-  "permissions": ["notifications"]
+  "permissions": ["notifications"],
+  "shortcuts": [
+    {
+      "name": "今日线报",
+      "url": "./#today",
+      "description": "查看今天的线报"
+    },
+    {
+      "name": "搜索线报",
+      "url": "./#search",
+      "description": "搜索关键词查找线报"
+    }
+  ]
 }
