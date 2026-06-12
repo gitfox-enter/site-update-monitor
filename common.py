@@ -225,9 +225,17 @@ def is_blacklisted(url: str, blacklist_domains: List[str]) -> bool:
     """
     parsed = urlparse(url)
     host = parsed.hostname or parsed.netloc
-    host = host.lower().lstrip("www.").lstrip("m.")
+    host = host.lower()
+    if host.startswith("www."):
+        host = host[4:]
+    elif host.startswith("m."):
+        host = host[2:]
     for domain in blacklist_domains:
-        domain_clean = domain.lower().lstrip("www.").lstrip("m.")
+        domain_clean = domain.lower()
+        if domain_clean.startswith("www."):
+            domain_clean = domain_clean[4:]
+        elif domain_clean.startswith("m."):
+            domain_clean = domain_clean[2:]
         if host == domain_clean or host.endswith("." + domain_clean):
             return True
     return False
@@ -360,12 +368,32 @@ class DomainRateLimiter:
 
     def wait(self, domain: str) -> None:
         """Block until at least *min_gap* seconds have elapsed since the last request to *domain*."""
+        sleep_time = 0.0
         with self._lock:
             now = time.time()
             last = self._last_request.get(domain, 0)
             elapsed = now - last
             if elapsed < self._min_gap:
-                time.sleep(self._min_gap - elapsed)
+                sleep_time = self._min_gap - elapsed
+        # Sleep outside the lock so other domains are not blocked
+        if sleep_time > 0:
+            time.sleep(sleep_time)
+        with self._lock:
+            self._last_request[domain] = time.time()
+
+    async def async_wait(self, domain: str) -> None:
+        """Async-compatible rate limiter: uses asyncio.sleep to avoid blocking the event loop."""
+        import asyncio as _asyncio
+        sleep_time = 0.0
+        with self._lock:
+            now = time.time()
+            last = self._last_request.get(domain, 0)
+            elapsed = now - last
+            if elapsed < self._min_gap:
+                sleep_time = self._min_gap - elapsed
+        if sleep_time > 0:
+            await _asyncio.sleep(sleep_time)
+        with self._lock:
             self._last_request[domain] = time.time()
 
 

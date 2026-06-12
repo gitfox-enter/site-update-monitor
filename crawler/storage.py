@@ -251,12 +251,12 @@ def merge_items_into_db(new_item_list: List[Dict[str, str]], check_time: str) ->
 # items_latest.json 导出（用于首页快速加载）
 # ============================================================
 
-_STICKY_ITEM: Dict[str, str] = {
+_STICKY_ITEM: Dict[str, Any] = {
     "url": "./alipay-redpacket.html",
     "text": "支付宝每日扫码领红包，大量支付红包等你来拿！",
     "source": "支付宝",
     "category": "置顶",
-    "sticky": true,
+    "sticky": True,
 }
 
 

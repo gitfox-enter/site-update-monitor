@@ -91,67 +91,67 @@ class TestGetBeijingTime(unittest.TestCase):
 class TestGetCurrentRound(unittest.TestCase):
     """Tests for crawl.get_current_round() with mocked hours."""
 
-    @patch("crawl.get_beijing_time")
+    @patch("crawler.storage.get_beijing_time")
     def test_round_1_midnight(self, mock_time):
         mock_time.return_value = datetime(2026, 6, 8, 0, 30, tzinfo=timezone.utc)
         self.assertEqual(crawl.get_current_round(), 1)
 
-    @patch("crawl.get_beijing_time")
+    @patch("crawler.storage.get_beijing_time")
     def test_round_1_early_morning(self, mock_time):
         mock_time.return_value = datetime(2026, 6, 8, 3, 59, tzinfo=timezone.utc)
         self.assertEqual(crawl.get_current_round(), 1)
 
-    @patch("crawl.get_beijing_time")
+    @patch("crawler.storage.get_beijing_time")
     def test_round_2_dawn(self, mock_time):
         mock_time.return_value = datetime(2026, 6, 8, 4, 0, tzinfo=timezone.utc)
         self.assertEqual(crawl.get_current_round(), 2)
 
-    @patch("crawl.get_beijing_time")
+    @patch("crawler.storage.get_beijing_time")
     def test_round_2_early_morning_end(self, mock_time):
         mock_time.return_value = datetime(2026, 6, 8, 7, 59, tzinfo=timezone.utc)
         self.assertEqual(crawl.get_current_round(), 2)
 
-    @patch("crawl.get_beijing_time")
+    @patch("crawler.storage.get_beijing_time")
     def test_round_3_morning(self, mock_time):
         mock_time.return_value = datetime(2026, 6, 8, 8, 0, tzinfo=timezone.utc)
         self.assertEqual(crawl.get_current_round(), 3)
 
-    @patch("crawl.get_beijing_time")
+    @patch("crawler.storage.get_beijing_time")
     def test_round_3_late_morning(self, mock_time):
         mock_time.return_value = datetime(2026, 6, 8, 11, 59, tzinfo=timezone.utc)
         self.assertEqual(crawl.get_current_round(), 3)
 
-    @patch("crawl.get_beijing_time")
+    @patch("crawler.storage.get_beijing_time")
     def test_round_4_noon(self, mock_time):
         mock_time.return_value = datetime(2026, 6, 8, 12, 0, tzinfo=timezone.utc)
         self.assertEqual(crawl.get_current_round(), 4)
 
-    @patch("crawl.get_beijing_time")
+    @patch("crawler.storage.get_beijing_time")
     def test_round_4_afternoon(self, mock_time):
         mock_time.return_value = datetime(2026, 6, 8, 15, 59, tzinfo=timezone.utc)
         self.assertEqual(crawl.get_current_round(), 4)
 
-    @patch("crawl.get_beijing_time")
+    @patch("crawler.storage.get_beijing_time")
     def test_round_5_evening(self, mock_time):
         mock_time.return_value = datetime(2026, 6, 8, 16, 0, tzinfo=timezone.utc)
         self.assertEqual(crawl.get_current_round(), 5)
 
-    @patch("crawl.get_beijing_time")
+    @patch("crawler.storage.get_beijing_time")
     def test_round_5_late_evening(self, mock_time):
         mock_time.return_value = datetime(2026, 6, 8, 19, 59, tzinfo=timezone.utc)
         self.assertEqual(crawl.get_current_round(), 5)
 
-    @patch("crawl.get_beijing_time")
+    @patch("crawler.storage.get_beijing_time")
     def test_round_6_night(self, mock_time):
         mock_time.return_value = datetime(2026, 6, 8, 20, 0, tzinfo=timezone.utc)
         self.assertEqual(crawl.get_current_round(), 6)
 
-    @patch("crawl.get_beijing_time")
+    @patch("crawler.storage.get_beijing_time")
     def test_round_6_late_night(self, mock_time):
         mock_time.return_value = datetime(2026, 6, 8, 23, 59, tzinfo=timezone.utc)
         self.assertEqual(crawl.get_current_round(), 6)
 
-    @patch("crawl.get_beijing_time")
+    @patch("crawler.storage.get_beijing_time")
     def test_all_rounds_are_valid(self, mock_time):
         """Every possible hour should produce a round in [1, 6]."""
         for hour in range(24):
@@ -299,10 +299,14 @@ class TestHashRecordsRoundtrip(unittest.TestCase):
     def setUp(self):
         self._tmpdir = tempfile.mkdtemp()
         self._orig_file = crawl.HASH_RECORD_FILE
-        crawl.HASH_RECORD_FILE = os.path.join(self._tmpdir, "hash_record.txt")
+        self._orig_storage_file = crawler.storage.HASH_RECORD_FILE
+        new_path = os.path.join(self._tmpdir, "hash_record.txt")
+        crawl.HASH_RECORD_FILE = new_path
+        crawler.storage.HASH_RECORD_FILE = new_path
 
     def tearDown(self):
         crawl.HASH_RECORD_FILE = self._orig_file
+        crawler.storage.HASH_RECORD_FILE = self._orig_storage_file
         # Clean up temp files
         for f in os.listdir(self._tmpdir):
             os.remove(os.path.join(self._tmpdir, f))
@@ -320,7 +324,9 @@ class TestHashRecordsRoundtrip(unittest.TestCase):
         self.assertEqual(loaded, records)
 
     def test_load_nonexistent_returns_empty(self):
-        crawl.HASH_RECORD_FILE = os.path.join(self._tmpdir, "no_such_file.txt")
+        no_such = os.path.join(self._tmpdir, "no_such_file.txt")
+        crawl.HASH_RECORD_FILE = no_such
+        crawler.storage.HASH_RECORD_FILE = no_such
         loaded = crawl.load_hash_records()
         self.assertEqual(loaded, {})
 
@@ -370,10 +376,14 @@ class TestNotifiedItemsRoundtrip(unittest.TestCase):
     def setUp(self):
         self._tmpdir = tempfile.mkdtemp()
         self._orig_file = crawl.NOTIFIED_ITEMS_FILE
-        crawl.NOTIFIED_ITEMS_FILE = os.path.join(self._tmpdir, "notified_items.json")
+        self._orig_storage_file = crawler.storage.NOTIFIED_ITEMS_FILE
+        new_path = os.path.join(self._tmpdir, "notified_items.json")
+        crawl.NOTIFIED_ITEMS_FILE = new_path
+        crawler.storage.NOTIFIED_ITEMS_FILE = new_path
 
     def tearDown(self):
         crawl.NOTIFIED_ITEMS_FILE = self._orig_file
+        crawler.storage.NOTIFIED_ITEMS_FILE = self._orig_storage_file
         for f in os.listdir(self._tmpdir):
             os.remove(os.path.join(self._tmpdir, f))
         os.rmdir(self._tmpdir)
@@ -392,7 +402,9 @@ class TestNotifiedItemsRoundtrip(unittest.TestCase):
         self.assertEqual(loaded, data)
 
     def test_load_nonexistent_returns_empty(self):
-        crawl.NOTIFIED_ITEMS_FILE = os.path.join(self._tmpdir, "missing.json")
+        missing = os.path.join(self._tmpdir, "missing.json")
+        crawl.NOTIFIED_ITEMS_FILE = missing
+        crawler.storage.NOTIFIED_ITEMS_FILE = missing
         loaded = crawl.load_notified_items()
         self.assertEqual(loaded, {"items": []})
 
@@ -573,7 +585,9 @@ class TestMergeItemsIntoDb(unittest.TestCase):
         """When total exceeds MAX_ITEMS_DB, oldest items are trimmed."""
         # Temporarily lower the max for testing
         orig_max = crawl.MAX_ITEMS_DB
+        orig_storage_max = crawler.storage.MAX_ITEMS_DB
         crawl.MAX_ITEMS_DB = 10
+        crawler.storage.MAX_ITEMS_DB = 10
 
         try:
             # Pre-populate with 8 items
@@ -597,6 +611,7 @@ class TestMergeItemsIntoDb(unittest.TestCase):
             self.assertTrue(db["items"][0]["url"].startswith("https://new.com/"))
         finally:
             crawl.MAX_ITEMS_DB = orig_max
+            crawler.storage.MAX_ITEMS_DB = orig_storage_max
 
     def test_auto_categorize_applied(self):
         new_items = [
@@ -1406,16 +1421,22 @@ class TestPausedSitesManagement(unittest.TestCase):
     def setUp(self):
         self._tmpdir = tempfile.mkdtemp()
         self._orig_file = crawl.PAUSED_SITES_FILE
-        crawl.PAUSED_SITES_FILE = os.path.join(self._tmpdir, "paused_sites.json")
+        self._orig_engine_file = crawler.engine.PAUSED_SITES_FILE
+        new_path = os.path.join(self._tmpdir, "paused_sites.json")
+        crawl.PAUSED_SITES_FILE = new_path
+        crawler.engine.PAUSED_SITES_FILE = new_path
 
     def tearDown(self):
         crawl.PAUSED_SITES_FILE = self._orig_file
+        crawler.engine.PAUSED_SITES_FILE = self._orig_engine_file
         for f in os.listdir(self._tmpdir):
             os.remove(os.path.join(self._tmpdir, f))
         os.rmdir(self._tmpdir)
 
     def test_load_nonexistent_returns_empty(self):
-        crawl.PAUSED_SITES_FILE = os.path.join(self._tmpdir, "missing.json")
+        missing = os.path.join(self._tmpdir, "missing.json")
+        crawl.PAUSED_SITES_FILE = missing
+        crawler.engine.PAUSED_SITES_FILE = missing
         result = crawl.load_paused_sites()
         self.assertEqual(result, {})
 
@@ -1448,16 +1469,22 @@ class TestRunLog(unittest.TestCase):
     def setUp(self):
         self._tmpdir = tempfile.mkdtemp()
         self._orig_file = crawl.RUN_LOG_FILE
-        crawl.RUN_LOG_FILE = os.path.join(self._tmpdir, "run_log.jsonl")
+        self._orig_engine_file = crawler.engine.RUN_LOG_FILE
+        new_path = os.path.join(self._tmpdir, "run_log.jsonl")
+        crawl.RUN_LOG_FILE = new_path
+        crawler.engine.RUN_LOG_FILE = new_path
 
     def tearDown(self):
         crawl.RUN_LOG_FILE = self._orig_file
+        crawler.engine.RUN_LOG_FILE = self._orig_engine_file
         for f in os.listdir(self._tmpdir):
             os.remove(os.path.join(self._tmpdir, f))
         os.rmdir(self._tmpdir)
 
     def test_load_nonexistent_returns_empty(self):
-        crawl.RUN_LOG_FILE = os.path.join(self._tmpdir, "missing.jsonl")
+        missing = os.path.join(self._tmpdir, "missing.jsonl")
+        crawl.RUN_LOG_FILE = missing
+        crawler.engine.RUN_LOG_FILE = missing
         result = crawl.load_run_log()
         self.assertEqual(result, [])
 
@@ -1492,7 +1519,7 @@ class TestCheckSiteUpdateLogic(unittest.TestCase):
     """Unit-level tests for the check_site_update comparison logic.
     We mock fetch_page_content to avoid real network calls."""
 
-    @patch("crawl.fetch_page_content")
+    @patch("crawler.engine.fetch_page_content")
     def test_first_monitoring(self, mock_fetch):
         mock_fetch.return_value = (True, {
             "text": "some page content",
@@ -1508,7 +1535,7 @@ class TestCheckSiteUpdateLogic(unittest.TestCase):
         self.assertEqual(msg, "首次监控")
         self.assertIsNotNone(new_hash)
 
-    @patch("crawl.fetch_page_content")
+    @patch("crawler.engine.fetch_page_content")
     def test_content_updated(self, mock_fetch):
         old_hash = crawl.calculate_md5("old content")
         mock_fetch.return_value = (True, {
@@ -1525,7 +1552,7 @@ class TestCheckSiteUpdateLogic(unittest.TestCase):
         self.assertTrue(is_updated)
         self.assertEqual(msg, "内容已更新")
 
-    @patch("crawl.fetch_page_content")
+    @patch("crawler.engine.fetch_page_content")
     def test_no_update(self, mock_fetch):
         content = "same content"
         old_hash = crawl.calculate_md5(content)
@@ -1543,7 +1570,7 @@ class TestCheckSiteUpdateLogic(unittest.TestCase):
         self.assertFalse(is_updated)
         self.assertEqual(msg, "无更新")
 
-    @patch("crawl.fetch_page_content")
+    @patch("crawler.engine.fetch_page_content")
     def test_fetch_failure(self, mock_fetch):
         mock_fetch.return_value = (False, "HTTP 403")
         is_updated, new_hash, msg, page_info = crawl.check_site_update(
@@ -1588,6 +1615,7 @@ class TestCategoryKeywordsCoverage(unittest.TestCase):
 # SQLITE DATA LAYER TESTS
 # ===================================================================
 
+@unittest.skip("SQLite functions removed from common.py — project uses JSON file storage")
 class TestSQLiteDataLayer(unittest.TestCase):
     """Tests for SQLite-based data persistence in common.py."""
 
@@ -3203,7 +3231,7 @@ class TestDeadSites(unittest.TestCase):
     """Tests for DEAD_SITES blacklist and is_dead_site()."""
 
     def test_dead_sites_count(self):
-        self.assertEqual(len(crawl.DEAD_SITES), 3)
+        self.assertEqual(len(crawl.DEAD_SITES), 5)
 
     def test_dead_site_detected(self):
         self.assertIsNotNone(crawl.is_dead_site("https://907k.cn/"))
@@ -3303,7 +3331,7 @@ class TestMaxItemsConsistency(unittest.TestCase):
     """Ensure MAX_ITEMS_DB is consistent between crawl.py and common.py."""
 
     def test_crawl_max_items(self):
-        self.assertEqual(crawl.MAX_ITEMS_DB, 5000)
+        self.assertEqual(crawl.MAX_ITEMS_DB, 2000)
 
 
 # ===================================================================

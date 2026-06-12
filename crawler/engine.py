@@ -32,7 +32,7 @@ from common import (
 from crawler.config import JS_RENDER_SITES, MAX_CONSECUTIVE_FAILURES, MAX_RETRIES, PAUSED_SITES_FILE, REQUEST_TIMEOUT, RETRY_BASE_DELAY, RUN_LOG_FILE, MONITOR_SITES, is_dead_site, get_source_name
 from crawler.storage import get_current_round, load_notified_items, save_notified_items, filter_new_items, merge_items_into_db, load_hash_records, save_hash_records, export_items_latest_json, get_random_delay, get_random_profile, get_referer
 from crawler.network import MetricsTracker, metrics, CircuitBreaker, circuit_breaker, get_conditional_headers, rate_limiter, is_allowed_by_robots, update_conditional_cache
-from crawler.parsers import _match_parser, extract_article_items, parse_rss_feed, parse_ghxi_items
+from crawler.parsers import _match_parser, extract_article_items, parse_rss_feed, parse_ghxi_items, fetch_page_content
 
 # Playwright: optional dependency for JS-rendered sites
 try:
@@ -163,8 +163,8 @@ async def fetch_page_content_async(
     if not is_allowed_by_robots(url):
         return False, "robots.txt 禁止爬取"
 
-    # Per-domain rate limiting
-    rate_limiter.wait(domain)
+    # Per-domain rate limiting (async to avoid blocking the event loop)
+    await rate_limiter.async_wait(domain)
 
     # === Playwright 路径：JS 渲染站点 ===
     if _needs_playwright(url):
@@ -178,7 +178,6 @@ async def fetch_page_content_async(
             return False, f"Playwright 抓取失败: {pw_result[:80]}"
 
         # 解析 Playwright 返回的 HTML
-        content_bytes = pw_result.encode('utf-8')
         soup = BeautifulSoup(pw_result, 'html.parser')
         title_tag = soup.find('title')
         title = title_tag.get_text(strip=True) if title_tag else url
@@ -331,8 +330,12 @@ async def fetch_page_content_async(
     # Response size limit (10MB)
     MAX_RESPONSE_SIZE = 10 * 1024 * 1024
     content_length = response.headers.get('Content-Length')
-    if content_length and int(content_length) > MAX_RESPONSE_SIZE:
-        return False, f"Response too large: {content_length} bytes"
+    if content_length:
+        try:
+            if int(content_length) > MAX_RESPONSE_SIZE:
+                return False, f"Response too large: {content_length} bytes"
+        except (ValueError, TypeError):
+            pass  # Malformed Content-Length header, ignore
     if len(response.content) > MAX_RESPONSE_SIZE:
         return False, f"Response body too large: {len(response.content)} bytes"
 
@@ -739,10 +742,11 @@ def save_paused_sites(paused: Dict[str, Any]) -> None:
 
 
 
-def export_crawl_status(all_site_results, new_item_list, metrics_summary):
+def export_crawl_status(all_site_results, new_item_list, metrics_summary, output_path=None):
     """Export crawl_status.json for the health dashboard."""
-    from common import CRAWL_STATUS_FILE, load_items_db
+    from common import load_items_db
     from crawler.config import get_source_name
+    _output_path = output_path or CRAWL_STATUS_FILE
     sites = []
     for r in all_site_results:
         entry = {
@@ -767,11 +771,11 @@ def export_crawl_status(all_site_results, new_item_list, metrics_summary):
         },
         "sites": sites,
     }
-    tmp = CRAWL_STATUS_FILE + ".tmp"
+    tmp = _output_path + ".tmp"
     try:
         with open(tmp, "w", encoding="utf-8") as f:
             json.dump(status, f, ensure_ascii=False, separators=(",", ":"))
-        os.replace(tmp, CRAWL_STATUS_FILE)
+        os.replace(tmp, _output_path)
     except Exception:
         if os.path.exists(tmp):
             os.remove(tmp)
@@ -1004,10 +1008,7 @@ async def main_async() -> None:
     if open_circuits:
         logger.warning("已熔断域名: %s", ', '.join(open_circuits.keys()))
 
-    # Save hash records to SQLite
-    save_hash_records(new_records)
-
-    # Also save to JSON file for backward compat
+    # Save hash records
     save_hash_records(new_records)
 
     # 构建完整条目字典（包含更新和首次爬取的站点）
@@ -1090,7 +1091,6 @@ async def main_async() -> None:
 # ============================================================
 # Graceful shutdown
 # ============================================================
-import signal
 
 _shutdown_requested = False
 
@@ -1113,5 +1113,6 @@ if __name__ == "__main__":
         logger.info("用户手动停止")
         sys.exit(0)
     except Exception as e:
-        logger.error("致命错误: %s", e)
         import traceback
+        logger.error("致命错误: %s\n%s", e, traceback.format_exc())
+        sys.exit(1)

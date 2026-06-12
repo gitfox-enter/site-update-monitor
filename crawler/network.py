@@ -6,7 +6,8 @@ import random
 import threading
 import time
 from urllib.robotparser import RobotFileParser
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
+from urllib.parse import urlparse
 from crawler.config import MAX_CONSECUTIVE_FAILURES, RESPECT_ROBOTS_TXT
 
 import requests

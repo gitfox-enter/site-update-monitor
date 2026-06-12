@@ -5,6 +5,7 @@ import logging
 import re
 import time
 import html as html_mod
+import requests
 from datetime import datetime, timezone, timedelta
 from typing import Any, Dict, List, Optional, Set, Tuple
 from urllib.parse import urljoin, urlparse
@@ -16,6 +17,8 @@ warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
 from common import (
     auto_categorize, CATEGORY_KEYWORDS, sanitize_href, sanitize_text, is_junk,
 )
+from crawler.config import REQUEST_TIMEOUT
+from crawler.storage import get_random_ua
 
 logger = logging.getLogger('crawl')
 
@@ -2330,9 +2333,14 @@ def _match_parser(url: str) -> Optional[Tuple[Any, Optional[Any]]]:
     """
     根据 URL 匹配 PARSER_REGISTRY 中的解析器。
     返回 (items_parser, text_parser) 或 None（使用通用解析）。
+    使用 hostname 匹配而非子串匹配，避免误命中。
     """
+    try:
+        hostname = urlparse(url).hostname or ''
+    except Exception:
+        hostname = ''
     for domain_pattern, parsers in PARSER_REGISTRY.items():
-        if domain_pattern in url:
+        if hostname == domain_pattern or hostname.endswith('.' + domain_pattern):
             return parsers
     return None
 
@@ -2456,8 +2464,12 @@ def fetch_page_content(url: str) -> Tuple[bool, Any]:
         # Response size limit (10MB)
         MAX_RESPONSE_SIZE = 10 * 1024 * 1024  # 10MB
         content_length = response.headers.get('Content-Length')
-        if content_length and int(content_length) > MAX_RESPONSE_SIZE:
-            return False, f"Response too large: {content_length} bytes"
+        if content_length:
+            try:
+                if int(content_length) > MAX_RESPONSE_SIZE:
+                    return False, f"Response too large: {content_length} bytes"
+            except (ValueError, TypeError):
+                pass  # Malformed Content-Length header, ignore
         if len(response.content) > MAX_RESPONSE_SIZE:
             return False, f"Response body too large: {len(response.content)} bytes"
 
