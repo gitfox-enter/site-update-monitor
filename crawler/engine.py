@@ -35,7 +35,7 @@ from common import (
 from crawler.config import JS_RENDER_SITES, MAX_CONSECUTIVE_FAILURES, MAX_RETRIES, PAUSED_SITES_FILE, REQUEST_TIMEOUT, RETRY_BASE_DELAY, RUN_LOG_FILE, MONITOR_SITES, is_dead_site, get_source_name
 from crawler.storage import get_current_round, load_notified_items, save_notified_items, filter_new_items, merge_items_into_db, save_hash_records, get_random_delay, get_random_profile, get_referer
 from crawler.network import MetricsTracker, metrics, CircuitBreaker, circuit_breaker, get_conditional_headers, rate_limiter, is_allowed_by_robots, update_conditional_cache
-from crawler.parsers import _match_parser, extract_article_items
+from crawler.parsers import _match_parser, extract_article_items, parse_rss_feed, parse_ghxi_items
 
 # Playwright: optional dependency for JS-rendered sites
 try:
@@ -751,7 +751,7 @@ def export_crawl_status(all_site_results, new_item_list, db_conn, metrics_summar
         entry = {
             "url": r.get("url", ""),
             "name": get_source_name(r.get("url", "")),
-            "status": "ok" if r.get("status") == "updated" or r.get("status") == "no_change" else ("fail" if r.get("status") == "error" else "skip"),
+            "status": "ok" if r.get("status") in ("updated", "no_update", "no_change", "first") else ("fail" if r.get("status") == "error" else "skip"),
         }
         if r.get("response_time"):
             entry["response_time"] = round(r.get("response_time"), 0)

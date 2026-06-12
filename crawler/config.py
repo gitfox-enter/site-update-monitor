@@ -168,6 +168,16 @@ DEAD_SITES: Dict[str, Dict[str, str]] = {
         "confirmed_at": "2026-06-10",
         "test_result": "HTTP 000 - 无法建立连接，域名无法解析或服务器已下线",
     },
+    "https://79tao.linejia.com/": {
+        "reason": "连接失败(Connection refused)",
+        "confirmed_at": "2026-06-12",
+        "test_result": "Connection refused - 服务器拒绝连接或已下线",
+    },
+    "https://www.0818tuan.com/": {
+        "reason": "连接失败(Connection refused)",
+        "confirmed_at": "2026-06-12",
+        "test_result": "Connection refused - 服务器拒绝连接或已下线",
+    },
 }
 
 
