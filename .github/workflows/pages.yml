@@ -30,7 +30,7 @@ jobs:
       - name: Prepare site
         run: |
           mkdir -p _site/public
-          for f in index.html status.html offline.html sw.js manifest.json items.json items_latest.json crawl_status.json; do
+          for f in index.html status.html offline.html redirect.html alipay-redpacket.html sw.js manifest.json items.json items_latest.json crawl_status.json; do
             [ -f "$f" ] && cp "$f" _site/
           done
           cp -r public/ _site/public/

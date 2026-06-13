@@ -853,6 +853,7 @@ var PAGE_SIZE = 40;
 var currentView = 'list';
 var todayOnly = false;
 var sortOrder = 'newest'; // 'newest' or 'oldest'
+var deferredPrompt;       // PWA install prompt event
 /* Source name normalization map */
 var SOURCE_MAP = {
   '线报酷 - 专注线报活动与优惠促销分享的线报网站': '线报酷',
@@ -902,8 +903,7 @@ var SRC_COLORS = {
   '免费族':   '#78909c',
   '网赚':     '#7e57c2',
   '优惠线报':  '#ff7043',
-  '活动5':    '#42a5f5',
-  '线报迷':   '#29b6f6'
+  '活动5':    '#42a5f5'
 };
 var DEFAULT_COLOR = '#78909c';
 
@@ -1075,7 +1075,6 @@ function loadData() {
       document.getElementById('item-list').innerHTML =
         '<div class="list-empty">加载失败，请刷新重试<br><small>' + err.message + '</small></div>';
     });
-}
 
 /* ================================================================
    SIDEBAR
@@ -1475,7 +1474,6 @@ if ('serviceWorker' in navigator) {
 /* ================================================================
    INIT
    ================================================================ */
-loadData();
 
   // === Safe Redirect Tracker ===
   function trackClick(e) {
@@ -1667,6 +1665,17 @@ loadData();
       }
     });
   })();
+
+  // === Expose functions called from HTML onclick to global scope ===
+  window.trackClick = trackClick;
+  window.copySiteLink = copySiteLink;
+  window.showBookmarkTip = showBookmarkTip;
+  window.closePwaBanner = closePwaBanner;
+
+} // end of loadData
+
+  // === Initialize data loading (must be after all function definitions) ===
+  loadData();
 
 </script>
 </body>

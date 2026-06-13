@@ -442,7 +442,7 @@ class ProxyPool:
                 f"Invalid strategy {strategy!r}; expected 'round_robin' or 'random'"
             )
 
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()
         self._proxies: Dict[str, Dict[str, Any]] = {}
         self._rr_index: int = 0
         self._max_failures: int = max_failures

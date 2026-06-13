@@ -444,7 +444,7 @@ async def main() -> None:
     if all_new_items:
         try:
             subprocess.run(
-                ["git", "add", "items.json", FAST_LOG_FILE],
+                ["git", "add", "items.json", "items_latest.json", FAST_LOG_FILE],
                 capture_output=True,
                 timeout=10,
             )

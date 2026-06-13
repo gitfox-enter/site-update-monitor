@@ -35,6 +35,11 @@
 <div id="status" class="empty">加载中...</div>
 
 <script>
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 fetch('crawl_status.json?t=' + Date.now())
   .then(function(r) { return r.json(); })
   .then(function(data) {
@@ -49,7 +54,7 @@ fetch('crawl_status.json?t=' + Date.now())
     var fail = sites.filter(function(s) { return s.status === 'fail'; }).length;
     var skip = sites.filter(function(s) { return s.status === 'skip'; }).length;
 
-    var html = '<div class="updated">最后运行: ' + (run.check_time || '-') + '</div>';
+    var html = '<div class="updated">最后运行: ' + escHtml(run.check_time || '-') + '</div>';
 
     // Overview stats
     html += '<div class="card"><h2>📊 运行概览</h2><div class="grid">';
@@ -74,10 +79,10 @@ fetch('crawl_status.json?t=' + Date.now())
         var cls = s.status === 'ok' ? 'ok' : (s.status === 'fail' ? 'fail' : 'skip');
         var label = s.status === 'ok' ? 'OK' : (s.status === 'fail' ? 'FAIL' : 'SKIP');
         html += '<div class="site-row">';
-        html += '<span class="site-name">' + (s.name || s.url) + '</span>';
+        html += '<span class="site-name">' + escHtml(s.name || s.url) + '</span>';
         html += '<span class="site-status ' + cls + '">' + label + '</span>';
         if (s.response_time) html += '<span class="site-rt">' + s.response_time + 'ms</span>';
-        if (s.error) html += '<span class="site-time" title="' + s.error + '">ERR</span>';
+        if (s.error) html += '<span class="site-time" title="' + escHtml(s.error) + '">ERR</span>';
         html += '</div>';
       });
     }

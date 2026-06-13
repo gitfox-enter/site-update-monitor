@@ -4,7 +4,9 @@ const ASSETS = [
   BASE + '/index.html',
   BASE + '/public/favicon.svg',
   BASE + '/offline.html',
-  BASE + '/redirect.html'
+  BASE + '/redirect.html',
+  BASE + '/status.html',
+  BASE + '/alipay-redpacket.html'
 ];
 const POLL_INTERVAL = 5 * 60 * 1000; // 5 minutes
 const NOTIFICATION_TAG = 'xianbao-update';
@@ -115,13 +117,14 @@ async function pollForUpdates() {
   if (!pollingEnabled) { setTimeout(pollForUpdates, POLL_INTERVAL); return; }
   try {
     const res = await fetch(BASE + '/items_latest.json?t=' + Date.now());
-    if (!res.ok) return;
+    if (!res.ok) { setTimeout(pollForUpdates, POLL_INTERVAL); return; }
     const data = await res.json();
     const currentCount = (data.items || []).length;
     
     // First poll: just record the count, don't notify
     if (lastItemCount === 0) {
       lastItemCount = currentCount;
+      setTimeout(pollForUpdates, POLL_INTERVAL);
       return;
     }
     

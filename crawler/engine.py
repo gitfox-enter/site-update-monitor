@@ -315,6 +315,12 @@ async def fetch_page_content_async(
             metrics.record_failure(domain)
             if active_proxy and _proxy_pool:
                 _proxy_pool.report_failure(active_proxy)
+            if attempt < MAX_RETRIES - 1:
+                delay = RETRY_BASE_DELAY * (2 ** attempt) + random.uniform(0, 0.5)
+                logger.debug("重试 %s (%d/%d): %s", domain, attempt + 1, MAX_RETRIES, str(e)[:80])
+                await asyncio.sleep(delay)
+                active_proxy = _proxy_pool.get_proxy() if _proxy_pool else None
+                continue
             logger.info("连接失败", extra={'site': url, 'event': 'connection_error'})
             return False, f"连接失败: {str(e)[:50]}"
         except Exception as e:

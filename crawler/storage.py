@@ -180,9 +180,17 @@ def filter_new_items(items: List[Any], notified: Dict[str, Any]) -> Tuple[List[A
     """
     new_items: List[Any] = []
     new_urls: Set[str] = set()
+    # Handle both dict (production) and set (legacy) formats
+    if isinstance(notified, dict):
+        notified_urls = set(
+            item['url'] if isinstance(item, dict) else item
+            for item in notified.get('items', [])
+        )
+    else:
+        notified_urls = set(notified)
     for item in items:
         item_url = item['url'] if isinstance(item, dict) else item
-        if item_url not in notified:
+        if item_url not in notified_urls:
             new_items.append(item)
             new_urls.add(item_url)
     return new_items, new_urls
