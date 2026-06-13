@@ -1587,10 +1587,6 @@ if ('serviceWorker' in navigator) {
       document.title = base;
     }
   }
-  // Hook into existing status update
-  var origUpdateStatus = updateStatus;
-  // We'll call updateDocumentTitle inside updateStatus by appending
-  // Actually let's just add a call after each renderAll/renderList
   setInterval(updateDocumentTitle, 2000); // lightweight periodic update
 
   // === New Item Count Badge for Notification ===
@@ -1671,6 +1667,12 @@ if ('serviceWorker' in navigator) {
   window.copySiteLink = copySiteLink;
   window.showBookmarkTip = showBookmarkTip;
   window.closePwaBanner = closePwaBanner;
+  window.goToPage = goToPage;
+  window.resetFilters = resetFilters;
+  window.switchView = switchView;
+  window.installApp = installApp;
+  window.selectSource = selectSource;
+  window.toggleCatDropdown = toggleCatDropdown;
 
 } // end of loadData
 
