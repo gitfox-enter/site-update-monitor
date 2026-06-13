@@ -400,6 +400,7 @@ async def main() -> None:
             )
 
     # 5. Save to SQLite
+    added = 0
     if all_new_items:
         added = merge_items_into_db(all_new_items, get_beijing_time().strftime("%Y-%m-%d %H:%M:%S"))
         logger.info("[结果] 新增 %d 条", added)
@@ -412,7 +413,7 @@ async def main() -> None:
     # 7. Log entry
     log_entry: Dict[str, Any] = {
         "time": get_beijing_time().strftime("%Y-%m-%d %H:%M:%S"),
-        "new_items": len(all_new_items),
+        "new_items": added,
         "sites_checked": len(FAST_SITES),
         "metrics": {
             "requests": metrics.request_count,
@@ -449,7 +450,7 @@ async def main() -> None:
             result = subprocess.run(
                 [
                     "git", "commit", "-m",
-                    f"快速更新: 新增 {len(all_new_items)} 条线报 "
+                    f"快速更新: 新增 {added} 条线报 "
                     f"({get_beijing_time().strftime('%H:%M')})",
                 ],
                 capture_output=True,

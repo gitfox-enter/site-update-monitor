@@ -29,7 +29,7 @@ from common import (
 from crawler.config import JS_RENDER_SITES, MAX_CONSECUTIVE_FAILURES, MAX_RETRIES, PAUSED_SITES_FILE, REQUEST_TIMEOUT, RETRY_BASE_DELAY, RUN_LOG_FILE, MONITOR_SITES, is_dead_site, get_source_name, get_site_tier
 from crawler.storage import get_current_round, load_notified_items, save_notified_items, filter_new_items, merge_items_into_db, load_hash_records, save_hash_records, export_items_latest_json, get_random_delay, get_random_profile, get_referer
 from crawler.network import MetricsTracker, metrics, CircuitBreaker, circuit_breaker, get_conditional_headers, rate_limiter, is_allowed_by_robots, update_conditional_cache
-from crawler.parsers import _match_parser, extract_article_items, parse_rss_feed, parse_ghxi_items, fetch_page_content
+from crawler.parsers import _match_parser, extract_article_items, parse_rss_feed, parse_ghxi_items, fetch_page_content, fetch_ghxi_items_async
 
 # Playwright: optional dependency for JS-rendered sites
 try:
@@ -140,21 +140,52 @@ def _parse_response_html(
     encoding: str,
     url: str,
     elapsed: float = 0.0,
+    ghxi_items: Optional[List[Dict[str, str]]] = None,
 ) -> Tuple[bool, Any]:
     """Parse HTML response bytes → extracted content dict or error.
 
     Shared by both Playwright and aiohttp fetch paths.
     Returns (True, result_dict) on success, (False, error_msg) on failure.
+
+    Args:
+        ghxi_items: Optional pre-fetched items from ghxi.com WP API
+                     (avoids blocking event loop with sync requests.get in async path).
     """
     soup = BeautifulSoup(content, 'html.parser')
 
-    # Encoding fallback when BS4 auto-detection fails (common for Chinese GB* sites)
-    if not soup.original_encoding:
+    # Encoding fallback: BS4 may misdetect Chinese pages as ISO-8859-1 / Windows-1252
+    # when the HTML lacks a <meta charset> tag. Re-decode if:
+    #   1. BS4 detected no encoding at all, OR
+    #   2. BS4 detected a Western/latin encoding but the page is likely Chinese
+    detected_enc = (soup.original_encoding or '').lower()
+    western_encodings = ('iso-8859-1', 'iso-8859-2', 'windows-1252', 'latin-1', 'latin1', 'ascii')
+    needs_redecode = not detected_enc or detected_enc in western_encodings
+    if needs_redecode:
+        # Use the passed encoding hint, or try to detect from content
         enc = encoding or 'utf-8'
         if enc.lower() in ('gb2312', 'gbk', 'gb18030'):
             enc = 'gbk'
-        decoded = content.decode(enc, errors='ignore')
-        soup = BeautifulSoup(decoded, 'html.parser')
+        # Heuristic: if a significant fraction of bytes are > 127, it's likely multi-byte
+        if detected_enc in western_encodings and enc == 'utf-8':
+            try:
+                high_bytes = sum(1 for b in content[:4096] if b > 127)
+                if high_bytes > len(content[:4096]) * 0.1:
+                    # Try GBK first for Chinese sites, fall back to utf-8
+                    try:
+                        decoded = content.decode('gbk', errors='strict')
+                        soup = BeautifulSoup(decoded, 'html.parser')
+                    except (UnicodeDecodeError, LookupError):
+                        decoded = content.decode('utf-8', errors='ignore')
+                        soup = BeautifulSoup(decoded, 'html.parser')
+                else:
+                    decoded = content.decode(enc, errors='ignore')
+                    soup = BeautifulSoup(decoded, 'html.parser')
+            except Exception:
+                decoded = content.decode(enc, errors='ignore')
+                soup = BeautifulSoup(decoded, 'html.parser')
+        else:
+            decoded = content.decode(enc, errors='ignore')
+            soup = BeautifulSoup(decoded, 'html.parser')
 
     title_tag = soup.find('title')
     title = title_tag.get_text(strip=True) if title_tag else url
@@ -167,14 +198,19 @@ def _parse_response_html(
         article_items = parse_rss_feed(content, url)
         text = '\n'.join(item['text'] for item in article_items)
     elif 'ghxi.com' in url:
-        article_items = parse_ghxi_items(soup, url)
-        if article_items:
+        # Use pre-fetched async items if available, otherwise fall back to sync API call
+        if ghxi_items is not None:
+            article_items = ghxi_items
             text = '\n'.join(item['text'] for item in article_items)
         else:
+            article_items = parse_ghxi_items(soup, url)
+        if not article_items:
             article_items = extract_article_items(soup, url)
             body = soup.find('body')
             text = body.get_text(separator=' ', strip=True) if body else ''
             text = ' '.join(text.split())
+        elif ghxi_items is None:
+            text = '\n'.join(item['text'] for item in article_items)
     elif parser_pair is not None:
         items_parser, text_parser = parser_pair
         article_items = items_parser(soup, url)
@@ -415,8 +451,13 @@ async def fetch_page_content_async(
     metrics.record_success(domain, elapsed)
 
     # Parse HTML response (shared logic)
+    # For ghxi.com: pre-fetch WP API items asynchronously to avoid blocking the event loop
+    ghxi_pre_fetched = None
+    if 'ghxi.com' in url:
+        ghxi_pre_fetched = await fetch_ghxi_items_async(session)
     ok, parse_result = _parse_response_html(
         response.content, response.encoding, url, elapsed,
+        ghxi_items=ghxi_pre_fetched,
     )
     if not ok:
         return False, parse_result
@@ -718,7 +759,7 @@ def save_paused_sites(paused: Dict[str, Any]) -> None:
 
 
 
-def export_crawl_status(all_site_results, new_item_list, metrics_summary, output_path=None):
+def export_crawl_status(all_site_results, new_item_list, metrics_summary, output_path=None, added_count=0):
     """Export crawl_status.json for the health dashboard."""
     _output_path = output_path or CRAWL_STATUS_FILE
     sites = []
@@ -740,7 +781,7 @@ def export_crawl_status(all_site_results, new_item_list, metrics_summary, output
         "last_run": {
             "check_time": new_item_list[0].get("time", "") if new_item_list else "",
             "total_items": total_items,
-            "new_items": len(new_item_list),
+            "new_items": added_count,
             "metrics": metrics_summary,
         },
         "sites": sites,
@@ -1000,23 +1041,25 @@ async def main_async() -> None:
                         'source': src_name,
                         'time': check_time,
                     })
+    # Insert new items to SQLite (also adds 'category' field to items in-place)
+    added = 0
+    if new_item_list:
+        added = merge_items_into_db(new_item_list, check_time)
+        logger.info("SQLite 新增 %d 条线报", added)
+
+    # Save notified items AFTER merge so they include 'category' field
     save_notified_items({
         'items': new_item_list,
         'updated_at': check_time,
     })
-
-    # Insert new items to SQLite
-    if new_item_list:
-        added = merge_items_into_db(new_item_list, check_time)
-        logger.info("SQLite 新增 %d 条线报", added)
 
     # 计算本轮新增URL数
     existing_urls_set = set(item['url'] for item in (notified.get('items', []) if isinstance(notified, dict) else []))
     new_urls = set(item['url'] for item in new_item_list if item['url'] not in existing_urls_set)
     logger.info("本轮新通知条目: %d 条", len(new_urls))
 
-    # Git提交
-    export_crawl_status(all_site_results, new_item_list, metrics_summary)
+    # Git提交 - use actual added count from merge_result, not raw new_item_list length
+    export_crawl_status(all_site_results, new_item_list, metrics_summary, added_count=added)
     git_commit_if_changed()
 
     # ===== 运行后自分析 =====

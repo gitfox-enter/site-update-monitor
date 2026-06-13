@@ -7,6 +7,7 @@ import time
 import random
 import html as html_mod
 import requests
+import aiohttp
 from typing import Any, Dict, List, Optional, Set, Tuple
 from urllib.parse import urljoin, urlparse
 
@@ -774,8 +775,8 @@ def parse_rss_feed(content_bytes: bytes, base_url: str) -> List[Dict[str, str]]:
 
 
 
-def parse_ghxi_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str]]:
-    """果核剥壳 - 通过 WordPress REST API 获取文章（站点为 Vue SPA，HTML 无法直接解析）"""
+def _ghxi_fetch_sync() -> List[Dict[str, str]]:
+    """果核剥壳 WP API 同步请求（供 sync 路径使用）。"""
     api_url = "https://www.ghxi.com/wp-json/wp/v2/posts?per_page=30"
     headers = {
         'User-Agent': get_random_ua(),
@@ -798,6 +799,44 @@ def parse_ghxi_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str]]
     except Exception as e:
         logger.info("果核剥壳 WP API 请求失败: %s", e)
     return items
+
+
+async def fetch_ghxi_items_async(session) -> List[Dict[str, str]]:
+    """果核剥壳 WP API 异步请求（供 async 路径使用，避免阻塞事件循环）。"""
+    api_url = "https://www.ghxi.com/wp-json/wp/v2/posts?per_page=30"
+    headers = {
+        'User-Agent': get_random_ua(),
+        'Accept': 'application/json, */*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+    }
+    items: List[Dict[str, str]] = []
+    try:
+        async with session.get(
+            api_url,
+            headers=headers,
+            timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT),
+        ) as resp:
+            if resp.status == 200:
+                posts = await resp.json()
+                for post in posts:
+                    title = html_mod.unescape(post.get('title', {}).get('rendered', ''))
+                    link = post.get('link', '')
+                    if title and len(title) > 3 and link:
+                        items.append({'text': title, 'url': link})
+                logger.info("果核剥壳 WP API (async) 获取到 %d 篇文章", len(items))
+            else:
+                logger.info("果核剥壳 WP API (async) 返回 HTTP %d", resp.status)
+    except Exception as e:
+        logger.info("果核剥壳 WP API (async) 请求失败: %s", e)
+    return items
+
+
+def parse_ghxi_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str]]:
+    """果核剥壳 - 通过 WordPress REST API 获取文章（站点为 Vue SPA，HTML 无法直接解析）
+
+    注意：此函数仅用于同步路径。异步路径应使用 fetch_ghxi_items_async。
+    """
+    return _ghxi_fetch_sync()
 
 
 def parse_ym2cc_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str]]:
