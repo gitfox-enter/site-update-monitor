@@ -1134,14 +1134,14 @@ function isNoiseItem(item) {
   if (!item || !item.url) return false;
   var url = item.url;
   /* Navigation / non-content page patterns */
-  if (/forum\.php/i.test(url)) return true;
+  if (/\bforum\.php\?/i.test(url) && !/mod=redirect/i.test(url)) return true;
   if (/xianbao-my\.html/i.test(url)) return true;
   if (/xianbao-day\.html/i.test(url)) return true;
   if (/member\.php\?mod=logging/i.test(url)) return true;
   if (/beian\.miit\.gov\.cn/i.test(url)) return true;
   if (/beian\.mps\.gov\.cn/i.test(url)) return true;
   /* ICP/micp registration text patterns */
-  if (item.text && /鲁ICP|鲁公网安备|粤ICP|京ICP|苏ICP/.test(item.text)) return true;
+  if (item.text && /(?:[京津沪渝冀晋辽吉黑苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云藏陕甘青宁新]ICP|[京津沪渝冀晋辽吉黑苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云藏陕甘青宁新]公网安备)/.test(item.text)) return true;
   return false;
 }
 
