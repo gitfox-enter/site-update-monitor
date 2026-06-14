@@ -264,7 +264,6 @@ def get_source_name(url: str) -> Optional[str]:
 HASH_RECORD_FILE = "hash_record.txt"
 NOTIFIED_ITEMS_FILE = "notified_items.json"  # 记录已通知过的条目URL，避免重复推送
 RUN_LOG_FILE = "run_log.jsonl"  # 每轮运行日志（JSONL格式），用于追踪历史与自检
-FAILED_SITES_FILE = "failed_sites.json"  # 连续失败站点记录，用于监控分析
 MAX_ITEMS_DB = 0  # 0 = 无上限，仅按7天时间窗口保留（与 common.py 保持一致）
 
 # 自适应 Tier 策略配置
