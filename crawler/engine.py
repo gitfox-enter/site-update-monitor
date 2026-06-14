@@ -26,10 +26,10 @@ from common import (
     sanitize_text, is_junk, ITEMS_DB_FILE, BLACKLIST_FILE, CRAWL_STATUS_FILE, MAX_ITEMS_DB,
     ProxyPool, create_proxy_pool,
 )
-from crawler.config import JS_RENDER_SITES, MAX_RETRIES, REQUEST_TIMEOUT, RETRY_BASE_DELAY, RUN_LOG_FILE, MONITOR_SITES, is_dead_site, get_source_name, get_site_tier, init_adaptive_tiers, update_adaptive_tier, save_adaptive_tiers, get_all_adaptive_tiers
+from crawler.config import JS_RENDER_SITES, MAX_RETRIES, REQUEST_TIMEOUT, RETRY_BASE_DELAY, RUN_LOG_FILE, MONITOR_SITES, is_dead_site, get_source_name, get_site_tier, init_adaptive_tiers, update_adaptive_tier, save_adaptive_tiers, get_all_adaptive_tiers, RSS_FIRST_SITES
 from crawler.storage import get_current_round, load_notified_items, save_notified_items, filter_new_items, merge_items_into_db, load_hash_records, save_hash_records, export_items_latest_json, get_random_delay, get_random_profile, get_referer
 from crawler.network import MetricsTracker, metrics, get_conditional_headers, rate_limiter, is_allowed_by_robots, update_conditional_cache
-from crawler.parsers import _match_parser, extract_article_items, parse_rss_feed, parse_ghxi_items, fetch_page_content, fetch_ghxi_items_async
+from crawler.parsers import _match_parser, extract_article_items, parse_rss_feed, parse_ghxi_items, fetch_page_content, fetch_ghxi_items_async, fetch_rss_feed_async
 
 # Playwright: optional dependency for JS-rendered sites
 try:
@@ -198,10 +198,9 @@ def _parse_response_html(
         article_items = parse_rss_feed(content, url)
         text = '\n'.join(item['text'] for item in article_items)
     elif 'ghxi.com' in url:
-        # Use pre-fetched async items if available, otherwise fall back to sync API call
+        # 兜底：同步路径仍可能走到这里，异步路径已在 fetch_page_content_async 中直接处理
         if ghxi_items is not None:
             article_items = ghxi_items
-            text = '\n'.join(item['text'] for item in article_items)
         else:
             article_items = parse_ghxi_items(soup, url)
         if not article_items:
@@ -209,7 +208,7 @@ def _parse_response_html(
             body = soup.find('body')
             text = body.get_text(separator=' ', strip=True) if body else ''
             text = ' '.join(text.split())
-        elif ghxi_items is None:
+        else:
             text = '\n'.join(item['text'] for item in article_items)
     elif parser_pair is not None:
         items_parser, text_parser = parser_pair
@@ -298,6 +297,50 @@ async def fetch_page_content_async(
         pw_encoding = 'utf-8'
         return _parse_response_html(pw_result.encode(pw_encoding), pw_encoding, url, elapsed)
 
+    # === ghxi.com: 直接请求 WP API，跳过无意义的首页 HTML ===
+    if 'ghxi.com' in url:
+        logger.info("WP API 直接抓取: %s", url, extra={'site': url, 'event': 'api_direct'})
+        start_time = time.time()
+        ghxi_items = await fetch_ghxi_items_async(session)
+        elapsed = time.time() - start_time
+        if ghxi_items:
+            metrics.record_success(domain, elapsed)
+            text = '\n'.join(item['text'] for item in ghxi_items)
+            new_hash = calculate_md5(text)
+            is_updated, new_hash, msg = _check_update(url, new_hash, old_records)
+            return True, {
+                'url': url, 'title': '果核剥壳', 'summary': '',
+                'items': ghxi_items, 'status': 'updated' if is_updated else 'no_update',
+                'is_updated': is_updated, 'new_hash': new_hash, 'message': msg,
+                'response_time': elapsed,
+            }
+        else:
+            metrics.record_failure(domain)
+            return False, "WP API 请求失败"
+
+    # === RSS 优先站点：绕过主页反爬（403/慢）=== 
+    for domain, feed_url in RSS_FIRST_SITES.items():
+        if domain in url:
+            logger.info("RSS 优先抓取: %s", url, extra={'site': url, 'event': 'rss_direct'})
+            start_time = time.time()
+            rss_items = await fetch_rss_feed_async(session, feed_url)
+            elapsed = time.time() - start_time
+            if rss_items:
+                metrics.record_success(domain, elapsed)
+                text = '\n'.join(item['text'] for item in rss_items)
+                new_hash = calculate_md5(text)
+                is_updated, new_hash, msg = _check_update(url, new_hash, old_records)
+                site_name = get_source_name(url) or domain
+                return True, {
+                    'url': url, 'title': site_name, 'summary': '',
+                    'items': rss_items, 'status': 'updated' if is_updated else 'no_update',
+                    'is_updated': is_updated, 'new_hash': new_hash, 'message': msg,
+                    'response_time': elapsed,
+                }
+            # RSS 失败，回退到普通 HTML 请求
+            logger.info("RSS feed 失败，回退到 HTML 请求: %s", url)
+            break
+
     # === 普通 aiohttp 路径 ===
     profile = get_random_profile()
     headers: Dict[str, str] = {
@@ -309,6 +352,10 @@ async def fetch_page_content_async(
     }
     headers.update(profile.get('fingerprint', {}))
     headers.update(get_conditional_headers(url))
+
+    # 确定超时时间：LOW tier 站点使用更长的超时
+    site_tier = get_site_tier(url)
+    timeout_seconds = REQUEST_TIMEOUT if site_tier == 'high' else REQUEST_TIMEOUT + 15
 
     logger.info("爬取 %s", url, extra={'site': url, 'event': 'crawl_start'})
 
@@ -322,7 +369,7 @@ async def fetch_page_content_async(
             async with session.get(
                 url,
                 headers=headers,
-                timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT),
+                timeout=aiohttp.ClientTimeout(total=timeout_seconds),
                 allow_redirects=True,
                 proxy=active_proxy,
             ) as resp:
@@ -448,13 +495,8 @@ async def fetch_page_content_async(
     metrics.record_success(domain, elapsed)
 
     # Parse HTML response (shared logic)
-    # For ghxi.com: pre-fetch WP API items asynchronously to avoid blocking the event loop
-    ghxi_pre_fetched = None
-    if 'ghxi.com' in url:
-        ghxi_pre_fetched = await fetch_ghxi_items_async(session)
     ok, parse_result = _parse_response_html(
         response.content, response.encoding, url, elapsed,
-        ghxi_items=ghxi_pre_fetched,
     )
     if not ok:
         return False, parse_result

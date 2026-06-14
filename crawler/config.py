@@ -289,6 +289,15 @@ JS_RENDER_SITES: Set[str] = {
     '51kanong.com',       # 反爬虫 JS 重定向页面（"页面重载开启"）
 }
 
+# RSS 优先站点：这些 WordPress 站点的 HTML 主页可能被反爬封禁（403）或加载慢，
+# 但 RSS feed（/feed/）端点通常无限制且更轻量。
+# 格式：{域名: RSS feed URL}
+RSS_FIRST_SITES: Dict[str, str] = {
+    'foxirj.com':     'https://www.foxirj.com/feed/',
+    'appinn.com':     'https://www.appinn.com/feed/',
+    'thosefree.com':  'https://www.thosefree.com/feed/',
+}
+
 # robots.txt 合规配置
 RESPECT_ROBOTS_TXT: bool = False  # 是否遵守 robots.txt（线报站 robots.txt 通常过严，个人监控工具建议关闭）
 

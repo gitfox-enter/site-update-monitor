@@ -814,7 +814,7 @@ async def fetch_ghxi_items_async(session) -> List[Dict[str, str]]:
         async with session.get(
             api_url,
             headers=headers,
-            timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT),
+            timeout=aiohttp.ClientTimeout(total=30),
         ) as resp:
             if resp.status == 200:
                 posts = await resp.json()
@@ -829,6 +829,43 @@ async def fetch_ghxi_items_async(session) -> List[Dict[str, str]]:
     except Exception as e:
         logger.info("果核剥壳 WP API (async) 请求失败: %s", e)
     return items
+
+
+async def fetch_rss_feed_async(session, feed_url: str, timeout_seconds: int = 25) -> List[Dict[str, str]]:
+    """异步获取并解析 RSS/Atom feed。
+
+    用于绕过主页 HTML 反爬策略（如 foxirj.com 的 403），
+    RSS 端点通常不受 IP 封锁影响。
+
+    Args:
+        session: aiohttp ClientSession
+        feed_url: RSS feed 完整 URL（如 https://www.foxirj.com/feed/）
+        timeout_seconds: 超时时间
+    Returns:
+        解析后的条目列表，失败返回空列表
+    """
+    headers = {
+        'User-Agent': get_random_ua(),
+        'Accept': 'application/rss+xml, application/xml, text/xml, */*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+        'Accept-Encoding': 'gzip, deflate',
+    }
+    try:
+        async with session.get(
+            feed_url,
+            headers=headers,
+            timeout=aiohttp.ClientTimeout(total=timeout_seconds),
+        ) as resp:
+            if resp.status == 200:
+                content = await resp.read()
+                items = parse_rss_feed(content, feed_url)
+                logger.info("RSS feed %s 获取到 %d 条", feed_url, len(items))
+                return items
+            else:
+                logger.info("RSS feed %s 返回 HTTP %d", feed_url, resp.status)
+    except Exception as e:
+        logger.info("RSS feed %s 请求失败: %s", feed_url, e)
+    return []
 
 
 def parse_ghxi_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str]]:
