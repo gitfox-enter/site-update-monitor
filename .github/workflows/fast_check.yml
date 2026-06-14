@@ -46,13 +46,26 @@ jobs:
       - name: 提交变更
         run: |
           set +e
-          git add items.json items_latest.json crawl_status.json hash_record.txt notified_items.json adaptive_tiers.json monitor.db 2>/dev/null || true
+
+          # 总是添加 crawl_status.json，确保网页显示最后爬取时间
+          git add crawl_status.json 2>/dev/null || true
+          # 其他文件按需添加
+          git add items.json items_latest.json hash_record.txt notified_items.json adaptive_tiers.json monitor.db 2>/dev/null || true
+
           git status
           if git diff --staged --quiet 2>/dev/null; then
             echo "No changes to commit"
             exit 0
           fi
-          git commit -m "fast-check: $(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')"
+
+          # 检查是否有新内容（items.json 有变更）
+          if git diff --staged --name-only | grep -q "items.json"; then
+            COMMIT_MSG="fast-check: $(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')"
+          else
+            COMMIT_MSG="状态更新: $(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')"
+          fi
+
+          git commit -m "$COMMIT_MSG"
           push_success=false
           for i in 1 2 3 4 5; do
             echo "=== Push attempt $i ==="
