@@ -1,103 +1,103 @@
 {
   "https://www.12345pro.com/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://cjx8.com/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://axutongxue.net/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://xianbao.icu/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://www.huifabu.cn/": {
-    "tier": "medium",
+    "tier": "high",
     "success_streak": 0,
     "fail_streak": 0,
-    "updated_at": "2026-06-15 01:28:17"
+    "updated_at": "2026-06-15 05:22:36"
   },
   "https://xianbaomi.com/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://www.007ymd.com/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://news.ixbk.fun/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://www.h6room.com/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://www.daydayzhuan.com/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://news.ixbk.net/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://b1.ymxianbao.cn/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://yangmao.wang/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://v1.xianbao.net/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://xzba.cc/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://www.iqnew.com/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://www.wycad.com/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://www.yangmaodang.club/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://www.zhuanyes.com/xianbao/": {
     "tier": "high",
-    "success_streak": 6,
+    "success_streak": 7,
     "fail_streak": 0
   },
   "https://www.baicaio.com/": {
     "tier": "high",
-    "success_streak": 3,
+    "success_streak": 4,
     "fail_streak": 0,
     "updated_at": "2026-06-14 20:05:44"
   },
@@ -109,43 +109,43 @@
   },
   "https://www.douban.com/group/711811/": {
     "tier": "high",
-    "success_streak": 2,
+    "success_streak": 3,
     "fail_streak": 0,
     "updated_at": "2026-06-14 23:53:31"
   },
   "https://www.bacaoo.com/": {
     "tier": "high",
-    "success_streak": 3,
+    "success_streak": 4,
     "fail_streak": 0,
     "updated_at": "2026-06-14 20:05:44"
   },
   "https://10000yun.com/": {
     "tier": "high",
-    "success_streak": 3,
+    "success_streak": 4,
     "fail_streak": 0,
     "updated_at": "2026-06-14 20:05:44"
   },
   "https://www.wobangzhao.com/": {
     "tier": "high",
-    "success_streak": 2,
+    "success_streak": 3,
     "fail_streak": 0,
     "updated_at": "2026-06-14 23:53:31"
   },
   "https://www.ithome.com/zt/xijiayi": {
     "tier": "high",
-    "success_streak": 2,
+    "success_streak": 3,
     "fail_streak": 0,
     "updated_at": "2026-06-14 23:53:31"
   },
   "https://www.ziyuanting.com/": {
     "tier": "high",
-    "success_streak": 2,
+    "success_streak": 3,
     "fail_streak": 0,
     "updated_at": "2026-06-14 23:53:31"
   },
   "https://www.huodong5.com/": {
     "tier": "high",
-    "success_streak": 2,
+    "success_streak": 3,
     "fail_streak": 0,
     "updated_at": "2026-06-14 23:53:31"
   },
@@ -157,19 +157,19 @@
   },
   "https://www.manmanbuy.com/": {
     "tier": "high",
-    "success_streak": 3,
+    "success_streak": 4,
     "fail_streak": 0,
     "updated_at": "2026-06-14 20:05:44"
   },
   "https://www.yxssp.com/": {
     "tier": "high",
-    "success_streak": 2,
+    "success_streak": 3,
     "fail_streak": 0,
     "updated_at": "2026-06-14 23:53:31"
   },
   "https://m.hybase.com/": {
     "tier": "high",
-    "success_streak": 2,
+    "success_streak": 3,
     "fail_streak": 0,
     "updated_at": "2026-06-14 23:53:31"
   }
