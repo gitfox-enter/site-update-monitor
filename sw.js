@@ -1,4 +1,4 @@
-const CACHE_NAME = 'xianbao-v10';
+const CACHE_NAME = 'xianbao-v11';
 const BASE = new URL('.', self.location.href).pathname.replace(/\/$/, '');
 const ASSETS = [
   BASE + '/index.html',
@@ -8,7 +8,7 @@ const ASSETS = [
   BASE + '/status.html',
   BASE + '/alipay-redpacket.html'
 ];
-const POLL_INTERVAL = 5 * 60 * 1000; // 5 minutes
+const POLL_INTERVAL = 15 * 60 * 1000; // 15 minutes (爬虫最快2小时更新，15分钟检查一次足够)
 const NOTIFICATION_TAG = 'xianbao-update';
 const LAST_COUNT_KEY = 'xb_last_item_count';
 let lastItemCount = 0;
