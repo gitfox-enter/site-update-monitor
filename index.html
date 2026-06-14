@@ -839,7 +839,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 
 <script>
 /* Frame-busting for clickjacking protection */
-if(window.top!==window.self){try{window.top.location=window.location}catch(e){document.body.style.display='none'}}
+if(window.top!==window.self){try{window.top.location=window.location}catch(e){/* blocked by browser, keep page visible */}}
 
 /* ================================================================
    DATA & STATE
@@ -1067,6 +1067,8 @@ function loadData() {
           buildMobileDropdown();
           renderList();
           updateStatus();
+          // Sync localStorage count with full dataset (no badge flash)
+          try { localStorage.setItem('xb_last_count', String(allItems.length)); } catch(e) {}
         }
       }).catch(function() { /* full load failed, latest is enough */ });
       renderAll();
@@ -1074,8 +1076,9 @@ function loadData() {
       checkNewItems();
     })
     .catch(function(err) {
-      document.getElementById('item-list').innerHTML =
-        '<div class="list-empty">加载失败，请刷新重试<br><small>' + err.message + '</small></div>';
+      var el = document.getElementById('item-list');
+      el.innerHTML = '<div class="list-empty">加载失败，请刷新重试<br><small></small></div>';
+      el.querySelector('small').textContent = err.message || '未知错误';
     });
 
 /* ================================================================
@@ -1412,7 +1415,7 @@ function esc(s) {
 }
 function escAttr(s) {
   if (!s) return '';
-  return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return s.replace(/\\/g, '\\\\').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 /* ================================================================

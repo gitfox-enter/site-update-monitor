@@ -3431,14 +3431,14 @@ class TestRedirectHtml(unittest.TestCase):
         # goToUrl should be assigned to window.goToUrl
         self.assertIn('window.goToUrl = function', html,
                          'goToUrl not exposed on window')
-        self.assertIn('window.copyOriginalUrl = function', html,
-                         'copyOriginalUrl not exposed on window')
+        self.assertIn('window.copyShareUrl = function', html,
+                         'copyShareUrl not exposed on window')
 
     def test_onclick_references_exist(self):
         with open(os.path.join(PROJECT_DIR, 'redirect.html'), 'r', encoding='utf-8') as f:
             html = f.read()
         self.assertIn('onclick="goToUrl()"', html)
-        self.assertIn('onclick="copyOriginalUrl()"', html)
+        self.assertIn('onclick="copyShareUrl()"', html)
 
 
 # ===================================================================

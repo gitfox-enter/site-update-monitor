@@ -25,7 +25,6 @@
       "type": "image/svg+xml"
     }
   ],
-  "permissions": ["notifications"],
   "shortcuts": [
     {
       "name": "今日线报",

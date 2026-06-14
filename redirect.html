@@ -142,7 +142,7 @@ a{color:inherit;text-decoration:none}
     <!-- Original URL display -->
     <div class="url-box">
       <div class="url-label">目标网址</div>
-      <div class="url-text" id="url-display" onclick="copyOriginalUrl()" title="点击复制原始链接">https://example.com</div>
+      <div class="url-text" id="url-display" onclick="copyShareUrl()" title="点击复制本页分享链接">https://example.com</div>
       <div class="url-copy-hint">👆 点击上方链接可复制网址</div>
     </div>
 
@@ -195,7 +195,7 @@ a{color:inherit;text-decoration:none}
   urlDisplay.textContent = targetUrl;
 
   // Copy the redirect page URL (our link for引流)
-  window.copyOriginalUrl = function() {
+  window.copyShareUrl = function() {
     var myUrl = window.location.href;
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(myUrl).then(function() {

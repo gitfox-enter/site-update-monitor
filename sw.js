@@ -15,9 +15,8 @@ let lastItemCount = 0;
 // === Install & Activate ===
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)).then(function() { return self.skipWaiting(); })
   );
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', e => {
@@ -97,8 +96,7 @@ self.addEventListener('notificationclick', e => {
   );
 });
 
-// === Polling: check items_latest.json for new items ===
-
+// === Polling: check items_latest.json for new items (managed by page, not SW) ===
 
 // === Message handler from page ===
 let pollingEnabled = true;
