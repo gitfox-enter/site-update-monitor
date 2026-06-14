@@ -26,9 +26,9 @@ from common import (
     sanitize_text, is_junk, ITEMS_DB_FILE, BLACKLIST_FILE, CRAWL_STATUS_FILE, MAX_ITEMS_DB,
     ProxyPool, create_proxy_pool,
 )
-from crawler.config import JS_RENDER_SITES, MAX_CONSECUTIVE_FAILURES, MAX_RETRIES, PAUSED_SITES_FILE, REQUEST_TIMEOUT, RETRY_BASE_DELAY, RUN_LOG_FILE, MONITOR_SITES, is_dead_site, get_source_name, get_site_tier, init_adaptive_tiers, update_adaptive_tier, save_adaptive_tiers, get_all_adaptive_tiers
+from crawler.config import JS_RENDER_SITES, MAX_RETRIES, REQUEST_TIMEOUT, RETRY_BASE_DELAY, RUN_LOG_FILE, MONITOR_SITES, is_dead_site, get_source_name, get_site_tier, init_adaptive_tiers, update_adaptive_tier, save_adaptive_tiers, get_all_adaptive_tiers
 from crawler.storage import get_current_round, load_notified_items, save_notified_items, filter_new_items, merge_items_into_db, load_hash_records, save_hash_records, export_items_latest_json, get_random_delay, get_random_profile, get_referer
-from crawler.network import MetricsTracker, metrics, CircuitBreaker, circuit_breaker, get_conditional_headers, rate_limiter, is_allowed_by_robots, update_conditional_cache
+from crawler.network import MetricsTracker, metrics, get_conditional_headers, rate_limiter, is_allowed_by_robots, update_conditional_cache
 from crawler.parsers import _match_parser, extract_article_items, parse_rss_feed, parse_ghxi_items, fetch_page_content, fetch_ghxi_items_async
 
 # Playwright: optional dependency for JS-rendered sites
@@ -278,11 +278,6 @@ async def fetch_page_content_async(
     parsed = urlparse(url)
     domain = parsed.hostname or parsed.netloc
 
-    # Circuit breaker check
-    if circuit_breaker.is_open(domain):
-        logger.info("熔断器打开，跳过该域名", extra={'site': domain, 'event': 'circuit_breaker_open'})
-        return False, "熔断器已打开（连续失败过多）"
-
     # robots.txt check
     if not is_allowed_by_robots(url):
         return False, "robots.txt 禁止爬取"
@@ -297,7 +292,6 @@ async def fetch_page_content_async(
         pw_ok, pw_result = await fetch_with_playwright(url)
         elapsed = time.time() - start_time
         if not pw_ok:
-            circuit_breaker.record_failure(domain)
             metrics.record_failure(domain)
             return False, f"Playwright 抓取失败: {pw_result[:80]}"
 
@@ -355,7 +349,6 @@ async def fetch_page_content_async(
                         _proxy_pool.report_success(active_proxy)
                     break
                 elif resp.status == 304:
-                    circuit_breaker.record_success(domain)
                     if active_proxy and _proxy_pool:
                         _proxy_pool.report_success(active_proxy)
                     return False, "304 页面未变更"
@@ -398,7 +391,6 @@ async def fetch_page_content_async(
                     break
 
         except asyncio.TimeoutError:
-            circuit_breaker.record_failure(domain)
             metrics.record_failure(domain)
             if active_proxy and _proxy_pool:
                 _proxy_pool.report_failure(active_proxy)
@@ -410,7 +402,6 @@ async def fetch_page_content_async(
             logger.info("请求超时", extra={'site': url, 'event': 'timeout'})
             return False, "请求超时"
         except aiohttp.ClientError as e:
-            circuit_breaker.record_failure(domain)
             metrics.record_failure(domain)
             if active_proxy and _proxy_pool:
                 _proxy_pool.report_failure(active_proxy)
@@ -423,7 +414,6 @@ async def fetch_page_content_async(
             logger.info("连接失败", extra={'site': url, 'event': 'connection_error'})
             return False, f"连接失败: {str(e)[:50]}"
         except Exception as e:
-            circuit_breaker.record_failure(domain)
             metrics.record_failure(domain)
             if active_proxy and _proxy_pool:
                 _proxy_pool.report_failure(active_proxy)
@@ -448,7 +438,6 @@ async def fetch_page_content_async(
     update_conditional_cache(url, SimpleNamespace(headers=response.headers))
 
     if response.status != 200:
-        circuit_breaker.record_failure(domain)
         metrics.record_failure(domain)
         logger.info("HTTP 请求失败", extra={
             'site': url, 'event': 'http_error',
@@ -456,7 +445,6 @@ async def fetch_page_content_async(
         })
         return False, f"HTTP {response.status}"
 
-    circuit_breaker.record_success(domain)
     metrics.record_success(domain, elapsed)
 
     # Parse HTML response (shared logic)
@@ -739,33 +727,6 @@ def analyze_and_fix(run_result: Dict[str, Any]) -> List[Dict[str, str]]:
     return issues_found
 
 
-# ============================================================
-# 暂停站点管理（自动移除/恢复连续失败站点）
-# ============================================================
-
-def load_paused_sites() -> Dict[str, Any]:
-    """加载被暂停的站点 {url: {'paused_at': '...', 'reason': '...', 'fail_count': N}}"""
-    if os.path.exists(PAUSED_SITES_FILE):
-        try:
-            with open(PAUSED_SITES_FILE, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except Exception:
-            pass
-    return {}
-
-
-def save_paused_sites(paused: Dict[str, Any]) -> None:
-    """保存暂停站点（原子写入）"""
-    tmp_file = PAUSED_SITES_FILE + '.tmp'
-    try:
-        with open(tmp_file, 'w', encoding='utf-8') as f:
-            json.dump(paused, f, ensure_ascii=False, indent=2)
-        os.replace(tmp_file, PAUSED_SITES_FILE)
-    except Exception as e:
-        logger.warning("暂停站点保存失败: %s", e)
-        if os.path.exists(tmp_file):
-            os.remove(tmp_file)
-
 
 
 def export_crawl_status(all_site_results, new_item_list, metrics_summary, output_path=None, added_count=0):
@@ -897,15 +858,11 @@ async def main_async() -> None:
     if filtered_by_blacklist:
         logger.info("黑名单过滤 %d 个站点: %s", len(filtered_by_blacklist), ', '.join(filtered_by_blacklist))
 
-    # 加载暂停站点（已关闭自动暂停，保留兼容）
-    paused = load_paused_sites()
-    paused_urls = set(paused.keys())
-
     # 加载自适应 tier 记录
     init_adaptive_tiers()
 
     # 实际监控列表
-    active_sites = [upgrade_to_https(url) for url in monitor_sites if url not in paused_urls]
+    active_sites = [upgrade_to_https(url) for url in monitor_sites]
     
     # === 分级爬取：根据轮次决定本次爬取哪些站点 ===
     # high: 每轮都爬, medium: 每2轮爬一次, low: 每4轮爬一次
@@ -919,10 +876,8 @@ async def main_async() -> None:
     if skipped:
         logger.info("分级过滤跳过 %d 个站点 (medium/low 本轮不爬)", skipped)
     
-    logger.info("监控站点数: %d (活跃) + %d (黑名单) + %d (暂停)",
-                len(active_sites), len(blacklist_domains), len(paused_urls))
-    if paused_urls:
-        logger.info("暂停站点: %s", ', '.join(paused_urls))
+    logger.info("监控站点数: %d (活跃) + %d (黑名单)",
+                len(active_sites), len(blacklist_domains))
 
     # 加载已通知过的条目URL（去重用）
     notified = load_notified_items()
@@ -1005,21 +960,11 @@ async def main_async() -> None:
             'message': result['message'],
         })
 
-    # 添加暂停站点到结果列表
-    for url in paused_urls:
-        all_site_results.append({
-            'url': url,
-            'title': url,
-            'summary': '',
-            'status': 'paused',
-            'message': paused[url].get('reason', '已暂停'),
-        })
-
     # === 自适应 Tier 调整：根据爬取结果升级/降级 ===
     tier_changes = []
     for r in all_site_results:
         url = r['url']
-        if r['status'] in ('dead', 'paused', 'robots_denied'):
+        if r['status'] in ('dead', 'robots_denied'):
             continue
         is_fail = r['status'] == 'error'
         has_items = r['status'] in ('updated', 'first')
@@ -1048,12 +993,6 @@ async def main_async() -> None:
     metrics_summary = metrics.get_summary()
     logger.info("总请求: %d | 成功: %d | 失败: %d",
                 metrics_summary['total_requests'], metrics_summary['success_count'], metrics_summary['fail_count'])
-
-    # 输出熔断器状态
-    cb_status = circuit_breaker.get_status()
-    open_circuits = {d: c for d, c in cb_status.items() if MAX_CONSECUTIVE_FAILURES > 0 and c >= MAX_CONSECUTIVE_FAILURES}
-    if open_circuits:
-        logger.warning("已熔断域名: %s", ', '.join(open_circuits.keys()))
 
     # Save hash records
     save_hash_records(new_records)
@@ -1108,7 +1047,6 @@ async def main_async() -> None:
         'error': error_count,
         'robots_denied': robots_denied_count,
         'updated': updated_count,
-        'paused': len(paused_urls),
         'tier_changes': tier_changes,
         'new_items': len(new_urls),
         'errors': errors_detail,

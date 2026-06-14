@@ -2174,12 +2174,11 @@ def fetch_page_content(url: str) -> Tuple[bool, Any]:
     - 每域名 Session 连接池复用
     - Referer 头部增强反爬抗性
     - HTTP 条件请求（ETag / If-Modified-Since）减少带宽
-    - 熔断器自动跳过连续失败域名
     - robots.txt 合规检查
     """
     # Lazy imports to avoid circular dependency (parsers ↔ network ↔ config)
     from crawler.network import (
-        circuit_breaker, is_allowed_by_robots, get_session,
+        is_allowed_by_robots, get_session,
         get_conditional_headers, update_conditional_cache, metrics,
     )
     from crawler.config import MAX_RETRIES, RETRY_BASE_DELAY
@@ -2191,11 +2190,6 @@ def fetch_page_content(url: str) -> Tuple[bool, Any]:
 
     parsed = urlparse(url)
     domain = parsed.hostname or parsed.netloc
-
-    # 熔断器检查：如果该域名连续失败过多，直接跳过
-    if circuit_breaker.is_open(domain):
-        logger.info("熔断器打开，跳过该域名", extra={'site': domain, 'event': 'circuit_breaker_open'})
-        return False, "熔断器已打开（连续失败过多）"
 
     # robots.txt 合规检查
     if not is_allowed_by_robots(url):
@@ -2244,7 +2238,6 @@ def fetch_page_content(url: str) -> Tuple[bool, Any]:
             if response.status_code == 304:
                 logger.info("HTTP 304 Not Modified", extra={'site': url, 'event': 'not_modified'})
                 # 304 时仍视为成功（页面未变更），返回特殊标记
-                circuit_breaker.record_success(domain)
                 return False, "304 页面未变更"
 
             # 403 或 5xx：指数退避重试
@@ -2268,7 +2261,6 @@ def fetch_page_content(url: str) -> Tuple[bool, Any]:
 
         # 检查最终 HTTP 状态码
         if response.status_code != 200:
-            circuit_breaker.record_failure(domain)
             metrics.record_failure(domain)
             logger.info("HTTP 请求失败", extra={
                 'site': url, 'event': 'http_error',
@@ -2276,8 +2268,7 @@ def fetch_page_content(url: str) -> Tuple[bool, Any]:
             })
             return False, f"HTTP {response.status_code}"
 
-        # 请求成功，重置熔断器
-        circuit_breaker.record_success(domain)
+        # 请求成功
         metrics.record_success(domain, elapsed)
 
         # SSRF protection: validate final URL is not internal (after redirects)
@@ -2374,22 +2365,18 @@ def fetch_page_content(url: str) -> Tuple[bool, Any]:
         }
 
     except requests.Timeout:
-        circuit_breaker.record_failure(domain)
         metrics.record_failure(domain)
         logger.info("请求超时", extra={'site': url, 'event': 'timeout'})
         return False, "请求超时"
     except requests.ConnectionError:
-        circuit_breaker.record_failure(domain)
         metrics.record_failure(domain)
         logger.info("连接失败", extra={'site': url, 'event': 'connection_error'})
         return False, "连接失败"
     except requests.RequestException as e:
-        circuit_breaker.record_failure(domain)
         metrics.record_failure(domain)
         logger.info("请求异常", extra={'site': url, 'event': 'request_exception'})
         return False, f"请求异常: {str(e)[:50]}"
     except Exception as e:
-        circuit_breaker.record_failure(domain)
         metrics.record_failure(domain)
         logger.info("未知错误", extra={'site': url, 'event': 'unknown_error'})
         return False, f"未知错误: {str(e)[:50]}"

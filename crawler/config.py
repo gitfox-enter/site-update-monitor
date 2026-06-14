@@ -264,18 +264,13 @@ def get_source_name(url: str) -> Optional[str]:
 HASH_RECORD_FILE = "hash_record.txt"
 NOTIFIED_ITEMS_FILE = "notified_items.json"  # 记录已通知过的条目URL，避免重复推送
 RUN_LOG_FILE = "run_log.jsonl"  # 每轮运行日志（JSONL格式），用于追踪历史与自检
-FAILED_SITES_FILE = "failed_sites.json"  # 连续失败站点记录，自动建议移除
-PAUSED_SITES_FILE = "paused_sites.json"  # 因连续失败被暂停的站点
-
-# 自动移除/恢复配置
-MAX_CONSECUTIVE_FAILURES = 0  # 0 = 关闭自动暂停功能，即使连续失败也不暂停站点
-RECOVERY_CHECK_INTERVAL = 6  # 每 N 轮尝试恢复一次暂停站点（已弃用，保留兼容）
+FAILED_SITES_FILE = "failed_sites.json"  # 连续失败站点记录，用于监控分析
 MAX_ITEMS_DB = 0  # 0 = 无上限，仅按7天时间窗口保留（与 common.py 保持一致）
 
 # 自适应 Tier 策略配置
 ADAPTIVE_TIERS_FILE = "adaptive_tiers.json"  # 自适应 tier 记录
 TIER_PROMOTE_SUCCESS_STREAK = 2  # 连续成功 N 次后升一级
-TIER_DEMOTE_FAIL_STREAK = 2  # 连续失败 N 次后降一级（不会暂停，最多降到 low）
+TIER_DEMOTE_FAIL_STREAK = 2  # 连续失败 N 次后降一级（最多降到 low）
 TIER_PROMOTE_ON_UPDATE = True  # 有新内容产出时立即升一级
 
 # 爬虫配置

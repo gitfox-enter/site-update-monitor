@@ -25,7 +25,6 @@ from crawler.engine import main
 _engine_names = {
     'main', 'check_site_update', 'git_commit_if_changed',
     'load_run_log', 'append_run_log', 'analyze_and_fix',
-    'load_paused_sites', 'save_paused_sites',
     'export_crawl_status',
     '_handle_signal', '_needs_playwright',
     'PLAYWRIGHT_AVAILABLE',

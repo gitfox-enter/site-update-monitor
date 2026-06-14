@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Crawler network layer: session pool, circuit breaker, metrics, conditional requests, robots.txt."""
+"""Crawler network layer: session pool, metrics, conditional requests, robots.txt."""
 
 import logging
 import random
@@ -8,7 +8,7 @@ import time
 from urllib.robotparser import RobotFileParser
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
-from crawler.config import MAX_CONSECUTIVE_FAILURES, RESPECT_ROBOTS_TXT
+from crawler.config import RESPECT_ROBOTS_TXT
 
 import requests
 
@@ -63,52 +63,6 @@ class MetricsTracker:
 # 全局指标实例
 metrics = MetricsTracker()
 
-
-# ============================================================
-# 熔断器（Circuit Breaker）
-# ============================================================
-
-class CircuitBreaker:
-    """
-    简单的域名级熔断器：追踪每个域名的连续失败次数。
-    当连续失败次数超过阈值时，熔断器打开（open），后续请求直接跳过该域名。
-    成功请求会重置失败计数。
-
-    状态说明：
-    - closed: 正常状态，允许请求通过
-    - open: 熔断状态，拒绝请求
-    """
-
-    def __init__(self, failure_threshold: int = MAX_CONSECUTIVE_FAILURES) -> None:
-        self._lock = threading.Lock()
-        self._failures: Dict[str, int] = {}  # domain -> consecutive failure count
-        self._threshold = failure_threshold
-
-    def is_open(self, domain: str) -> bool:
-        """检查某域名的熔断器是否处于打开（拒绝请求）状态。"""
-        with self._lock:
-            if self._threshold <= 0:
-                return False  # 阈值为0表示关闭熔断器
-            return self._failures.get(domain, 0) >= self._threshold
-
-    def record_success(self, domain: str) -> None:
-        """记录成功，重置该域名的连续失败计数。"""
-        with self._lock:
-            self._failures[domain] = 0
-
-    def record_failure(self, domain: str) -> None:
-        """记录失败，递增该域名的连续失败计数。"""
-        with self._lock:
-            self._failures[domain] = self._failures.get(domain, 0) + 1
-
-    def get_status(self) -> Dict[str, int]:
-        """返回所有域名的失败计数快照。"""
-        with self._lock:
-            return dict(self._failures)
-
-
-# 全局熔断器实例
-circuit_breaker = CircuitBreaker()
 
 # Global rate limiter
 rate_limiter = DomainRateLimiter(min_gap=1.0)

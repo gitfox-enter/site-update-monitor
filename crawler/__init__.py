@@ -12,11 +12,11 @@ from crawler.config import (
     NOTIFIED_ITEMS_FILE,
     RUN_LOG_FILE,
     FAILED_SITES_FILE,
-    PAUSED_SITES_FILE,
     ADAPTIVE_TIERS_FILE,
     MAX_ITEMS_DB,
-    MAX_CONSECUTIVE_FAILURES,
-    RECOVERY_CHECK_INTERVAL,
+    TIER_PROMOTE_SUCCESS_STREAK,
+    TIER_DEMOTE_FAIL_STREAK,
+    TIER_PROMOTE_ON_UPDATE,
     MAX_RETRIES,
     RETRY_BASE_DELAY,
     REQUEST_TIMEOUT,
@@ -37,7 +37,6 @@ from crawler.config import (
 
 # --- Network ---
 from crawler.network import (
-    CircuitBreaker,
     MetricsTracker,
     metrics,
 )
@@ -88,7 +87,6 @@ def __getattr__(name):
     _engine_names = {
         'main', 'check_site_update', 'git_commit_if_changed',
         'load_run_log', 'append_run_log', 'analyze_and_fix',
-        'load_paused_sites', 'save_paused_sites',
         'export_crawl_status',
         '_handle_signal', '_needs_playwright',
     }

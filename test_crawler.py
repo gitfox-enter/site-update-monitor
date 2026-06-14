@@ -1414,55 +1414,7 @@ class TestFastCheckAutoCategorize(unittest.TestCase):
 
 
 # ===================================================================
-# 7. CIRCUIT BREAKER / PAUSED SITES TESTS
-# ===================================================================
-
-class TestPausedSitesManagement(unittest.TestCase):
-    """Tests for load_paused_sites / save_paused_sites."""
-
-    def setUp(self):
-        self._tmpdir = tempfile.mkdtemp()
-        self._orig_file = crawl.PAUSED_SITES_FILE
-        self._orig_engine_file = crawler.engine.PAUSED_SITES_FILE
-        new_path = os.path.join(self._tmpdir, "paused_sites.json")
-        crawl.PAUSED_SITES_FILE = new_path
-        crawler.engine.PAUSED_SITES_FILE = new_path
-
-    def tearDown(self):
-        crawl.PAUSED_SITES_FILE = self._orig_file
-        crawler.engine.PAUSED_SITES_FILE = self._orig_engine_file
-        for f in os.listdir(self._tmpdir):
-            os.remove(os.path.join(self._tmpdir, f))
-        os.rmdir(self._tmpdir)
-
-    def test_load_nonexistent_returns_empty(self):
-        missing = os.path.join(self._tmpdir, "missing.json")
-        crawl.PAUSED_SITES_FILE = missing
-        crawler.engine.PAUSED_SITES_FILE = missing
-        result = crawl.load_paused_sites()
-        self.assertEqual(result, {})
-
-    def test_save_and_load(self):
-        paused = {
-            "https://broken.com/": {
-                "paused_at": "2026-06-08 10:00:00",
-                "reason": "连续失败3轮",
-                "fail_count": 3,
-            }
-        }
-        crawl.save_paused_sites(paused)
-        loaded = crawl.load_paused_sites()
-        self.assertEqual(loaded, paused)
-
-    def test_load_corrupt_json_returns_empty(self):
-        with open(crawl.PAUSED_SITES_FILE, "w", encoding="utf-8") as f:
-            f.write("not json at all")
-        result = crawl.load_paused_sites()
-        self.assertEqual(result, {})
-
-
-# ===================================================================
-# 8. RUN LOG TESTS
+# 7. RUN LOG TESTS
 # ===================================================================
 
 class TestRunLog(unittest.TestCase):
@@ -2062,22 +2014,6 @@ class TestAsyncIntegration(unittest.TestCase):
             self.assertTrue(len(profile['user_agent']) > 20)
             # Should start with Mozilla
             self.assertTrue(profile['user_agent'].startswith('Mozilla/5.0'))
-
-    def test_circuit_breaker_basic(self):
-        """Test CircuitBreaker basic open/close behavior."""
-        cb = crawl.CircuitBreaker(failure_threshold=3)
-        domain = "test.example.com"
-        # Not open initially
-        self.assertFalse(cb.is_open(domain))
-        # Record failures
-        cb.record_failure(domain)
-        cb.record_failure(domain)
-        self.assertFalse(cb.is_open(domain))
-        cb.record_failure(domain)  # 3rd failure -> open
-        self.assertTrue(cb.is_open(domain))
-        # Success resets it
-        cb.record_success(domain)
-        self.assertFalse(cb.is_open(domain))
 
     def test_metrics_tracker(self):
         """Test MetricsTracker success/failure recording."""

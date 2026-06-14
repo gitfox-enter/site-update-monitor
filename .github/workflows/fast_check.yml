@@ -46,7 +46,7 @@ jobs:
       - name: 提交变更
         run: |
           set +e
-          git add items.json items_latest.json crawl_status.json hash_record.txt notified_items.json paused_sites.json failed_sites.json adaptive_tiers.json monitor.db 2>/dev/null || true
+          git add items.json items_latest.json crawl_status.json hash_record.txt notified_items.json failed_sites.json adaptive_tiers.json monitor.db 2>/dev/null || true
           git status
           if git diff --staged --quiet 2>/dev/null; then
             echo "No changes to commit"
