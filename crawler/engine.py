@@ -882,6 +882,14 @@ async def main_async() -> None:
     global _proxy_pool
     logger.info("GitHub Actions 多站点更新监控系统 v3.0 (async)")
 
+    # 智能调度：判断本轮是否需要执行
+    from crawler.smart_scheduler import should_run, record_run
+    should, reason = should_run(mode='crawl')
+    if not should:
+        logger.info("[智能调度] 跳过本轮全量爬取: %s", reason)
+        return
+    logger.info("[智能调度] 执行本轮全量爬取: %s", reason)
+
     # 获取当前时间和轮次
     now = get_beijing_time()
     round_num = get_current_round()
@@ -1137,6 +1145,9 @@ async def main_async() -> None:
     await close_playwright()
 
     # Close SQLite connection
+
+    # 记录本次运行时间（智能调度用）
+    record_run(mode='crawl')
 
     logger.info("本轮巡检结束")
 

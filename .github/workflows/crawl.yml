@@ -2,8 +2,8 @@ name: 站点更新监控
 
 on:
   schedule:
-    # 每 2 小时作为兜底调度（Cloudflare Worker 负责精准 30 分钟触发）
-    - cron: '0 */2 * * *'
+    # 每 30 分钟唤醒，由 smart_scheduler 决定是否执行
+    - cron: '0,30 * * * *'
   workflow_dispatch:
 
 concurrency:
@@ -66,6 +66,8 @@ jobs:
 
           # 总是添加 crawl_status.json，确保网页显示最后爬取时间
           git add crawl_status.json 2>/dev/null || true
+          # 调度器状态和日志（智能调度需要）
+          git add scheduler_state.json run_log.jsonl 2>/dev/null || true
           # 其他文件按需添加
           git add hash_record.txt notified_items.json adaptive_tiers.json feed.xml 2>/dev/null || true
           # 核心数据文件：直接 commit 到 Git，数据永不丢失

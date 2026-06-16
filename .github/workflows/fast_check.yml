@@ -2,8 +2,8 @@ name: 快速增量检查
 
 on:
   schedule:
-    # 每 2 小时偏移 30 分钟作为兜底（Cloudflare Worker 负责精准触发）
-    - cron: '30 */2 * * *'
+    # 每 30 分钟唤醒，由 smart_scheduler 决定是否执行
+    - cron: '15,45 * * * *'
   workflow_dispatch:
 
 concurrency:
@@ -61,6 +61,8 @@ jobs:
 
           # 总是添加 crawl_status.json，确保网页显示最后爬取时间
           git add crawl_status.json 2>/dev/null || true
+          # 调度器状态和日志（智能调度需要）
+          git add scheduler_state.json fast_log.jsonl 2>/dev/null || true
           # 其他文件按需添加（items.json 已迁移到 Gist）
           git add hash_record.txt notified_items.json adaptive_tiers.json items_ref.json gist_config.json 2>/dev/null || true
 
