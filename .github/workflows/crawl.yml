@@ -44,14 +44,6 @@ jobs:
         run: python crawl.py
       - name: 生成 RSS Feed
         run: python rss_feed.py
-      - name: 同步数据到 Gist
-        run: python gist_store.py
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 生成数据引用
-        run: python -c "from gist_store import get_gist_raw_url; import json; gist_id=open('gist_config.json').read(); ref={'version':1,'source':'gist','gist_id':json.loads(gist_id)['data_gist_id'],'files':{'items':get_gist_raw_url('items.json'),'items_latest':get_gist_raw_url('items_latest.json')}}; open('items_ref.json','w').write(json.dumps(ref,indent=2))"
-
       - name: 验证 JSON 文件完整性
         run: |
           echo "=== 验证 JSON 文件 ==="
@@ -75,10 +67,9 @@ jobs:
           # 总是添加 crawl_status.json，确保网页显示最后爬取时间
           git add crawl_status.json 2>/dev/null || true
           # 其他文件按需添加
-          git add hash_record.txt notified_items.json adaptive_tiers.json feed.xml gist_config.json 2>/dev/null || true
-          # items.json / items_latest.json 已迁移到 Gist，不再 commit
-          # 仅 commit 一个轻量引用文件指向 Gist
-          git add items_ref.json 2>/dev/null || true
+          git add hash_record.txt notified_items.json adaptive_tiers.json feed.xml 2>/dev/null || true
+          # 核心数据文件：直接 commit 到 Git，数据永不丢失
+          git add items.json items_latest.json 2>/dev/null || true
 
           git status
           if git diff --staged --quiet 2>/dev/null; then
