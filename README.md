@@ -1,52 +1,53 @@
 # Site Update Monitor
 
-A production-grade, multi-site content change monitoring system powered by GitHub Actions. Crawls 47 deal, coupon, and resource sites on schedule, detects content updates via MD5 fingerprinting, and aggregates results into a live SPA frontend.
+自动化多站点内容监控，基于 GitHub Actions 定时爬取、检测更新并聚合展示。
 
-## Architecture
+## 功能
+
+- **47 个站点监控** — 线报、优惠券、软件资源等，支持 WordPress / Discuz / RSS / 自定义 CMS
+- **智能爬取** — 防检测 UA 轮换、域名级限速、指数退避重试、断路器保护
+- **数据去重** — MD5 指纹比对，最多保留 1500 条记录，自动清理
+- **RSS 输出** — 标准 RSS 2.0 feed，支持订阅
+- **SPA 前端** — 搜索、分类筛选、分页，数据通过 Gist 动态加载
+- **CI/CD** — 自动化测试、定时爬取、GitHub Pages 部署
+
+## 爬取频率
+
+| 任务 | 频率 | 站点数 |
+|------|------|--------|
+| 全量爬取 | 每天 3 次（8:00 / 13:00 / 18:00 北京时间） | 47 |
+| 快速检测 | 每 30 分钟（9:00–21:00 北京时间） | 12 |
+
+## 项目结构
 
 ```
-GitHub Actions (cron)
-    │
-    ├── crawl.py (Full Crawl)         — 47 sites, 3× daily (Beijing 8/13/18)
-    ├── fast_check.py (Fast Check)    — 12 priority sites, every 30 min (Beijing 9–21)
-    │
-    ├── items.json                    — data store (max 1500 items, deduplicated)
-    ├── hash_record.json              — per-site content fingerprints
-    ├── run_log.jsonl                 — structured run history (last 30 runs)
-    │
-    ├── index.html                    — PWA SPA frontend
-    └── sw.js                         — service worker (network-first for data)
+crawl.py / fast_check.py    爬取入口
+common.py                   公共工具
+blacklist.json              黑名单配置
+sites.yaml                  站点配置
+crawler/                    爬虫核心模块
+  ├── parsers/              站点解析器（插件式注册）
+  ├── config.py             配置加载
+  ├── engine.py             爬取引擎
+  ├── network.py            网络请求
+  └── storage.py            数据持久化 + Gist 同步
+public/                     前端静态文件
+  ├── css/app.css
+  ├── js/app.js
+  └── ..
+.gist/                      Gist 配置
+tests/                      测试用例
 ```
 
-## Key Features
+## 添加新站点
 
-- **47 monitored sites** with site-specific parsers (WordPress, Discuz, RSS, custom CMS)
-- **Plugin-based parser registry** (`PARSER_REGISTRY`) for easy site addition
-- **Anti-detection**: 8 consistent browser profiles (UA + sec-ch-ua + language), random crawl order, referer spoofing, cookie persistence
-- **Resilience**: exponential backoff retry (1s / 2s / 4s), per-domain circuit breaker, graceful SIGTERM / SIGINT shutdown
-- **Security**: SSRF protection (redirect target validation), URL scheme validation, 10 MB response size limit, HTTPS auto-upgrade
-- **Data integrity**: atomic file writes (write-to-tmp + os.replace), JSON hash records with schema versioning
-- **Monitoring**: structured JSON logging, metrics tracking, SLA-aware self-analysis with run log rotation
-- **Performance**: ThreadPoolExecutor (6 workers), per-domain rate limiting, HTTP conditional requests (ETag / Last-Modified), O(1) source name lookup
-- **CI/CD**: automated test suite (162 tests), GitHub Actions with concurrency groups, timeout limits, and 5-attempt push with rebase conflict resolution
+1. 在 `sites.yaml` 中添加站点 URL 和类型
+2. 在 `crawler/parsers/` 下对应模块中注册解析器
+3. 运行测试确认通过
 
-## Project Structure
+## 在线演示
 
-| File | Purpose |
-|------|---------|
-| `common.py` | Shared utilities: JSON formatter, data persistence, blacklist, sanitization, metrics |
-| `crawl.py` | Full crawl engine: 47-site parser registry, 6-thread pool, anti-detection, retry logic |
-| `fast_check.py` | Lightweight checker for 12 priority sites with quick fingerprint comparison |
-| `blacklist.json` | Configurable title / URL / domain blacklist |
-| `index.html` | PWA SPA frontend with search, filtering, and pagination |
-| `sw.js` | Service worker for offline support and network-first data fetching |
-| `.github/workflows/crawl.yml` | Scheduled full crawl (3× daily) CI workflow |
-| `.github/workflows/fast_check.yml` | Scheduled fast check (every 30 min) CI workflow |
-| `.github/workflows/pages.yml` | GitHub Pages deployment workflow |
-
-## Live Demo
-
-Visit the live dashboard: [线报聚合](https://gitfox-enter.github.io/site-update-monitor/)
+👉 [线报聚合](https://gitfox-enter.github.io/site-update-monitor/)
 
 ## License
 
