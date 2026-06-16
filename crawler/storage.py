@@ -369,6 +369,13 @@ def export_items_latest_json(json_path: str = ITEMS_LATEST_FILE) -> bool:
         with open(tmp_file, "w", encoding="utf-8") as f:
             json.dump(output, f, ensure_ascii=False, separators=(",", ":"))
         os.replace(tmp_file, json_path)
+        # 写后验证：确保文件可读且为有效 JSON
+        try:
+            with open(json_path, 'r', encoding='utf-8') as f:
+                json.load(f)
+        except Exception as ve:
+            logger.error('items_latest.json JSON 验证失败: %s', ve)
+            return False
         logger.info("已导出 items_latest.json: %d 条", total_count)
         return True
     except Exception as e:
