@@ -7,6 +7,7 @@ RSS/Atom Feed 生成器 — 将线报数据导出为标准 Atom feed。
 
 import json
 import os
+import re
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone, timedelta
 from typing import Any, Dict, List, Optional
@@ -15,6 +16,11 @@ from common import (
     get_beijing_time,
     load_items_db,
     ITEMS_DB_FILE,
+)
+
+# XML 1.0 不允许的控制字符和 Unicode 代理对
+_INVALID_XML_RE = re.compile(
+    '[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x84\x86-\x9f\ud800-\udfff\ufffe\uffff]'
 )
 
 FEED_FILE = "feed.xml"
@@ -60,13 +66,13 @@ def generate_atom_feed(output_path: str = FEED_FILE, max_items: int = MAX_FEED_I
     for item in items:
         entry = ET.SubElement(root, f'{{{NS}}}entry')
 
-        title = item.get('text', '无标题')
+        title = _sanitize_xml(item.get('text', '无标题'))
         # Atom title requires type="html" if content has special chars
         title_el = ET.SubElement(entry, f'{{{NS}}}title')
         title_el.text = title
         title_el.set('type', 'text')
 
-        url = item.get('url', '')
+        url = _sanitize_xml(item.get('url', ''))
         ET.SubElement(entry, f'{{{NS}}}link', href=url, rel='alternate')
         ET.SubElement(entry, f'{{{NS}}}id').text = url or f"tag:gitfox-enter,{updated_at[:10]}:{hash(title)}"
 
@@ -75,8 +81,8 @@ def generate_atom_feed(output_path: str = FEED_FILE, max_items: int = MAX_FEED_I
         ET.SubElement(entry, f'{{{NS}}}published').text = _to_iso8601(time_str)
 
         # Content summary
-        source = item.get('source', '')
-        category = item.get('category', '')
+        source = _sanitize_xml(item.get('source', ''))
+        category = _sanitize_xml(item.get('category', ''))
         content_parts = []
         if source:
             content_parts.append(f"来源: {source}")
@@ -107,6 +113,13 @@ def generate_atom_feed(output_path: str = FEED_FILE, max_items: int = MAX_FEED_I
         if os.path.exists(tmp_path):
             os.remove(tmp_path)
         return False
+
+
+def _sanitize_xml(text: str) -> str:
+    """Remove characters invalid in XML 1.0 (control chars, surrogates, etc.)."""
+    if not text:
+        return text
+    return _INVALID_XML_RE.sub('', text)
 
 
 def _to_iso8601(time_str: str) -> str:
