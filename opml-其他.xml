@@ -3,9 +3,9 @@
   <head>
     <title>线报聚合 - 其他</title>
     <ownerName>线报聚合</ownerName>
-    <ownerId>https://gitfox-enter.github.io/site-update-monitor/</ownerId>
+    <ownerId>https://gitfox-enter.github.io/RSSForge/</ownerId>
   </head>
   <body>
-    <outline type="rss" text="万云积分" title="万云积分" xmlUrl="https://gitfox-enter.github.io/site-update-monitor/feeds/万云积分.xml" htmlUrl="https://10000yun.com/" />
+    <outline type="rss" text="万云积分" title="万云积分" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/万云积分.xml" htmlUrl="https://10000yun.com/" />
   </body>
 </opml>
