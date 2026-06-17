@@ -2,9 +2,36 @@
   "线报酷": {
     "interval": 15,
     "freq_label": "每15分钟",
-    "count": 696,
+    "count": 729,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/线报酷.xml",
-    "icon": "https://www.google.com/s2/favicons?domain=news.ixbk.fun&sz=64",
+    "icon": "https://www.google.com/s2/favicons?domain=news.ixbk.net&sz=64",
+    "parent": "",
+    "category": ""
+  },
+  "爱Q生活": {
+    "interval": 30,
+    "freq_label": "每30分钟",
+    "count": 64,
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/爱Q生活.xml",
+    "icon": "https://www.google.com/s2/favicons?domain=fdzys666.xyz&sz=64",
+    "parent": "",
+    "category": ""
+  },
+  "反斗限免": {
+    "interval": 240,
+    "freq_label": "每4小时",
+    "count": 20,
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/反斗限免.xml",
+    "icon": "https://www.google.com/s2/favicons?domain=free.apprcn.com&sz=64",
+    "parent": "",
+    "category": ""
+  },
+  "拔草哦": {
+    "interval": 60,
+    "freq_label": "每小时",
+    "count": 75,
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/拔草哦.xml",
+    "icon": "https://www.google.com/s2/favicons?domain=www.bacaoo.com&sz=64",
     "parent": "",
     "category": ""
   },
@@ -71,15 +98,6 @@
     "parent": "",
     "category": ""
   },
-  "拔草哦": {
-    "interval": 60,
-    "freq_label": "每小时",
-    "count": 65,
-    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/拔草哦.xml",
-    "icon": "https://www.google.com/s2/favicons?domain=www.bacaoo.com&sz=64",
-    "parent": "",
-    "category": ""
-  },
   "慢慢买": {
     "interval": 120,
     "freq_label": "每2小时",
@@ -104,15 +122,6 @@
     "count": 38,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/H6线报.xml",
     "icon": "https://www.google.com/s2/favicons?domain=www.h6room.com&sz=64",
-    "parent": "",
-    "category": ""
-  },
-  "反斗限免": {
-    "interval": 240,
-    "freq_label": "每4小时",
-    "count": 13,
-    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/反斗限免.xml",
-    "icon": "https://www.google.com/s2/favicons?domain=free.apprcn.com&sz=64",
     "parent": "",
     "category": ""
   },
