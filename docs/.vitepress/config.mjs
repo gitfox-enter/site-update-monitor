@@ -1,5 +1,4 @@
 import { defineConfig } from 'vitepress'
-import { fileURLToPath } from 'node:url'
 
 export default defineConfig({
   base: '/RSSForge/',
@@ -10,6 +9,18 @@ export default defineConfig({
     ['link', { rel: 'icon', href: 'https://gitfox-enter.github.io/RSSForge/favicon.ico' }],
     ['meta', { name: 'theme-color', content: '#e91e8e' }],
   ],
+  locales: {
+    root: {
+      label: '简体中文',
+      lang: 'zh-CN',
+    },
+    en: {
+      label: 'English',
+      lang: 'en-US',
+      link: '/en/',
+      description: '⚡ Free RSS feed generator powered by GitHub Actions. Generate RSS for any website — no server, zero cost.',
+    },
+  },
   vite: {
     css: {
       preprocessorOptions: {},
@@ -66,17 +77,64 @@ export default defineConfig({
           ],
         },
       ],
+      '/en/guide/': [
+        {
+          text: '📖 Guide',
+          items: [
+            { text: 'What is RSSForge', link: '/en/guide/introduction' },
+            { text: 'Getting Started', link: '/en/guide/getting-started' },
+            { text: 'Deploy to GitHub', link: '/en/guide/deploy' },
+            { text: 'How It Works', link: '/en/guide/how-it-works' },
+          ],
+        },
+      ],
+      '/en/sites/': [
+        {
+          text: '📋 Sites',
+          items: [
+            { text: 'Supported Sites', link: '/en/sites/' },
+          ],
+        },
+      ],
+      '/en/config/': [
+        {
+          text: '⚙️ Configuration',
+          items: [
+            { text: 'sites.yaml Config', link: '/en/config/sites' },
+            { text: 'Pagination & History', link: '/en/config/pagination' },
+            { text: 'Update Scheduling', link: '/en/config/schedule' },
+            { text: 'Filters & Blacklist', link: '/en/config/filter' },
+          ],
+        },
+      ],
+      '/en/feeds/': [
+        {
+          text: '📡 Feeds',
+          items: [
+            { text: 'Feed Overview', link: '/en/feeds/overview' },
+            { text: 'OPML Bulk Subscribe', link: '/en/feeds/opml' },
+            { text: 'RSS Readers', link: '/en/feeds/readers' },
+          ],
+        },
+      ],
     },
     socialLinks: [{ icon: 'github', link: 'https://github.com/gitfox-enter/RSSForge' }],
     footer: {
       message: '基于 GitHub Actions 运行，零服务器成本',
-      copyright: `MIT License · © ${new Date().getFullYear()} RSSForge · Fork from site-update-monitor`,
+      copyright: `MIT License · © ${new Date().getFullYear()} RSSForge`,
     },
     editLink: {
       pattern: 'https://github.com/gitfox-enter/RSSForge/edit/main/docs/:path',
       text: '在 GitHub 上编辑此页',
     },
     search: { provider: 'local' },
+    localeLinks: {
+      text: '简体中文',
+      items: [
+        { text: '简体中文', link: '/' },
+        { text: 'English', link: '/en/' },
+      ],
+    },
   },
   markdown: {
     lineNumbers: false,
