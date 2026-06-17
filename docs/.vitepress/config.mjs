@@ -20,6 +20,7 @@ export default defineConfig({
     siteTitle: 'RSSForge',
     nav: [
       { text: '指南', link: '/guide/introduction' },
+      { text: '站点', link: '/sites/' },
       { text: '配置', link: '/config/sites' },
       { text: '订阅源', link: '/feeds/overview' },
       { text: 'GitHub', link: 'https://github.com/gitfox-enter/RSSForge' },
@@ -33,6 +34,14 @@ export default defineConfig({
             { text: '快速开始', link: '/guide/getting-started' },
             { text: '部署到 GitHub', link: '/guide/deploy' },
             { text: '运行机制', link: '/guide/how-it-works' },
+          ],
+        },
+      ],
+      '/sites/': [
+        {
+          text: '📋 站点',
+          items: [
+            { text: '支持的站点', link: '/sites/' },
           ],
         },
       ],
