@@ -1,83 +1,97 @@
-# Site Update Monitor
+# RSSForge · 万物皆可 RSS
 
-基于 GitHub Actions 的多站点线报聚合服务。定时爬取 42 个网站，生成 RSS/OPML 订阅源，部署到 GitHub Pages。
+> ⚡ 基于 GitHub Actions 的免费 RSS 订阅源生成器，无服务器、零成本、可持续更新
 
-👉 [在线页面](https://gitfox-enter.github.io/site-update-monitor/)
+👉 [在线演示](https://gitfox-enter.github.io/site-update-monitor/) · 📡 [订阅全量 Feed](https://gitfox-enter.github.io/site-update-monitor/feed.xml)
+
+---
+
+## 什么是 RSSForge？
+
+RSSForge 是一个运行在 GitHub Actions 上的 RSS 订阅源生成器。你无需租用服务器，只需 Fork 项目并启用 GitHub Pages，Actions 就会自动定时抓取网站，生成 RSS/OPML 订阅源。
+
+它受到 [RSSHub](https://github.com/DIYgod/RSSHub) 和 [RSS-Bridge](https://github.com/RSS-Bridge/rss-bridge) 的启发，但核心区别是：**完全免费，无需自建**。
+
+---
 
 ## 核心功能
 
-- **42 站点监控** — 线报、购物比价、软件资源、社区论坛，支持 HTML/RSS/JS 渲染多种抓取方式
-- **每站独立抓取间隔** — 线报站 15 分钟、购物站 60 分钟、软件站 4-8 小时，夜间自动降频
-- **RSS 订阅** — 全量聚合 feed + 每站独立 feed，支持 OPML 一键导入
-- **智能调度** — 根据站点更新频率自动决定本轮是否抓取，避免无效请求
-- **自适应分级** — 根据抓取成功率自动升降站点优先级，连续失败自动降为 dead
-- **数据去重** — MD5 指纹 + URL 去重 + 模糊标题合并（多源聚合），7 天滚动保留
+- 🔧 **零服务器成本** — 直接利用 GitHub Actions 免费计算资源，24 小时自动运行
+- 📡 **RSS / OPML 输出** — 全量聚合 feed + 每站独立 feed + 按分类 OPML 包
+- ⚡ **每站独立调度** — 线报站 15 分钟、软件站 4-8 小时，智能降频
+- 🔄 **自动去重** — MD5 指纹 + URL 去重 + 模糊标题合并，7 天滚动保留
+- 📦 **一键 Fork 自用** — 任何人 Fork 后稍作配置就能拥有自己的订阅服务
+- 🤝 **社区贡献** — 提交 PR 即可贡献抓取规则，所有 fork 用户自动受益
+
+---
 
 ## 数据流
 
 ```
 sites.yaml (站点配置)
-      │
-      ▼
-crawl.yml (每30分钟)       fast_check.yml (每30分钟, 偏移15分)
-      │                            │
-      ▼                            ▼
-smart_scheduler 过滤         仅爬 fast_check 站点
-(每站独立判断间隔是否到期)
-      │                            │
-      └────────┬───────────────────┘
-               ▼
-         items.json (数据存储)
-               │
-      ┌────────┼────────┐
-      ▼        ▼        ▼
-  rss_feed.py      opml_generator.py
-      │             │
-      ├─ feed.xml   ├─ opml.xml (全量)
-      ├─ feeds/*.xml└─ opml-{分类}.xml
-      └─ feeds_meta.json
-               │
-               ▼
-         pages.yml → GitHub Pages
-               │
-               ▼
-         index.html (读 feed.xml 展示)
+        │
+        ▼
+  GitHub Actions 定时触发
+        │
+  smart_scheduler (每站独立判断是否到期)
+        │
+        ▼
+  crawler (Playwright / aiohttp / RSS)
+        │
+        ▼
+  items.json (数据存储)
+        │
+   ┌────┴────┐
+   ▼         ▼
+rss_feed.py   opml_generator.py
+   │         │
+   ├─ feed.xml      ├─ opml.xml (全量)
+   ├─ feeds/*.xml    └─ opml-{分类}.xml
+   └─ feeds_meta.json
+        │
+        ▼
+  GitHub Pages → 你的网站
 ```
 
-## 抓取调度
+---
 
-两个工作流交替运行，合计每 **15 分钟**检查一次：
+## 快速开始
 
-| 工作流 | Cron | 说明 |
-|--------|------|------|
-| crawl.yml | `0,30 * * * *` | 全量爬取，受智能调度过滤 |
-| fast_check.yml | `15,45 * * * *` | 快速增量，仅爬 `fast_check: true` 站点 |
+### Step 1：Fork 本项目
 
-**智能调度规则**：每个站点根据 `sites.yaml` 中的 `interval` 字段独立判断是否需要抓取。距离上次抓取不足间隔则跳过。22:00-08:00（北京时间）间隔自动翻倍。
+点击页面右上角 **Fork** 按钮，复制到你的 GitHub 账号。
 
-## 站点配置 (sites.yaml)
+### Step 2：启用 GitHub Pages
 
-所有站点配置的单一真相源，其他模块均从此文件加载：
+1. 进入你的仓库 → **Settings** → **Pages**
+2. **Source** 选择 **Deploy from a branch**
+3. Branch 选择 `gh-pages`（没有则新建一个空的）
+4. Save，等待几分钟域名生效
+
+### Step 3：修改 sites.yaml
+
+编辑 `sites.yaml`，添加你想监控的网站：
 
 ```yaml
 sites:
-  - url: "https://example.com/"    # 站点 URL（必填）
-    name: 示例站                     # 显示名称（必填）
-    tier: high                      # 优先级: high | medium | low
-    interval: 15                    # 最小抓取间隔（分钟，必填）
-    fast_check: true                # 是否参与快速检查（可选）
-    js_render: true                 # 是否需要 Playwright 渲染（可选）
-    rss_feed: "https://..."         # 直接用 RSS 源代替 HTML 抓取（可选）
-    parser: ghxi                    # 强制指定解析器（可选）
-
-dead_sites:
-  "https://dead-site.com/":
-    reason: "域名已过期"
-    confirmed_at: "2026-01-01"
-    test_result: "Connection refused"
+  - url: "https://example.com/"
+    name: 示例站点
+    tier: high          # high | medium | low
+    interval: 15        # 最小抓取间隔（分钟）
+    fast_check: true    # 是否参与快速增量检查
+    js_render: true     # 是否需要 JS 渲染（SPA 站点）
 ```
 
-**interval 参考值**：
+### Step 4：订阅 RSS
+
+在 RSS 阅读器中添加订阅：
+
+- **全量聚合**：`https://[你的用户名].github.io/site-update-monitor/feed.xml`
+- **OPML 导入**：下载 `opml.xml`，导入 Reeder / FeedMe / inoreader 等阅读器
+
+---
+
+## interval 参考值
 
 | 站点类型 | interval | 示例 |
 |----------|----------|------|
@@ -87,17 +101,7 @@ dead_sites:
 | 社区论坛 | 60-120 min | 豆瓣小组、开心赚 |
 | 软件资源 | 240-480 min | 果核剥壳、423Down、小众软件 |
 
-## RSS 订阅输出
-
-| 文件 | 说明 |
-|------|------|
-| `feed.xml` | 全量聚合 feed（所有来源） |
-| `feeds/{站名}.xml` | 每站独立 feed（无条数上限） |
-| `feeds_meta.json` | 每站更新频率元数据（前端展示用） |
-| `opml.xml` | 全量 OPML（按分类组织） |
-| `opml-{分类}.xml` | 按分类的 OPML（线报站/购物比价/软件站/论坛/其他） |
-
-每个 feed 包含 `sy:updatePeriod` 和 `sy:updateFrequency` 元素，RSS 阅读器可据此判断更新频率。
+---
 
 ## 项目结构
 
@@ -124,7 +128,7 @@ crawler/
       ├── deal_sites.py    线报/优惠站点解析器
       ├── software_sites.py 软件站点解析器
       ├── forum_sites.py   论坛站点解析器
-      └── rss_parsers.py   RSS/Atom 解析器
+      └── rss_parsers.py  RSS/Atom 解析器
 
 feeds/                     生成的每站独立 feed
 .github/workflows/
@@ -134,23 +138,46 @@ feeds/                     生成的每站独立 feed
   └── daily_summary.yml    每日摘要
 ```
 
+---
+
 ## 添加新站点
 
 1. 在 `sites.yaml` 中添加站点，设置 `url`/`name`/`tier`/`interval`
-2. 如果是标准 HTML 站点，无需额外操作（通用解析器自动处理）
-3. 如果站点有特殊结构，在 `crawler/parsers/` 对应模块中添加解析函数并注册到 `PARSER_REGISTRY`
-4. 如果是 SPA 站点（Angular/React 等），设置 `js_render: true`
-5. 如果站点提供 RSS 源，设置 `rss_feed` 字段（跳过 HTML 抓取，直接用 RSS）
+2. 标准 HTML 站点无需额外操作（通用解析器自动处理）
+3. 有特殊结构的站点，在 `crawler/parsers/` 中添加解析函数并注册
+4. SPA 站点设置 `js_render: true`
+5. 有 RSS 源的站点，设置 `rss_feed` 字段跳过 HTML 抓取
 6. 本地运行 `python crawl.py` 验证
+
+---
 
 ## 自适应分级
 
-站点优先级会根据抓取结果自动调整：
-
 - 连续成功 ≥ 2 次 → 提升 1 级
 - 连续失败 ≥ 2 次 → 降低 1 级
-- low 级别连续失败 → 标记为 dead（不再爬取）
+- low 级别连续失败 → 标记为 dead（停止爬取）
 - dead 站点恢复 → 回到 low 级别
+
+---
+
+## 贡献规则
+
+发现了好站点？想支持这个项目？多种方式参与：
+
+- ⭐ **Star** 本项目，让更多人看到
+- 🔧 **提交 PR** 贡献新的站点抓取规则
+- 🐛 **反馈问题** 站点失效 / 新功能建议
+- 🧧 **支付宝领红包** 扫描页面底部的红包码，每天可领一次
+
+---
+
+## 灵感来源
+
+- [RSSHub](https://github.com/DIYgod/RSSHub) — 万物皆 RSS
+- [RSS-Bridge](https://github.com/RSS-Bridge/rss-bridge) — PHP 版 RSS 生成器
+- [wewe-rss](https://github.com/cooderl/wewe-rss) — 微信公众号 RSS
+
+---
 
 ## License
 
