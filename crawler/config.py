@@ -210,6 +210,57 @@ SITE_MAX_PAGES: Dict[str, int] = _load_site_max_pages()
 
 
 # ============================================================
+# 多分类支持（从 sites.yaml categories 字段加载）
+# ============================================================
+
+def _load_site_categories() -> Dict[str, List[Dict[str, str]]]:
+    """Load per-site category definitions. Returns {url: [{path, name}]}."""
+    sites = _get_sites_list()
+    if not sites:
+        return {}
+    result: Dict[str, List[Dict[str, str]]] = {}
+    for s in sites:
+        cats = s.get("categories")
+        if cats:
+            result[s["url"]] = cats
+    return result
+
+
+SITE_CATEGORIES: Dict[str, List[Dict[str, str]]] = _load_site_categories()
+
+
+def get_site_categories(url: str) -> List[Dict[str, str]]:
+    """Get categories for a given site URL. Returns list of {path, name}."""
+    return SITE_CATEGORIES.get(url, [])
+
+
+def get_category_feed_key(category_url: str) -> str:
+    """Generate a unique feed key for a category URL.
+    
+    E.g. 'https://www.423down.com/apk' -> '423Down-安卓软件'
+    Returns empty string if not a category URL.
+    """
+    from urllib.parse import urlparse
+    parsed = urlparse(category_url)
+    host = (parsed.hostname or '').lower()
+    path = parsed.path.rstrip('/')
+    
+    # Find which parent site this category belongs to
+    parent_url = None
+    parent_name = None
+    for parent, cats in SITE_CATEGORIES.items():
+        parent_parsed = urlparse(parent)
+        if parent_parsed.hostname == host:
+            for cat in cats:
+                cat_path = '/' + cat['path'].lstrip('/')
+                if path == cat_path or path == cat_path.rstrip('/'):
+                    parent_url = parent
+                    parent_name = get_source_name(parent) or parent
+                    return f"{parent_name}-{cat['name']}"
+    return ""
+
+
+# ============================================================
 # 快速检查站点（从 sites.yaml fast_check 字段加载）
 # ============================================================
 
