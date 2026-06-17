@@ -29,11 +29,10 @@ jobs:
         uses: actions/checkout@v4
       - name: Prepare site
         run: |
-          mkdir -p _site/public
-          for f in index.html status.html offline.html redirect.html alipay-redpacket.html sw.js manifest.json crawl_status.json feed.xml items_ref.json items.json items_latest.json; do
+          mkdir -p _site
+          for f in index.html status.html feed.xml crawl_status.json; do
             [ -f "$f" ] && cp "$f" _site/
           done
-          cp -r public/ _site/public/
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact

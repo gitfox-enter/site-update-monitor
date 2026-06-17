@@ -2,186 +2,236 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-<meta http-equiv="X-Content-Type-Options" content="nosniff">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://gist.githubusercontent.com; font-src 'self'; object-src 'none'">
-<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-<meta name="theme-color" content="#1976d2">
-<title>线报聚合 - 实时监控全网羊毛线报</title>
-<meta name="description" content="线报聚合：自动聚合全网羊毛线报、优惠信息、活动促销，实时更新，一键跳转。支持PWA推送通知，第一时间掌握最新线报">
-<meta name="keywords" content="线报,羊毛,优惠,促销,薅羊毛,线报聚合,京东,淘宝,拼多多,红包,免费,限时活动">
-<meta name="news_keywords" content="线报,羊毛,优惠,促销,红包">
-<meta name="robots" content="index,follow,max-snippet:200,max-image-preview:large">
-<meta name="renderer" content="webkit">
-<meta name="apple-mobile-web-app-title" content="线报聚合">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<!-- Open Graph -->
-<meta property="og:title" content="线报聚合 - 实时监控全网羊毛线报">
-<meta property="og:description" content="自动聚合全网羊毛线报、优惠促销信息，实时更新一键跳转，PWA推送通知第一时间掌握最新线报">
-<meta property="og:type" content="website">
-<meta property="og:url" content="./">
-<meta property="og:image" content="./public/icon-512.png">
-<meta property="og:site_name" content="线报聚合">
-<meta property="og:locale" content="zh_CN">
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="线报聚合 - 实时监控全网羊毛线报">
-<meta name="twitter:description" content="自动聚合全网羊毛线报、优惠促销信息，实时更新一键跳转，PWA推送通知第一时间掌握最新线报">
-<meta name="twitter:image" content="./public/icon-512.png">
-<!-- Canonical -->
-<link rel="canonical" href="./">
-<link rel="dns-prefetch" href="https://github.githubassets.com">
-<link rel="preload" href="items_latest.json" as="fetch" fetchpriority="high" crossorigin>
-<!-- Icons -->
-<link rel="icon" type="image/svg+xml" href="public/favicon.svg">
-<link rel="apple-touch-icon" href="public/icon-192.png">
-<link rel="manifest" href="manifest.json">
-<link rel="alternate" type="application/atom+xml" title="线报聚合 RSS Feed" href="feed.xml">
-<!-- JSON-LD -->
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"线报聚合","url":"./","description":"实时聚合全网羊毛线报、优惠促销信息，网址导航跳转服务","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"browserRequirements":"Requires JavaScript. Requires HTML5."}
-</script>
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"DataFeed","name":"线报聚合 - 羊毛线报数据","description":"全网羊毛线报、优惠促销信息聚合数据","url":"./items.json","dataFeedElement":{"@type":"DataFeedItem","dateCreated":"2026-01-01"}}
-</script>
-<link rel="stylesheet" href="public/css/app.css?v=20250616">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>线报聚合 - RSS 阅读器</title>
+<meta name="description" content="全网羊毛线报实时聚合，RSS 在线阅读">
+<meta name="theme-color" content="#1a73e8">
+<link rel="alternate" type="application/atom+xml" title="RSS Feed" href="feed.xml">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f5f5f5;--card:#fff;--text:#333;--text2:#888;--accent:#1a73e8;--border:#e0e0e0;--tag:#e8f0fe;--tag-text:#1a73e8;--new:#e8f5e9;--hover:#fafafa}
+@media(prefers-color-scheme:dark){:root{--bg:#1a1a1a;--card:#2a2a2a;--text:#e0e0e0;--text2:#999;--accent:#8ab4f8;--border:#404040;--tag:#1a3a5c;--tag-text:#8ab4f8;--new:#1a3a1a;--hover:#333}}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+header{background:var(--card);border-bottom:1px solid var(--border);padding:12px 16px;position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header h1{font-size:18px;white-space:nowrap}
+header h1 a{color:var(--text);text-decoration:none}
+header h1 span{color:var(--accent);font-size:14px;font-weight:normal;margin-left:6px}
+.search-box{flex:1;min-width:160px;max-width:320px;position:relative}
+.search-box input{width:100%;padding:6px 10px 6px 30px;border:1px solid var(--border);border-radius:20px;font-size:14px;background:var(--bg);color:var(--text);outline:none}
+.search-box input:focus{border-color:var(--accent)}
+.search-box::before{content:"🔍";position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:12px}
+.source-filter{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.source-filter button{padding:3px 10px;border:1px solid var(--border);border-radius:14px;font-size:12px;background:var(--card);color:var(--text);cursor:pointer;white-space:nowrap}
+.source-filter button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.source-filter button:hover{opacity:.85}
+.stats{font-size:12px;color:var(--text2);white-space:nowrap}
+main{max-width:800px;margin:0 auto;padding:8px}
+.entry{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px;transition:background .15s}
+.entry:hover{background:var(--hover)}
+.entry.is-new{border-left:3px solid var(--accent)}
+.entry-header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.entry-source{font-size:11px;padding:1px 6px;border-radius:8px;background:var(--tag);color:var(--tag-text);white-space:nowrap}
+.entry-time{font-size:11px;color:var(--text2)}
+.entry-title{font-size:15px;font-weight:500}
+.entry-title a{color:var(--text);text-decoration:none}
+.entry-title a:hover{color:var(--accent)}
+.entry-cat{font-size:11px;padding:1px 6px;border-radius:8px;background:var(--new);color:#4caf50}
+.empty{text-align:center;padding:60px 20px;color:var(--text2)}
+.empty p{margin-top:8px;font-size:14px}
+.load-more{text-align:center;padding:16px}
+.load-more button{padding:8px 24px;border:1px solid var(--border);border-radius:20px;background:var(--card);color:var(--text);cursor:pointer;font-size:14px}
+.load-more button:hover{border-color:var(--accent);color:var(--accent)}
+footer{text-align:center;padding:20px;font-size:12px;color:var(--text2)}
+footer a{color:var(--accent);text-decoration:none}
+.loading{text-align:center;padding:40px;color:var(--text2)}
+@media(max-width:600px){
+  header{padding:8px 12px;gap:8px}
+  header h1{font-size:16px}
+  .search-box{max-width:none;min-width:100px}
+  main{padding:4px}
+  .entry{padding:10px 12px;border-radius:6px}
+  .entry-title{font-size:14px}
+}
+</style>
 </head>
 <body>
-
-<!-- Skip link for screen readers / keyboard users -->
-<a id="skip-link" href="#content">跳转到主要内容</a>
-
-<!-- ===== HEADER ===== -->
-<header id="header" role="banner">
-  <button id="icon-menu" onclick="toggleCatDropdown()" aria-label="打开来源分类菜单">&#9776;</button>
-  <h1 id="logo"><a href="./" aria-label="线报聚合首页">⚡ 线报聚合</a></h1>
-  <div class="header-divider" aria-hidden="true"></div>
-  <form id="search-form" onsubmit="handleSearch(event)" role="search" aria-label="搜索线报">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input id="search-input" type="search" autocomplete="off" placeholder="请输入关键词 (按 / 聚焦).." aria-label="搜索关键词" aria-describedby="search-desc">
-    <span id="search-desc" class="sr-only">输入关键词后按回车搜索线报</span>
-    <button type="submit" id="search-btn" aria-label="执行搜索">搜 索</button>
-  </form>
-  <nav id="menu" role="navigation" aria-label="主导航">
-    <button id="install-btn" onclick="installApp()" title="安装到主屏幕" aria-label="安装应用到主屏幕">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      <span>安装</span>
-    </button>
-    <a id="redpacket-btn" href="./alipay-redpacket.html" title="支付宝领红包" aria-label="支付宝每日领红包">
-      🧧
-      <span>领钱</span>
-    </a>
-  </nav>
+<header>
+  <h1><a href="./">📡 线报聚合</a><span id="count"></span></h1>
+  <div class="search-box"><input type="text" id="search" placeholder="搜索线报..."></div>
+  <div class="source-filter" id="sources"></div>
 </header>
+<main id="feed"><div class="loading">加载中...</div></main>
+<div class="load-more" id="more" style="display:none"><button onclick="showMore()">加载更多</button></div>
+<footer>线报聚合 · RSS 在线阅读 · <a href="feed.xml" target="_blank">RSS 订阅</a> · <a href="status.html">监控状态</a></footer>
 
-<!-- ===== MOBILE CATEGORY TOGGLE ===== -->
-<button id="cat-toggle-bar" onclick="toggleCatDropdown()" aria-label="展开来源分类" aria-expanded="false">
-  <span class="toggle-arrow" aria-hidden="true">▶</span>
-  <span id="cat-toggle-text">全部线报</span>
-</button>
-<div id="cat-dropdown" role="listbox" aria-label="选择来源分类"></div>
+<script>
+var PAGE_SIZE = 30;
+var allEntries = [];
+var filtered = [];
+var activeSource = 'all';
+var searchQuery = '';
+var shown = 0;
 
-<!-- ===== MAIN APP ===== -->
-<div id="app">
-  <!-- Sidebar -->
-  <aside id="sidebar" role="complementary" aria-label="来源分类筛选">
-    <nav class="cat-section" id="sidebar-cats" role="navigation" aria-label="来源列表"></nav>
-  </aside>
+function parseFeed(xml) {
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(xml, 'text/xml');
+  var ns = 'http://www.w3.org/2005/Atom';
+  var entries = [];
+  var els = doc.getElementsByTagNameNS(ns, 'entry');
+  for (var i = 0; i < els.length; i++) {
+    var e = els[i];
+    var title = e.getElementsByTagNameNS(ns, 'title');
+    var link = e.getElementsByTagNameNS(ns, 'link');
+    var updated = e.getElementsByTagNameNS(ns, 'updated');
+    var content = e.getElementsByTagNameNS(ns, 'content');
+    var category = e.getElementsByTagNameNS(ns, 'category');
 
-  <!-- Content -->
-  <main id="content" role="main" aria-label="线报内容" tabindex="-1">
-    <!-- View bar (mobile only) -->
+    var titleText = title.length ? title[0].textContent : '';
+    var href = link.length ? link[0].getAttribute('href') : '';
+    var timeText = updated.length ? updated[0].textContent : '';
+    var contentText = content.length ? content[0].textContent : '';
+    var catText = category.length ? category[0].getAttribute('term') : '';
 
-    <!-- List View -->
-    <section id="list-view" aria-label="线报列表">
-      <h2 class="sr-only">线报列表</h2>
-      <div id="status-bar" role="status" aria-live="polite">
-        <span id="status-text" aria-busy="true">
-          <div class="skeleton-item"><div class="skeleton-badge"></div><div class="skeleton-body"><div class="skeleton-line w80"></div><div class="skeleton-line w40"></div></div></div>
-          <div class="skeleton-item"><div class="skeleton-badge"></div><div class="skeleton-body"><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div>
-          <div class="skeleton-item"><div class="skeleton-badge"></div><div class="skeleton-body"><div class="skeleton-line w80"></div><div class="skeleton-line w40"></div></div></div>
-          <div class="skeleton-item"><div class="skeleton-badge"></div><div class="skeleton-body"><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div>
-          <div class="skeleton-item"><div class="skeleton-badge"></div><div class="skeleton-body"><div class="skeleton-line w80"></div><div class="skeleton-line w40"></div></div></div>
-        </span>
-        <span id="last-update"></span>
-      </div>
-      <div id="filter-toolbar" role="toolbar" aria-label="筛选与排序工具栏">
-        <button id="today-toggle" class="filter-btn" onclick="toggleTodayFilter()" aria-label="只看今天的线报" aria-pressed="false">只看今天</button>
-        <div class="toolbar-sep" aria-hidden="true"></div>
-        <button id="sort-btn" class="filter-btn" onclick="toggleSortOrder()" aria-label="切换时间排序方式">最新优先 ↓</button>
-        <span id="item-count" aria-live="polite"></span>
-      </div>
-      <!-- 推广横幅 -->
-      <div id="promo-banner" role="complementary" aria-label="推广本站">
-        <span class="promo-icon">📢</span>
-        <span class="promo-text">觉得<strong>线报聚合</strong>有用？欢迎分享给朋友！其他网站觉得好也请<strong>友情链接推广</strong>，一起做大流量 👍</span>
-        <span class="promo-actions">
-          <button class="promo-btn promo-btn-primary" onclick="copySiteLink()">📎复制链接</button>
-          <button class="promo-btn promo-btn-secondary" onclick="showBookmarkTip()">⭐收藏本站</button>
-        </span>
-      </div>
-      <div class="list-wrap" id="item-list" role="list" aria-label="线报条目列表"></div>
-      <nav id="pagination" role="navigation" aria-label="分页导航"></nav>
-    </section>
+    // Extract source from content like "来源: XXX | 链接: ..."
+    var source = '';
+    if (contentText) {
+      var parts = contentText.split('|');
+      for (var j = 0; j < parts.length; j++) {
+        var p = parts[j].trim();
+        if (p.indexOf('来源:') === 0 || p.indexOf('来源：') === 0) {
+          source = p.replace(/^来源[:：]\s*/, '');
+          break;
+        }
+      }
+    }
 
-    
+    // Format time for display
+    var displayTime = '';
+    var diffMin = 0;
+    if (timeText) {
+      var d = new Date(timeText);
+      if (!isNaN(d.getTime())) {
+        diffMin = Math.floor((Date.now() - d.getTime()) / 60000);
+        if (diffMin < 60) {
+          displayTime = diffMin <= 1 ? '刚刚' : diffMin + ' 分钟前';
+        } else if (diffMin < 1440) {
+          displayTime = Math.floor(diffMin / 60) + ' 小时前';
+        } else {
+          displayTime = (d.getMonth() + 1) + '/' + d.getDate() + ' ' +
+            String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+        }
+      }
+    }
 
-  </main>
-</div>
+    entries.push({
+      title: titleText,
+      href: href,
+      time: timeText,
+      displayTime: displayTime,
+      source: source,
+      category: catText,
+      isNew: diffMin > 0 && diffMin < 60
+    });
+  }
+  return entries;
+}
 
-<!-- ===== FOOTER ===== -->
-<footer id="footer" role="contentinfo">
-  <div class="footer-inner">
-    <!-- Disclaimer section -->
-    <div class="footer-section">
-      <div class="footer-section-title">📋 免责声明</div>
-      <div class="footer-disclaimer">
-        本站「线报聚合」仅提供<strong>网址导航跳转服务</strong>，通过自动化程序从互联网抓取链接信息。
-        不存储、不展示任何第三方网页内容。对跳转后网页的内容真实性、安全性不承担任何责任。
-        请用户注意<strong>防范电信网络诈骗</strong>，保护好个人财产安全。
-        所有链接均经安全跳转页提醒后访问。
-      </div>
-    </div>
-    <!-- Promo section -->
-    <div class="footer-section">
-      <div class="footer-promo">
-        🌟 <strong>线报聚合</strong> 是免费的羊毛线报导航站，帮助您第一时间掌握全网优惠信息。<br>
-        如果您觉得本站好用，请<strong>多多推广分享</strong>！您的推广是我们持续运营的最大动力。<br>
-        其他网站/博主如觉本站有价值，欢迎<strong>友情链接、互相推广</strong>，一起引流做大！
-      </div>
-    </div>
-    <!-- Links -->
-    <div class="footer-links">
-      <a href="./">首页</a>
-      <a href="./alipay-redpacket.html">支付宝红包</a>
-      <a href="./status.html">监控状态</a>
-      <a href="./feed.xml" target="_blank" rel="noopener">RSS 订阅</a>
-    </div>
-    <div class="footer-copy">线报聚合 · 网址导航服务 · MIT License · ⚡ Powered by GitHub Actions</div>
-  </div>
-</footer>
+function render() {
+  var feed = document.getElementById('feed');
+  if (filtered.length === 0) {
+    feed.innerHTML = '<div class="empty"><p>没有匹配的线报</p></div>';
+    document.getElementById('more').style.display = 'none';
+    return;
+  }
 
-<!-- ===== BACK TO TOP ===== -->
-<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="返回顶部">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>
-</button>
+  var end = Math.min(shown + PAGE_SIZE, filtered.length);
+  var html = '';
+  for (var i = shown; i < end; i++) {
+    var e = filtered[i];
+    var cls = 'entry' + (e.isNew ? ' is-new' : '');
+    html += '<div class="' + cls + '">';
+    html += '<div class="entry-header">';
+    if (e.source) html += '<span class="entry-source">' + esc(e.source) + '</span>';
+    if (e.category) html += '<span class="entry-cat">' + esc(e.category) + '</span>';
+    html += '<span class="entry-time">' + esc(e.displayTime) + '</span>';
+    html += '</div>';
+    html += '<div class="entry-title"><a href="' + esc(e.href) + '" target="_blank" rel="noopener">' + esc(e.title) + '</a></div>';
+    html += '</div>';
+  }
+  if (shown === 0) {
+    feed.innerHTML = html;
+  } else {
+    feed.insertAdjacentHTML('beforeend', html);
+  }
+  shown = end;
+  document.getElementById('more').style.display = shown < filtered.length ? '' : 'none';
+  document.getElementById('count').textContent = filtered.length + ' 条';
+}
 
-<!-- Keyboard hints (desktop only) -->
-<div class="kbd-hint" id="kbd-hint" aria-hidden="true">
-  按 <kbd>/</kbd> 搜索 · <kbd>Ctrl+D</kbd> 收藏 · <kbd>Esc</kbd> 关闭
-</div>
+function esc(s) {
+  if (!s) return '';
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
 
-<!-- Bookmark Toast -->
-<div id="bookmark-toast" role="alert" aria-live="polite"></div>
+function applyFilter() {
+  filtered = allEntries.filter(function(e) {
+    if (activeSource !== 'all' && e.source !== activeSource) return false;
+    if (searchQuery && e.title.indexOf(searchQuery) === -1 && e.source.indexOf(searchQuery) === -1) return false;
+    return true;
+  });
+  shown = 0;
+  render();
+}
 
-<!-- PWA Install Banner -->
-<div id="pwa-banner" role="alert" aria-label="安装应用">
-  <span class="pwa-icon">📱</span>
-  <span class="pwa-text">安装<strong>线报聚合</strong>到主屏幕，第一时间获取最新线报推送通知！</span>
-  <button class="pwa-btn" onclick="installApp()">立即安装</button>
-  <button class="pwa-close" onclick="closePwaBanner()" aria-label="关闭安装提示">✕</button>
-</div>
+function showMore() {
+  render();
+}
 
-<script src="public/js/app.js?v=20250616"></script>
+function buildSourceFilter() {
+  var counts = {};
+  allEntries.forEach(function(e) {
+    if (e.source) counts[e.source] = (counts[e.source] || 0) + 1;
+  });
+  var sorted = Object.keys(counts).sort(function(a, b) { return counts[b] - counts[a]; });
+  var html = '<button class="' + (activeSource === 'all' ? 'active' : '') + '" onclick="setSource(\'all\')">全部</button>';
+  sorted.forEach(function(s) {
+    html += '<button class="' + (activeSource === s ? 'active' : '') + '" onclick="setSource(\'' + esc(s) + '\')">' + esc(s) + ' ' + counts[s] + '</button>';
+  });
+  document.getElementById('sources').innerHTML = html;
+}
+
+function setSource(s) {
+  activeSource = s;
+  buildSourceFilter();
+  applyFilter();
+}
+
+// Search
+var searchTimer;
+document.getElementById('search').addEventListener('input', function() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(function() {
+    searchQuery = document.getElementById('search').value.trim();
+    applyFilter();
+  }, 200);
+});
+
+// Load feed
+fetch('feed.xml?t=' + Date.now())
+  .then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.text();
+  })
+  .then(function(xml) {
+    allEntries = parseFeed(xml);
+    buildSourceFilter();
+    applyFilter();
+  })
+  .catch(function(err) {
+    document.getElementById('feed').innerHTML =
+      '<div class="empty"><p>加载失败: ' + esc(err.message) + '</p></div>';
+  });
+</script>
 </body>
 </html>

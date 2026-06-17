@@ -18,7 +18,6 @@ jobs:
       TZ: Asia/Shanghai
     permissions:
       contents: write
-      gist: write
     steps:
       - name: 检出仓库
         uses: actions/checkout@v4
@@ -47,14 +46,6 @@ jobs:
       - name: 生成 RSS Feed
         run: python rss_feed.py
 
-      - name: 同步数据到 Gist
-        run: python gist_store.py
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 生成数据引用
-        run: python -c "from gist_store import get_gist_raw_url; import json; gist_id=open('gist_config.json').read(); ref={'version':1,'source':'gist','gist_id':json.loads(gist_id)['data_gist_id'],'files':{'items':get_gist_raw_url('items.json'),'items_latest':get_gist_raw_url('items_latest.json')}}; open('items_ref.json','w').write(json.dumps(ref,indent=2))"
-
       - name: 提交变更
         run: |
           set +e
@@ -63,8 +54,8 @@ jobs:
           git add crawl_status.json 2>/dev/null || true
           # 调度器状态和日志（智能调度需要）
           git add scheduler_state.json fast_log.jsonl 2>/dev/null || true
-          # 其他文件按需添加（items.json 已迁移到 Gist）
-          git add hash_record.txt notified_items.json adaptive_tiers.json items_ref.json gist_config.json 2>/dev/null || true
+          # 数据和状态文件
+          git add hash_record.txt notified_items.json adaptive_tiers.json feed.xml 2>/dev/null || true
 
           git status
           if git diff --staged --quiet 2>/dev/null; then
@@ -73,7 +64,7 @@ jobs:
           fi
 
           # 检查是否有新内容
-          if git diff --staged --name-only | grep -q "items_ref.json\|adaptive_tiers.json"; then
+          if git diff --staged --name-only | grep -q "feed.xml\|adaptive_tiers.json"; then
             COMMIT_MSG="快速更新: $(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')"
           else
             COMMIT_MSG="状态更新: $(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')"

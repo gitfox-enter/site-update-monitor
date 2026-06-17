@@ -44,19 +44,6 @@ jobs:
         run: python crawl.py
       - name: 生成 RSS Feed
         run: python rss_feed.py
-      - name: 验证 JSON 文件完整性
-        run: |
-          echo "=== 验证 JSON 文件 ==="
-          for f in items.json items_latest.json; do
-            echo -n "$f: "
-            if python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$f" 2>/dev/null; then
-              echo "✅ 有效 ($(wc -c < $f) bytes)"
-            else
-              echo "❌ 损坏！"
-              exit 1
-            fi
-          done
-          echo "=== 验证通过 ==="
 
       - name: 提交变更
         run: |
@@ -68,10 +55,8 @@ jobs:
           git add crawl_status.json 2>/dev/null || true
           # 调度器状态和日志（智能调度需要）
           git add scheduler_state.json run_log.jsonl 2>/dev/null || true
-          # 其他文件按需添加
+          # 数据和状态文件
           git add hash_record.txt notified_items.json adaptive_tiers.json feed.xml 2>/dev/null || true
-          # 核心数据文件：直接 commit 到 Git，数据永不丢失
-          git add items.json items_latest.json 2>/dev/null || true
 
           git status
           if git diff --staged --quiet 2>/dev/null; then
@@ -80,7 +65,7 @@ jobs:
           fi
 
           # 检查是否有新内容
-          if git diff --staged --name-only | grep -q "items_ref.json"; then
+          if git diff --staged --name-only | grep -q "feed.xml"; then
             COMMIT_MSG="自动更新: $(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')"
           elif git diff --staged --name-only | grep -q "adaptive_tiers.json"; then
             COMMIT_MSG="状态更新: $(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')"
