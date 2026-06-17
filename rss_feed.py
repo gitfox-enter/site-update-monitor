@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-RSS/Atom Feed 生成器 — 生成全量聚合 feed + 每站独立 feed。
+RSS/Atom Feed 生成器 — 为每个订阅站点生成独立 feed。
 
 输出:
-  feed.xml          — 全量聚合（所有来源）
   feeds/线报酷.xml   — 按来源拆分的独立 feed
   feeds/白菜哦.xml   — ...
 """
@@ -31,10 +30,10 @@ _INVALID_XML_RE = re.compile(
 # 配置
 # ============================================================
 
-SITE_URL = "https://gitfox-enter.github.io/site-update-monitor/"
+SITE_URL = "https://gitfox-enter.github.io/RSSForge/"
 FEEDS_DIR = "feeds"
-FEED_TITLE = "线报聚合 - 实时监控全网羊毛线报"
-FEED_DESCRIPTION = "自动聚合全网羊毛线报、优惠信息、活动促销，实时更新"
+FEED_TITLE = "RSSForge"
+FEED_DESCRIPTION = "基于 GitHub Actions 的免费 RSS 订阅源生成器"
 
 # 来源名 → 安全文件名映射
 def _safe_filename(name: str) -> str:
@@ -109,7 +108,7 @@ def _build_atom_feed(items: List[Dict], title: str, feed_url: str,
     ET.SubElement(root, f'{{{NS}}}link', href=feed_url, rel='self', type='application/atom+xml')
     ET.SubElement(root, f'{{{NS}}}id').text = feed_url
     ET.SubElement(root, f'{{{NS}}}updated').text = _to_iso8601(updated_at)
-    ET.SubElement(root, f'{{{NS}}}generator', uri='https://github.com/gitfox-enter/site-update-monitor').text = 'site-update-monitor'
+    ET.SubElement(root, f'{{{NS}}}generator', uri='https://github.com/gitfox-enter/RSSForge').text = 'RSSForge'
 
     # sy:updatePeriod — 让 RSS 阅读器知道更新频率
     if interval_min is not None:
@@ -176,7 +175,7 @@ def _write_feed(root: ET.Element, output_path: str) -> bool:
 
 
 def generate_all_feeds() -> Dict[str, int]:
-    """生成全量聚合 feed + 每站独立 feed。
+    """生成每站独立 feed（不再生成全量聚合 feed.xml）。
 
     Returns:
         dict: {'total': N, 'per_site': {name: count}, 'feeds_generated': M}
@@ -204,15 +203,7 @@ def generate_all_feeds() -> Dict[str, int]:
 
     stats = {'total': len(items), 'per_site': {}, 'feeds_generated': 0}
 
-    # 1. 全量聚合 feed（用最短 interval 15min 表示更新频繁）
-    all_feed_url = SITE_URL + "feed.xml"
-    root = _build_atom_feed(items, FEED_TITLE, all_feed_url, FEED_DESCRIPTION, updated_at,
-                            interval_min=15)
-    if _write_feed(root, "feed.xml"):
-        stats['feeds_generated'] += 1
-        print(f"全量 feed: {len(items)} 条")
-
-    # 2. 按来源拆分的 per-site feed
+    # 1. 按来源拆分的 per-site feed
     os.makedirs(FEEDS_DIR, exist_ok=True)
 
     by_source: Dict[str, List[Dict]] = {}
@@ -226,8 +217,8 @@ def generate_all_feeds() -> Dict[str, int]:
         safe_name = _safe_filename(source)
         filename = f"{FEEDS_DIR}/{safe_name}.xml"
         feed_url = SITE_URL + filename
-        title = f"{source} - 线报聚合"
-        desc = f"来自 {source} 的线报更新"
+        title = f"{source} - RSSForge"
+        desc = f"{source} 的 RSS 订阅源（由 RSSForge 生成）"
         interval = _name_intervals.get(source, 30)
 
         root = _build_atom_feed(source_items, title, feed_url, desc, updated_at,
