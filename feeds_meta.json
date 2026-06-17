@@ -1,8 +1,26 @@
 {
+  "爱Q生活": {
+    "interval": 30,
+    "freq_label": "每30分钟",
+    "count": 64,
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/爱Q生活.xml",
+    "icon": "https://www.google.com/s2/favicons?domain=fdzys666.xyz&sz=64",
+    "parent": "",
+    "category": ""
+  },
+  "资源厅": {
+    "interval": 60,
+    "freq_label": "每小时",
+    "count": 58,
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/资源厅.xml",
+    "icon": "https://www.google.com/s2/favicons?domain=www.ziyuanting.com&sz=64",
+    "parent": "",
+    "category": ""
+  },
   "线报酷": {
     "interval": 15,
     "freq_label": "每15分钟",
-    "count": 624,
+    "count": 679,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/线报酷.xml",
     "icon": "https://www.google.com/s2/favicons?domain=news.ixbk.fun&sz=64",
     "parent": "",
@@ -11,27 +29,36 @@
   "线报ICU": {
     "interval": 15,
     "freq_label": "每15分钟",
-    "count": 157,
+    "count": 160,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/线报ICU.xml",
     "icon": "https://www.google.com/s2/favicons?domain=xianbao.icu&sz=64",
-    "parent": "",
-    "category": ""
-  },
-  "超级线报": {
-    "interval": 20,
-    "freq_label": "每20分钟",
-    "count": 44,
-    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/超级线报.xml",
-    "icon": "https://www.google.com/s2/favicons?domain=cjx8.com&sz=64",
     "parent": "",
     "category": ""
   },
   "专业线报": {
     "interval": 20,
     "freq_label": "每20分钟",
-    "count": 216,
+    "count": 242,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/专业线报.xml",
     "icon": "https://www.google.com/s2/favicons?domain=www.zhuanyes.com&sz=64",
+    "parent": "",
+    "category": ""
+  },
+  "超级线报": {
+    "interval": 20,
+    "freq_label": "每20分钟",
+    "count": 49,
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/超级线报.xml",
+    "icon": "https://www.google.com/s2/favicons?domain=cjx8.com&sz=64",
+    "parent": "",
+    "category": ""
+  },
+  "汇发部": {
+    "interval": 20,
+    "freq_label": "每20分钟",
+    "count": 152,
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/汇发部.xml",
+    "icon": "https://www.google.com/s2/favicons?domain=www.huifabu.cn&sz=64",
     "parent": "",
     "category": ""
   },
@@ -59,15 +86,6 @@
     "count": 186,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/爱Q社区.xml",
     "icon": "https://www.google.com/s2/favicons?domain=www.iqnew.com&sz=64",
-    "parent": "",
-    "category": ""
-  },
-  "汇发部": {
-    "interval": 20,
-    "freq_label": "每20分钟",
-    "count": 100,
-    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/汇发部.xml",
-    "icon": "https://www.google.com/s2/favicons?domain=www.huifabu.cn&sz=64",
     "parent": "",
     "category": ""
   },
