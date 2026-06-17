@@ -29,7 +29,7 @@ FEED_URL = "https://gitfox-enter.github.io/site-update-monitor/feed.xml"
 SITE_URL = "https://gitfox-enter.github.io/site-update-monitor/"
 FEED_DESCRIPTION = "自动聚合全网羊毛线报、优惠信息、活动促销，实时更新"
 FEED_LANGUAGE = "zh-CN"
-MAX_FEED_ITEMS = 50  # RSS feed 最大条目数
+MAX_FEED_ITEMS = 200  # RSS feed 最大条目数（覆盖近 2-3 天内容）
 
 
 def generate_atom_feed(output_path: str = FEED_FILE, max_items: int = MAX_FEED_ITEMS) -> bool:
