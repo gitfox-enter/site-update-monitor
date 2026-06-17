@@ -305,12 +305,15 @@ def generate_all_feeds() -> Dict[str, int]:
             freq_label = "每8小时"
         else:
             freq_label = f"每{interval // 60}小时"
+        # 提取第一个条目的 URL 用于获取 favicon
+        su_items = by_source.get(source, [])
+        _su = su_items[0].get('url', '') if su_items else ''
         meta[source] = {
             'interval': interval,
             'freq_label': freq_label,
             'count': count,
             'feed_url': SITE_URL + FEEDS_DIR + '/' + _safe_filename(source) + '.xml',
-            'icon': _extract_favicon_url(sample_url) if sample_url else _extract_favicon_url(SITE_URL),
+            'icon': _extract_favicon_url(_su) if _su else _extract_favicon_url(SITE_URL),
         }
     try:
         tmp_path = 'feeds_meta.json.tmp'
