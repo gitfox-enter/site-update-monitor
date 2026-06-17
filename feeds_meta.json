@@ -3,102 +3,102 @@
     "interval": 15,
     "freq_label": "每15分钟",
     "count": 154,
-    "feed_url": "https://gitfox-enter.github.io/site-update-monitor/feeds/线报酷.xml"
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/线报酷.xml"
   },
   "超级线报": {
     "interval": 20,
     "freq_label": "每20分钟",
     "count": 35,
-    "feed_url": "https://gitfox-enter.github.io/site-update-monitor/feeds/超级线报.xml"
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/超级线报.xml"
   },
   "专业线报": {
     "interval": 20,
     "freq_label": "每20分钟",
     "count": 101,
-    "feed_url": "https://gitfox-enter.github.io/site-update-monitor/feeds/专业线报.xml"
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/专业线报.xml"
   },
   "线报ICU": {
     "interval": 15,
     "freq_label": "每15分钟",
     "count": 82,
-    "feed_url": "https://gitfox-enter.github.io/site-update-monitor/feeds/线报ICU.xml"
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/线报ICU.xml"
   },
   "白菜哦": {
     "interval": 60,
     "freq_label": "每小时",
     "count": 30,
-    "feed_url": "https://gitfox-enter.github.io/site-update-monitor/feeds/白菜哦.xml"
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/白菜哦.xml"
   },
   "拔草哦": {
     "interval": 60,
     "freq_label": "每小时",
     "count": 65,
-    "feed_url": "https://gitfox-enter.github.io/site-update-monitor/feeds/拔草哦.xml"
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/拔草哦.xml"
   },
   "慢慢买": {
     "interval": 120,
     "freq_label": "每2小时",
     "count": 99,
-    "feed_url": "https://gitfox-enter.github.io/site-update-monitor/feeds/慢慢买.xml"
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/慢慢买.xml"
   },
   "优惠线报": {
     "interval": 60,
     "freq_label": "每小时",
     "count": 17,
-    "feed_url": "https://gitfox-enter.github.io/site-update-monitor/feeds/优惠线报.xml"
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/优惠线报.xml"
   },
   "H6线报": {
     "interval": 30,
     "freq_label": "每30分钟",
     "count": 38,
-    "feed_url": "https://gitfox-enter.github.io/site-update-monitor/feeds/H6线报.xml"
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/H6线报.xml"
   },
   "反斗限免": {
     "interval": 240,
     "freq_label": "每4小时",
     "count": 13,
-    "feed_url": "https://gitfox-enter.github.io/site-update-monitor/feeds/反斗限免.xml"
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/反斗限免.xml"
   },
   "线报网": {
     "interval": 20,
     "freq_label": "每20分钟",
     "count": 40,
-    "feed_url": "https://gitfox-enter.github.io/site-update-monitor/feeds/线报网.xml"
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/线报网.xml"
   },
   "爱Q社区": {
     "interval": 20,
     "freq_label": "每20分钟",
     "count": 41,
-    "feed_url": "https://gitfox-enter.github.io/site-update-monitor/feeds/爱Q社区.xml"
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/爱Q社区.xml"
   },
   "天天赚": {
     "interval": 30,
     "freq_label": "每30分钟",
     "count": 28,
-    "feed_url": "https://gitfox-enter.github.io/site-update-monitor/feeds/天天赚.xml"
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/天天赚.xml"
   },
   "网赚": {
     "interval": 30,
     "freq_label": "每30分钟",
     "count": 36,
-    "feed_url": "https://gitfox-enter.github.io/site-update-monitor/feeds/网赚.xml"
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/网赚.xml"
   },
   "羊毛线报": {
     "interval": 30,
     "freq_label": "每30分钟",
     "count": 21,
-    "feed_url": "https://gitfox-enter.github.io/site-update-monitor/feeds/羊毛线报.xml"
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/羊毛线报.xml"
   },
   "12345线报": {
     "interval": 30,
     "freq_label": "每30分钟",
     "count": 21,
-    "feed_url": "https://gitfox-enter.github.io/site-update-monitor/feeds/12345线报.xml"
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/12345线报.xml"
   },
   "423Down": {
     "interval": 360,
     "freq_label": "每6小时",
     "count": 25,
-    "feed_url": "https://gitfox-enter.github.io/site-update-monitor/feeds/423Down.xml"
+    "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/423Down.xml"
   }
 }
