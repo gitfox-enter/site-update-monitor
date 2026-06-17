@@ -313,6 +313,16 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 .feed-card:hover { border-color: var(--pink); box-shadow: 0 2px 12px rgba(233,30,142,0.08); }
+.feed-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: contain;
+  flex-shrink: 0;
+  background: #fff;
+  padding: 2px;
+}
+.feed-icon-wrap { flex-shrink: 0; }
 .feed-info { flex: 1; min-width: 0; }
 .feed-name { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .feed-freq { font-size: 11px; color: var(--text3); margin-top: 2px; }
@@ -632,6 +642,9 @@ function copyFeedLink(feedUrl) {
         var count = m.count || 0;
         var feedFile = 'feeds/' + encodeURIComponent(name) + '.xml';
         html += '<div class="feed-card">\
+          <div class="feed-icon-wrap">\
+            <img class="feed-icon" src="' + (m.icon || '') + '" alt="' + name + '" onerror="this.style.display=' + "'none'" + '">\
+          </div>\
           <div class="feed-info">\
             <div class="feed-name">' + name + '</div>\
             <div class="feed-freq">' + freq + ' · ' + count + ' 条</div>\
