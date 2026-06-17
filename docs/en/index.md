@@ -6,7 +6,7 @@ hero:
   text: RSS for Everything
   tagline: Free RSS feed generator powered by GitHub Actions<br>Generate RSS feeds for any website — no server, zero cost, automatic updates
   image:
-    src: https://gitfox-enter.github.io/RSSForge/favicon.ico
+    src: https://gitfox-enter.github.io/RSSForge/favicon.svg
     alt: RSSForge
   actions:
     - theme: brand
