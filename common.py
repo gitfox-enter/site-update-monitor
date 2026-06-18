@@ -95,6 +95,10 @@ __all__ = [
     # Proxy pool
     "ProxyPool",
     "create_proxy_pool",
+    # Favicon
+    "fetch_site_favicon",
+    # Content extraction
+    "fetch_article_summary",
 ]
 
 
@@ -750,3 +754,203 @@ def create_proxy_pool(extra_proxies: Optional[List[str]] = None) -> ProxyPool:
         for url in extra_proxies:
             pool.add_proxy(url)
     return pool
+
+
+# ============================================================
+# Favicon fetching — 直接从网站获取 favicon，替代 Google 服务
+# ============================================================
+
+import urllib.request as _urllib_request
+import urllib.error as _urllib_error
+
+_ICONS_DIR = "public/icons"
+_favicon_cache: Dict[str, str] = {}
+
+_USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/126.0.0.0 Safari/537.36"
+)
+
+
+def _download_to_file(url: str, filepath: str, timeout: int = 8) -> bool:
+    """Download *url* to *filepath*. Returns True on success."""
+    try:
+        req = _urllib_request.Request(url, headers={"User-Agent": _USER_AGENT})
+        with _urllib_request.urlopen(req, timeout=timeout) as resp:
+            data = resp.read()
+            if len(data) < 50:  # too small, probably an error page
+                return False
+            os.makedirs(os.path.dirname(filepath), exist_ok=True)
+            with open(filepath, "wb") as f:
+                f.write(data)
+            return True
+    except Exception:
+        return False
+
+
+def _try_fetch_favicon_from_html(site_url: str, filepath: str) -> bool:
+    """Fetch the site homepage, parse <link rel="icon">, and download the favicon."""
+    try:
+        req = _urllib_request.Request(site_url, headers={"User-Agent": _USER_AGENT})
+        with _urllib_request.urlopen(req, timeout=10) as resp:
+            html = resp.read(32768).decode("utf-8", errors="ignore")
+
+        # Parse link tags for icon references
+        for m in re.finditer(
+            r'<link[^>]+rel=["\'](?:shortcut icon|icon|apple-touch-icon)["\'][^>]*>',
+            html, re.IGNORECASE,
+        ):
+            tag = m.group(0)
+            href_m = re.search(r'href=["\']([^"\']+)["\']', tag)
+            if href_m:
+                icon_href = href_m.group(1).strip()
+                if not icon_href or icon_href.startswith("data:"):
+                    continue
+                # Resolve relative URLs
+                parsed_site = urlparse(site_url)
+                if icon_href.startswith("//"):
+                    icon_url = parsed_site.scheme + ":" + icon_href
+                elif icon_href.startswith("/"):
+                    icon_url = f"{parsed_site.scheme}://{parsed_site.hostname}{icon_href}"
+                elif icon_href.startswith("http"):
+                    icon_url = icon_href
+                else:
+                    icon_url = f"{parsed_site.scheme}://{parsed_site.hostname}/{icon_href}"
+                if _download_to_file(icon_url, filepath):
+                    return True
+
+        # Fallback: try /favicon.ico
+        parsed = urlparse(site_url)
+        ico_url = f"{parsed.scheme}://{parsed.hostname}/favicon.ico"
+        return _download_to_file(ico_url, filepath)
+    except Exception:
+        return False
+
+
+def fetch_site_favicon(site_url: str, site_name: str) -> str:
+    """获取网站真实 favicon 并缓存到 public/icons/。
+
+    尝试顺序：
+      1. 本地缓存（已存在则直接返回）
+      2. 从网站 HTML 解析 <link rel="icon">
+      3. 网站 /favicon.ico
+      4. DuckDuckGo 图标服务（备选）
+      5. Icon.horse 服务（备选）
+      6. 生成占位 SVG（兜底）
+
+    Returns:
+        favicon 的 URL（用于 feeds_meta.json 和 Atom feed 的 <icon>）
+    """
+    if site_name in _favicon_cache:
+        return _favicon_cache[site_name]
+
+    os.makedirs(_ICONS_DIR, exist_ok=True)
+    safe_name = re.sub(r'[^\w\u4e00-\u9fff]', '', site_name)
+    filepath = os.path.join(_ICONS_DIR, f"{safe_name}.png")
+    icon_url = SITE_URL_BASE + f"icons/{safe_name}.png"
+
+    # 1) 本地已缓存
+    if os.path.exists(filepath) and os.path.getsize(filepath) > 50:
+        _favicon_cache[site_name] = icon_url
+        return icon_url
+
+    # 2) 从网站 HTML 解析 + /favicon.ico
+    if _try_fetch_favicon_from_html(site_url, filepath):
+        _favicon_cache[site_name] = icon_url
+        return icon_url
+
+    # 3) DuckDuckGo 图标服务（不需要 API key，国内可访问）
+    domain = urlparse(site_url).hostname or ""
+    if _download_to_file(
+        f"https://icons.duckduckgo.com/ip3/{domain}.ico", filepath
+    ):
+        _favicon_cache[site_name] = icon_url
+        return icon_url
+
+    # 4) Icon.horse
+    if _download_to_file(
+        f"https://icon.horse/icon/{domain}", filepath
+    ):
+        _favicon_cache[site_name] = icon_url
+        return icon_url
+
+    # 5) 兜底：生成带首字母的 SVG 占位图
+    letter = site_name[0] if site_name else "?"
+    svg = (
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">'
+        f'<rect width="64" height="64" rx="12" fill="#e91e8e"/>'
+        f'<text x="32" y="44" font-size="32" fill="white" text-anchor="middle" '
+        f'font-family="sans-serif">{letter}</text></svg>'
+    )
+    svg_path = filepath.replace(".png", ".svg")
+    with open(svg_path, "w", encoding="utf-8") as f:
+        f.write(svg)
+    fallback_url = SITE_URL_BASE + f"icons/{safe_name}.svg"
+    _favicon_cache[site_name] = fallback_url
+    return fallback_url
+
+
+# 基础 URL，供 favicon 和 summary 使用
+SITE_URL_BASE = "https://gitfox-enter.github.io/RSSForge/"
+
+
+# ============================================================
+# Article summary extraction — 提取文章摘要用于 RSS 正文
+# ============================================================
+
+def fetch_article_summary(url: str, timeout: int = 8) -> Dict[str, str]:
+    """抓取文章页面并提取摘要文本和图片。
+
+    Returns:
+        dict with keys: 'summary' (text), 'image' (first image URL or '')
+    """
+    result = {"summary": "", "image": ""}
+    try:
+        req = _urllib_request.Request(url, headers={"User-Agent": _USER_AGENT})
+        with _urllib_request.urlopen(req, timeout=timeout) as resp:
+            raw = resp.read(65536)
+            html = raw.decode("utf-8", errors="ignore")
+
+        # 尝试 <meta name="description">
+        desc_m = re.search(
+            r'<meta\s+name=["\']description["\']\s+content=["\']([^"\']+)["\']',
+            html, re.IGNORECASE,
+        )
+        if desc_m:
+            result["summary"] = desc_m.group(1).strip()[:500]
+
+        # 尝试 <meta property="og:description">
+        if not result["summary"]:
+            og_m = re.search(
+                r'<meta\s+(?:property|name)=["\']og:description["\']\s+content=["\']([^"\']+)["\']',
+                html, re.IGNORECASE,
+            )
+            if og_m:
+                result["summary"] = og_m.group(1).strip()[:500]
+
+        # 如果没有 meta description，提取第一段正文
+        if not result["summary"]:
+            # 移除 script/style 标签
+            clean = re.sub(r'<(script|style)[^>]*>.*?</\1>', '', html, flags=re.DOTALL | re.IGNORECASE)
+            paragraphs = re.findall(r'<p[^>]*>(.*?)</p>', clean, re.DOTALL | re.IGNORECASE)
+            for p in paragraphs:
+                text = re.sub(r'<[^>]+>', '', p).strip()
+                if len(text) > 30:
+                    result["summary"] = text[:500]
+                    break
+
+        # 提取第一张图片
+        img_m = re.search(r'<img[^>]+src=["\']([^"\']+)["\']', html, re.IGNORECASE)
+        if img_m:
+            img_url = img_m.group(1)
+            if img_url.startswith("//"):
+                img_url = "https:" + img_url
+            elif img_url.startswith("/"):
+                parsed = urlparse(url)
+                img_url = f"{parsed.scheme}://{parsed.hostname}{img_url}"
+            result["image"] = img_url
+
+    except Exception:
+        pass
+    return result
