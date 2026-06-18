@@ -2,7 +2,7 @@
   "线报酷": {
     "interval": 15,
     "freq_label": "每15分钟",
-    "count": 1085,
+    "count": 1120,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/线报酷.xml",
     "icon": "https://gitfox-enter.github.io/RSSForge/public/icons/线报酷.png",
     "site_url": "http://news.ixbk.net/"
@@ -74,7 +74,7 @@
   "羊毛线报": {
     "interval": 30,
     "freq_label": "每30分钟",
-    "count": 21,
+    "count": 55,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/羊毛线报.xml",
     "icon": "https://gitfox-enter.github.io/RSSForge/public/icons/羊毛线报.png",
     "site_url": "https://b1.ymxianbao.cn/"
@@ -106,7 +106,7 @@
   "爱Q生活": {
     "interval": 30,
     "freq_label": "每30分钟",
-    "count": 0,
+    "count": 64,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/爱Q生活.xml",
     "icon": "https://gitfox-enter.github.io/RSSForge/public/icons/爱Q生活.png",
     "site_url": "https://axutongxue.net/"
@@ -154,7 +154,7 @@
   "资源厅": {
     "interval": 60,
     "freq_label": "每小时",
-    "count": 0,
+    "count": 58,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/资源厅.xml",
     "icon": "https://gitfox-enter.github.io/RSSForge/public/icons/资源厅.png",
     "site_url": "https://www.ziyuanting.com/"
@@ -162,7 +162,7 @@
   "网赚": {
     "interval": 30,
     "freq_label": "每30分钟",
-    "count": 36,
+    "count": 44,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/网赚.xml",
     "icon": "https://gitfox-enter.github.io/RSSForge/public/icons/网赚.png",
     "site_url": "https://www.wycad.com/"
@@ -194,7 +194,7 @@
   "拔草哦": {
     "interval": 60,
     "freq_label": "每小时",
-    "count": 65,
+    "count": 75,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/拔草哦.xml",
     "icon": "https://gitfox-enter.github.io/RSSForge/public/icons/拔草哦.png",
     "site_url": "https://www.bacaoo.com/"
