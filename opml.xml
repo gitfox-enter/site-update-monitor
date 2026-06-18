@@ -7,30 +7,46 @@
     <dateCreated>2026-06-18</dateCreated>
   </head>
   <body>
-    <outline type="rss" text="12345线报" title="12345线报" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/12345线报.xml" />
-    <outline type="rss" text="423Down" title="423Down" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/423Down.xml" />
-    <outline type="rss" text="H6线报" title="H6线报" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/H6线报.xml" />
-    <outline type="rss" text="万云积分" title="万云积分" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/万云积分.xml" />
-    <outline type="rss" text="专业线报" title="专业线报" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/专业线报.xml" />
-    <outline type="rss" text="优惠线报" title="优惠线报" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/优惠线报.xml" />
-    <outline type="rss" text="反斗限免" title="反斗限免" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/反斗限免.xml" />
-    <outline type="rss" text="天天赚" title="天天赚" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/天天赚.xml" />
-    <outline type="rss" text="异次元RSS" title="异次元RSS" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/异次元RSS.xml" />
-    <outline type="rss" text="慢慢买" title="慢慢买" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/慢慢买.xml" />
-    <outline type="rss" text="我不找" title="我不找" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/我不找.xml" />
-    <outline type="rss" text="拔草哦" title="拔草哦" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/拔草哦.xml" />
-    <outline type="rss" text="汇发部" title="汇发部" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/汇发部.xml" />
-    <outline type="rss" text="活动5" title="活动5" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/活动5.xml" />
-    <outline type="rss" text="爱Q生活" title="爱Q生活" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/爱Q生活.xml" />
-    <outline type="rss" text="爱Q社区" title="爱Q社区" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/爱Q社区.xml" />
-    <outline type="rss" text="白菜哦" title="白菜哦" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/白菜哦.xml" />
-    <outline type="rss" text="线报ICU" title="线报ICU" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/线报ICU.xml" />
-    <outline type="rss" text="线报网" title="线报网" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/线报网.xml" />
-    <outline type="rss" text="线报迷" title="线报迷" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/线报迷.xml" />
-    <outline type="rss" text="线报酷" title="线报酷" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/线报酷.xml" />
-    <outline type="rss" text="网赚" title="网赚" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/网赚.xml" />
-    <outline type="rss" text="羊毛线报" title="羊毛线报" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/羊毛线报.xml" />
-    <outline type="rss" text="资源厅" title="资源厅" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/资源厅.xml" />
-    <outline type="rss" text="超级线报" title="超级线报" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/超级线报.xml" />
+    <outline type="rss" text="007羊毛党" title="007羊毛党" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/007羊毛党.xml" htmlUrl="https://www.007ymd.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/007羊毛党.png" />
+    <outline type="rss" text="12345线报" title="12345线报" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/12345线报.xml" htmlUrl="https://www.12345pro.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/12345线报.svg" />
+    <outline type="rss" text="423Down" title="423Down" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/423Down.xml" htmlUrl="https://www.423down.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/423Down.png" />
+    <outline type="rss" text="51卡农" title="51卡农" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/51卡农.xml" htmlUrl="https://www.51kanong.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/51卡农.png" />
+    <outline type="rss" text="H6线报" title="H6线报" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/H6线报.xml" htmlUrl="https://www.h6room.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/H6线报.png" />
+    <outline type="rss" text="IT之家" title="IT之家" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/IT之家.xml" htmlUrl="https://www.ithome.com/zt/xijiayi" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/IT之家.png" />
+    <outline type="rss" text="LSapk" title="LSapk" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/LSapk.xml" htmlUrl="https://www.lsapk.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/LSapk.png" />
+    <outline type="rss" text="万云积分" title="万云积分" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/万云积分.xml" htmlUrl="https://10000yun.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/万云积分.png" />
+    <outline type="rss" text="专业线报" title="专业线报" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/专业线报.xml" htmlUrl="https://www.zhuanyes.com/xianbao/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/专业线报.png" />
+    <outline type="rss" text="优惠线报" title="优惠线报" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/优惠线报.xml" htmlUrl="https://www.yxssp.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/优惠线报.png" />
+    <outline type="rss" text="佛系软件" title="佛系软件" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/佛系软件.xml" htmlUrl="https://www.foxirj.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/佛系软件.png" />
+    <outline type="rss" text="免费族" title="免费族" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/免费族.xml" htmlUrl="https://www.thosefree.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/免费族.png" />
+    <outline type="rss" text="华军软件" title="华军软件" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/华军软件.xml" htmlUrl="https://www.onlinedown.net/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/华军软件.png" />
+    <outline type="rss" text="反斗限免" title="反斗限免" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/反斗限免.xml" htmlUrl="https://free.apprcn.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/反斗限免.png" />
+    <outline type="rss" text="多多软件" title="多多软件" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/多多软件.xml" htmlUrl="https://www.ddooo.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/多多软件.png" />
+    <outline type="rss" text="天天赚" title="天天赚" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/天天赚.xml" htmlUrl="https://www.daydayzhuan.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/天天赚.png" />
+    <outline type="rss" text="好赚网" title="好赚网" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/好赚网.xml" htmlUrl="https://m.hybase.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/好赚网.png" />
+    <outline type="rss" text="小众软件" title="小众软件" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/小众软件.xml" htmlUrl="https://www.appinn.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/小众软件.png" />
+    <outline type="rss" text="开心赚" title="开心赚" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/开心赚.xml" htmlUrl="https://www.kxdao.net/forum-42-1.html" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/开心赚.png" />
+    <outline type="rss" text="异次元RSS" title="异次元RSS" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/异次元RSS.xml" htmlUrl="https://feed.iplaysoft.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/异次元RSS.png" />
+    <outline type="rss" text="慢慢买" title="慢慢买" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/慢慢买.xml" htmlUrl="https://www.manmanbuy.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/慢慢买.png" />
+    <outline type="rss" text="我不找" title="我不找" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/我不找.xml" htmlUrl="https://www.wobangzhao.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/我不找.png" />
+    <outline type="rss" text="拔草哦" title="拔草哦" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/拔草哦.xml" htmlUrl="https://www.bacaoo.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/拔草哦.svg" />
+    <outline type="rss" text="新赚吧" title="新赚吧" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/新赚吧.xml" htmlUrl="https://xzba.cc/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/新赚吧.png" />
+    <outline type="rss" text="果核剥壳" title="果核剥壳" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/果核剥壳.xml" htmlUrl="https://www.ghxi.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/果核剥壳.png" />
+    <outline type="rss" text="汇发部" title="汇发部" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/汇发部.xml" htmlUrl="https://www.huifabu.cn/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/汇发部.png" />
+    <outline type="rss" text="活动5" title="活动5" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/活动5.xml" htmlUrl="https://www.huodong5.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/活动5.png" />
+    <outline type="rss" text="爱Q生活" title="爱Q生活" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/爱Q生活.xml" htmlUrl="https://axutongxue.net/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/爱Q生活.png" />
+    <outline type="rss" text="爱Q社区" title="爱Q社区" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/爱Q社区.xml" htmlUrl="https://www.iqnew.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/爱Q社区.png" />
+    <outline type="rss" text="白菜哦" title="白菜哦" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/白菜哦.xml" htmlUrl="https://www.baicaio.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/白菜哦.png" />
+    <outline type="rss" text="线报ICU" title="线报ICU" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/线报ICU.xml" htmlUrl="https://xianbao.icu/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/线报ICU.png" />
+    <outline type="rss" text="线报网" title="线报网" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/线报网.xml" htmlUrl="https://v1.xianbao.net/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/线报网.png" />
+    <outline type="rss" text="线报迷" title="线报迷" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/线报迷.xml" htmlUrl="https://xianbaomi.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/线报迷.svg" />
+    <outline type="rss" text="线报酷" title="线报酷" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/线报酷.xml" htmlUrl="http://news.ixbk.net/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/线报酷.png" />
+    <outline type="rss" text="网赚" title="网赚" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/网赚.xml" htmlUrl="https://www.wycad.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/网赚.png" />
+    <outline type="rss" text="羊毛党" title="羊毛党" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/羊毛党.xml" htmlUrl="https://www.yangmaodang.club/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/羊毛党.svg" />
+    <outline type="rss" text="羊毛王" title="羊毛王" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/羊毛王.xml" htmlUrl="https://yangmao.wang/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/羊毛王.png" />
+    <outline type="rss" text="羊毛线报" title="羊毛线报" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/羊毛线报.xml" htmlUrl="https://b1.ymxianbao.cn/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/羊毛线报.png" />
+    <outline type="rss" text="豆瓣小组" title="豆瓣小组" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/豆瓣小组.xml" htmlUrl="https://www.douban.com/group/711811/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/豆瓣小组.png" />
+    <outline type="rss" text="资源厅" title="资源厅" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/资源厅.xml" htmlUrl="https://www.ziyuanting.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/资源厅.png" />
+    <outline type="rss" text="超级线报" title="超级线报" xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/超级线报.xml" htmlUrl="https://cjx8.com/" iconUrl="https://gitfox-enter.github.io/RSSForge/public/icons/超级线报.png" />
   </body>
 </opml>

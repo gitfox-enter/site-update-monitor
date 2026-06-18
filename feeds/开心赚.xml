@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/syndication/1.0">
+  <title>开心赚 - RSSForge</title>
+  <subtitle>开心赚 的 RSS 订阅源（由 RSSForge 生成）</subtitle>
+  <link href="https://gitfox-enter.github.io/RSSForge/" rel="alternate" />
+  <link href="https://gitfox-enter.github.io/RSSForge/feeds/开心赚.xml" rel="self" type="application/atom+xml" />
+  <id>https://gitfox-enter.github.io/RSSForge/feeds/开心赚.xml</id>
+  <updated>2026-06-18T13:25:46+08:00</updated>
+  <generator uri="https://github.com/gitfox-enter/RSSForge">RSSForge</generator>
+  <sy:updatePeriod>daily</sy:updatePeriod>
+  <sy:updateFrequency>12</sy:updateFrequency>
+  <sy:updateBase>2000-01-01T00:00:00+08:00</sy:updateBase>
+  <author>
+    <name>RSSForge</name>
+  </author>
+  <icon>https://gitfox-enter.github.io/RSSForge/public/icons/开心赚.png</icon>
+</feed>
