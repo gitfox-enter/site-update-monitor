@@ -14,14 +14,15 @@ import re
 import json
 import xml.etree.ElementTree as ET
 from typing import List, Dict
+from common import slugify
 
 FEEDS_DIR = "feeds"
 SITE_URL = "https://gitfox-enter.github.io/RSSForge/"
 
 
 def _safe_filename(name: str) -> str:
-    """清理文件名，只保留中文、字母、数字、下划线."""
-    return re.sub(r'[^\w\u4e00-\u9fff]', '', name)
+    """ASCII 安全文件名 (fix #9)."""
+    return slugify(name)
 
 
 def _feed_has_entries(filepath: str) -> bool:

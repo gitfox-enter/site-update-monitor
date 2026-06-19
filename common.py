@@ -53,6 +53,38 @@ BLACKLIST_FILE: str = "blacklist.json"
 
 MAX_ITEMS_DB: int = 0  # 0 = 无上限，仅按7天时间窗口保留
 
+
+# ============================================================
+# Filename slugification — ASCII-safe filenames (fix #9)
+# ============================================================
+
+def slugify(name: str) -> str:
+    """将站点名称转为 ASCII 安全的文件名。
+
+    中文字符转为拼音，其他非 ASCII 字符移除。
+    例如: '线报酷' -> 'xian-bao-ku', '423Down' -> '423Down'
+    """
+    if not name:
+        return 'unknown'
+
+    # 尝试用 pypinyin 转换中文
+    try:
+        from pypinyin import lazy_pinyin, Style
+        parts = lazy_pinyin(name, style=Style.NORMAL)
+        slug = '-'.join(parts)
+    except ImportError:
+        # pypinyin 不可用时，直接移除非 ASCII
+        slug = name
+
+    # 保留字母、数字、连字符
+    slug = re.sub(r'[^a-zA-Z0-9\-]', '-', slug)
+    # 合并连续连字符
+    slug = re.sub(r'-{2,}', '-', slug)
+    # 移除首尾连字符
+    slug = slug.strip('-')
+
+    return slug or 'unknown'
+
 # ============================================================
 # Public API
 # ============================================================
@@ -846,7 +878,7 @@ def fetch_site_favicon(site_url: str, site_name: str) -> str:
         return _favicon_cache[site_name]
 
     os.makedirs(_ICONS_DIR, exist_ok=True)
-    safe_name = re.sub(r'[^\w\u4e00-\u9fff]', '', site_name)
+    safe_name = slugify(site_name)
     filepath = os.path.join(_ICONS_DIR, f"{safe_name}.png")
     icon_url = SITE_URL_BASE + f"icons/{safe_name}.png"
 

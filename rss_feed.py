@@ -25,6 +25,7 @@ from common import (
     get_beijing_time,
     load_items_db,
     ITEMS_DB_FILE,
+    slugify,
 )
 
 # 导入站点配置
@@ -143,7 +144,7 @@ def fetch_site_favicon(site_url: str, site_name: str) -> str:
         return _favicon_cache[site_name]
 
     os.makedirs(ICONS_DIR, exist_ok=True)
-    safe_name = re.sub(r'[^\w\u4e00-\u9fff]', '', site_name)
+    safe_name = slugify(site_name)
     filepath = os.path.join(ICONS_DIR, f"{safe_name}.png")
     icon_url = f"{SITE_URL}{ICONS_DIR}/{safe_name}.png"
 
@@ -187,8 +188,8 @@ def fetch_site_favicon(site_url: str, site_name: str) -> str:
 # ============================================================
 
 def _safe_filename(name: str) -> str:
-    """将来源名称转为安全的文件名."""
-    return re.sub(r'[^\w\u4e00-\u9fff]', '', name)
+    """将来源名称转为 ASCII 安全的文件名 (fix #9)."""
+    return slugify(name)
 
 
 def _sanitize_xml(text: str) -> str:
