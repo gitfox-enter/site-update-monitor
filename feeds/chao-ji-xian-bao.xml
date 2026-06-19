@@ -5,7 +5,7 @@
   <link href="https://cjx8.com/" rel="alternate" />
   <link href="https://gitfox-enter.github.io/RSSForge/feeds/chao-ji-xian-bao.xml" rel="self" type="application/atom+xml" />
   <id>https://gitfox-enter.github.io/RSSForge/feeds/chao-ji-xian-bao.xml</id>
-  <updated>2026-06-20T00:41:59+08:00</updated>
+  <updated>2026-06-20T02:14:58+08:00</updated>
   <generator uri="https://github.com/gitfox-enter/RSSForge">RSSForge</generator>
   <rights>内容版权归原作者所有，RSSForge 仅提供聚合索引</rights>
   <sy:updatePeriod>hourly</sy:updatePeriod>
@@ -17,11 +17,59 @@
   </author>
   <icon>https://gitfox-enter.github.io/RSSForge/public/icons/chao-ji-xian-bao.png</icon>
   <entry>
+    <title type="text">全部线报</title>
+    <link href="https://cjx8.com/?cat=0" rel="alternate" />
+    <id>tag:cjx8.com,2026-06-20:item</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
+    <author>
+      <name>超级线报</name>
+    </author>
+    <summary type="text">全部线报</summary>
+    <content type="html">&lt;p&gt;全部线报&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/?cat=0"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">豆瓣买组</title>
+    <link href="https://cjx8.com/?cat=9" rel="alternate" />
+    <id>tag:cjx8.com,2026-06-20:item</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
+    <author>
+      <name>超级线报</name>
+    </author>
+    <summary type="text">豆瓣买组</summary>
+    <content type="html">&lt;p&gt;豆瓣买组&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/?cat=9"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">豆瓣拼组</title>
+    <link href="https://cjx8.com/?cat=3" rel="alternate" />
+    <id>tag:cjx8.com,2026-06-20:item</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
+    <author>
+      <name>超级线报</name>
+    </author>
+    <summary type="text">豆瓣拼组</summary>
+    <content type="html">&lt;p&gt;豆瓣拼组&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/?cat=3"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">小屁屁找</title>
+    <link href="https://cjx8.com/?cat=5" rel="alternate" />
+    <id>tag:cjx8.com,2026-06-20:item</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
+    <author>
+      <name>超级线报</name>
+    </author>
+    <summary type="text">小屁屁找</summary>
+    <content type="html">&lt;p&gt;小屁屁找&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/?cat=5"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
     <title type="text">好心天天分享</title>
     <link href="https://cjx8.com/?cat=13" rel="alternate" />
     <id>tag:cjx8.com,2026-06-20:item</id>
-    <updated>2026-06-20T00:41:09+08:00</updated>
-    <published>2026-06-20T00:41:09+08:00</published>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -32,8 +80,8 @@
     <title type="text">败家少女的日常</title>
     <link href="https://cjx8.com/?cat=10" rel="alternate" />
     <id>tag:cjx8.com,2026-06-20:item</id>
-    <updated>2026-06-20T00:41:09+08:00</updated>
-    <published>2026-06-20T00:41:09+08:00</published>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -44,8 +92,8 @@
     <title type="text">优惠女孩的日常</title>
     <link href="https://cjx8.com/?cat=19" rel="alternate" />
     <id>tag:cjx8.com,2026-06-20:item</id>
-    <updated>2026-06-20T00:41:09+08:00</updated>
-    <published>2026-06-20T00:41:09+08:00</published>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -56,8 +104,8 @@
     <title type="text">天涯花花的百宝袋</title>
     <link href="https://cjx8.com/?cat=11" rel="alternate" />
     <id>tag:cjx8.com,2026-06-20:item</id>
-    <updated>2026-06-20T00:41:09+08:00</updated>
-    <published>2026-06-20T00:41:09+08:00</published>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -68,8 +116,8 @@
     <title type="text">白菜省钱君</title>
     <link href="https://cjx8.com/?cat=12" rel="alternate" />
     <id>tag:cjx8.com,2026-06-20:item</id>
-    <updated>2026-06-20T00:41:09+08:00</updated>
-    <published>2026-06-20T00:41:09+08:00</published>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -80,8 +128,8 @@
     <title type="text">披着羊毛的魔鬼</title>
     <link href="https://cjx8.com/?cat=14" rel="alternate" />
     <id>tag:cjx8.com,2026-06-20:item</id>
-    <updated>2026-06-20T00:41:09+08:00</updated>
-    <published>2026-06-20T00:41:09+08:00</published>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -89,11 +137,23 @@
     <content type="html">&lt;p&gt;披着羊毛的魔鬼&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/?cat=14"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
+    <title type="text">妖娆本娆</title>
+    <link href="https://cjx8.com/?cat=17" rel="alternate" />
+    <id>tag:cjx8.com,2026-06-20:item</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
+    <author>
+      <name>超级线报</name>
+    </author>
+    <summary type="text">妖娆本娆</summary>
+    <content type="html">&lt;p&gt;妖娆本娆&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/?cat=17"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
     <title type="text">白给王酸菜</title>
     <link href="https://cjx8.com/?cat=20" rel="alternate" />
     <id>tag:cjx8.com,2026-06-20:item</id>
-    <updated>2026-06-20T00:41:09+08:00</updated>
-    <published>2026-06-20T00:41:09+08:00</published>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -104,8 +164,8 @@
     <title type="text">拼夕夕bot</title>
     <link href="https://cjx8.com/?cat=21" rel="alternate" />
     <id>tag:cjx8.com,2026-06-20:item</id>
-    <updated>2026-06-20T00:41:09+08:00</updated>
-    <published>2026-06-20T00:41:09+08:00</published>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -113,11 +173,23 @@
     <content type="html">&lt;p&gt;拼夕夕bot&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/?cat=21"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
+    <title type="text">光芒呀shine</title>
+    <link href="https://cjx8.com/?cat=22" rel="alternate" />
+    <id>tag:cjx8.com,2026-06-20:item</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
+    <author>
+      <name>超级线报</name>
+    </author>
+    <summary type="text">光芒呀shine</summary>
+    <content type="html">&lt;p&gt;光芒呀shine&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/?cat=22"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
     <title type="text">买白菜的妹妹</title>
     <link href="https://cjx8.com/?cat=23" rel="alternate" />
     <id>tag:cjx8.com,2026-06-20:item</id>
-    <updated>2026-06-20T00:41:09+08:00</updated>
-    <published>2026-06-20T00:41:09+08:00</published>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -128,8 +200,8 @@
     <title type="text">薅羊毛的大队长</title>
     <link href="https://cjx8.com/?cat=24" rel="alternate" />
     <id>tag:cjx8.com,2026-06-20:item</id>
-    <updated>2026-06-20T00:41:09+08:00</updated>
-    <published>2026-06-20T00:41:09+08:00</published>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -137,37 +209,37 @@
     <content type="html">&lt;p&gt;薅羊毛的大队长&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/?cat=24"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title type="text">丐支付宝神券部分弹3无门槛优惠2026-06-20 00:24:350支付宝菜黑五200-20券+国际5折，carari日本速干浴巾25.7元2026-06-20 00:23:400京东</title>
-    <link href="https://cjx8.com/post/1778501" rel="alternate" />
-    <id>tag:cjx8.com,2026-06-20:1778501</id>
-    <updated>2026-06-20T00:41:09+08:00</updated>
-    <published>2026-06-20T00:41:09+08:00</published>
+    <title type="text">屁三养MEP黑椒鸡肉方便面100g*5 临期 13.53元2026-06-20 01:03:450淘宝菜辉英喜达印尼炸鸡拌面450g+440g组合装 3首单凑后4.11元2026-06-20 01:02:530京东</title>
+    <link href="https://cjx8.com/post/1778599" rel="alternate" />
+    <id>tag:cjx8.com,2026-06-20:1778599</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
-    <summary type="text">丐支付宝神券部分弹3无门槛优惠2026-06-20 00:24:350支付宝菜黑五200-20券+国际5折，carari日本速干浴巾25.7元2026-06-20 00:23:400京东</summary>
-    <content type="html">&lt;p&gt;丐支付宝神券部分弹3无门槛优惠2026-06-20 00:24:350支付宝菜黑五200-20券+国际5折，carari日本速干浴巾25.7元2026-06-20 00:23:400京东&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/post/1778501"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <summary type="text">屁三养MEP黑椒鸡肉方便面100g*5 临期 13.53元2026-06-20 01:03:450淘宝菜辉英喜达印尼炸鸡拌面450g+440g组合装 3首单凑后4.11元2026-06-20 01:02:530京东</summary>
+    <content type="html">&lt;p&gt;屁三养MEP黑椒鸡肉方便面100g*5 临期 13.53元2026-06-20 01:03:450淘宝菜辉英喜达印尼炸鸡拌面450g+440g组合装 3首单凑后4.11元2026-06-20 01:02:530京东&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/post/1778599"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
     <category term="京东" />
   </entry>
   <entry>
-    <title type="text">菜黑五200-20券+国际5折，carari日本速干浴巾25.7元2026-06-20 00:23:400京东</title>
-    <link href="https://cjx8.com/post/1778500" rel="alternate" />
-    <id>tag:cjx8.com,2026-06-20:1778500</id>
-    <updated>2026-06-20T00:41:09+08:00</updated>
-    <published>2026-06-20T00:41:09+08:00</published>
+    <title type="text">菜辉英喜达印尼炸鸡拌面450g+440g组合装 3首单凑后4.11元2026-06-20 01:02:530京东</title>
+    <link href="https://cjx8.com/post/1778602" rel="alternate" />
+    <id>tag:cjx8.com,2026-06-20:1778602</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
-    <summary type="text">菜黑五200-20券+国际5折，carari日本速干浴巾25.7元2026-06-20 00:23:400京东</summary>
-    <content type="html">&lt;p&gt;菜黑五200-20券+国际5折，carari日本速干浴巾25.7元2026-06-20 00:23:400京东&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/post/1778500"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <summary type="text">菜辉英喜达印尼炸鸡拌面450g+440g组合装 3首单凑后4.11元2026-06-20 01:02:530京东</summary>
+    <content type="html">&lt;p&gt;菜辉英喜达印尼炸鸡拌面450g+440g组合装 3首单凑后4.11元2026-06-20 01:02:530京东&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/post/1778602"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
     <category term="京东" />
   </entry>
   <entry>
     <title type="text">自贡PPT制作</title>
     <link href="https://nav.weyondesign.com" rel="alternate" />
     <id>tag:nav.weyondesign.com,2026-06-20:item</id>
-    <updated>2026-06-20T00:41:09+08:00</updated>
-    <published>2026-06-20T00:41:09+08:00</published>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -178,8 +250,8 @@
     <title type="text">动画片下载</title>
     <link href="http://www.yiyazaojiao.com" rel="alternate" />
     <id>tag:www.yiyazaojiao.com,2026-06-20:item</id>
-    <updated>2026-06-20T00:41:09+08:00</updated>
-    <published>2026-06-20T00:41:09+08:00</published>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -190,12 +262,137 @@
     <title type="text">次世代下载网</title>
     <link href="https://www.downext.com" rel="alternate" />
     <id>tag:www.downext.com,2026-06-20:item</id>
-    <updated>2026-06-20T00:41:09+08:00</updated>
-    <published>2026-06-20T00:41:09+08:00</published>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
     <summary type="text">次世代下载网</summary>
     <content type="html">&lt;p&gt;次世代下载网&lt;/p&gt;&lt;p&gt;&lt;a href="https://www.downext.com"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">学习资料</title>
+    <link href="https://www.1haogu.com" rel="alternate" />
+    <id>tag:www.1haogu.com,2026-06-20:item</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
+    <author>
+      <name>超级线报</name>
+    </author>
+    <summary type="text">学习资料</summary>
+    <content type="html">&lt;p&gt;学习资料&lt;/p&gt;&lt;p&gt;&lt;a href="https://www.1haogu.com"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">喵闪视觉</title>
+    <link href="https://www.miao333.com" rel="alternate" />
+    <id>tag:www.miao333.com,2026-06-20:item</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
+    <author>
+      <name>超级线报</name>
+    </author>
+    <summary type="text">喵闪视觉</summary>
+    <content type="html">&lt;p&gt;喵闪视觉&lt;/p&gt;&lt;p&gt;&lt;a href="https://www.miao333.com"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">金聪线报</title>
+    <link href="http://www.jincong.net" rel="alternate" />
+    <id>tag:www.jincong.net,2026-06-20:item</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
+    <author>
+      <name>超级线报</name>
+    </author>
+    <summary type="text">金聪线报</summary>
+    <content type="html">&lt;p&gt;金聪线报&lt;/p&gt;&lt;p&gt;&lt;a href="http://www.jincong.net"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">站点地图</title>
+    <link href="https://cjx8.com/sitemap/index.xml" rel="alternate" />
+    <id>tag:cjx8.com,2026-06-20:index.xml</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
+    <author>
+      <name>超级线报</name>
+    </author>
+    <summary type="text">站点地图</summary>
+    <content type="html">&lt;p&gt;站点地图&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/sitemap/index.xml"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">申请友链</title>
+    <link href="https://cjx8.com/feedback" rel="alternate" />
+    <id>tag:cjx8.com,2026-06-20:feedback</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
+    <author>
+      <name>超级线报</name>
+    </author>
+    <summary type="text">申请友链</summary>
+    <content type="html">&lt;p&gt;申请友链&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/feedback"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">赚200大毛速度2026-06-20 00:40:0012夕金煌芒9斤净重18.9元2026-06-20 00:38:551拼多多菜淘京红包领，粽子3件3折，锦韵斋礼盒1880g2026-06-20 00:37:050京东</title>
+    <link href="https://cjx8.com/post/1778552" rel="alternate" />
+    <id>tag:cjx8.com,2026-06-20:1778552</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
+    <author>
+      <name>超级线报</name>
+    </author>
+    <summary type="text">赚200大毛速度2026-06-20 00:40:0012夕金煌芒9斤净重18.9元2026-06-20 00:38:551拼多多菜淘京红包领，粽子3件3折，锦韵斋礼盒1880g2026-06-20 00:37:050京东</summary>
+    <content type="html">&lt;p&gt;赚200大毛速度2026-06-20 00:40:0012夕金煌芒9斤净重18.9元2026-06-20 00:38:551拼多多菜淘京红包领，粽子3件3折，锦韵斋礼盒1880g2026-06-20 00:37:050京东&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/post/1778552"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="京东" />
+  </entry>
+  <entry>
+    <title type="text">夕金煌芒9斤净重18.9元2026-06-20 00:38:551拼多多菜淘京红包领，粽子3件3折，锦韵斋礼盒1880g2026-06-20 00:37:050京东</title>
+    <link href="https://cjx8.com/post/1778549" rel="alternate" />
+    <id>tag:cjx8.com,2026-06-20:1778549</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
+    <author>
+      <name>超级线报</name>
+    </author>
+    <summary type="text">夕金煌芒9斤净重18.9元2026-06-20 00:38:551拼多多菜淘京红包领，粽子3件3折，锦韵斋礼盒1880g2026-06-20 00:37:050京东</summary>
+    <content type="html">&lt;p&gt;夕金煌芒9斤净重18.9元2026-06-20 00:38:551拼多多菜淘京红包领，粽子3件3折，锦韵斋礼盒1880g2026-06-20 00:37:050京东&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/post/1778549"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="京东" />
+  </entry>
+  <entry>
+    <title type="text">菜淘京红包领，粽子3件3折，锦韵斋礼盒1880g2026-06-20 00:37:050京东</title>
+    <link href="https://cjx8.com/post/1778553" rel="alternate" />
+    <id>tag:cjx8.com,2026-06-20:1778553</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
+    <author>
+      <name>超级线报</name>
+    </author>
+    <summary type="text">菜淘京红包领，粽子3件3折，锦韵斋礼盒1880g2026-06-20 00:37:050京东</summary>
+    <content type="html">&lt;p&gt;菜淘京红包领，粽子3件3折，锦韵斋礼盒1880g2026-06-20 00:37:050京东&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/post/1778553"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="京东" />
+  </entry>
+  <entry>
+    <title type="text">鬼黑五200-20券+国际5折券，carari日本速干浴巾25.7元2026-06-20 00:24:091京东菜黑五200-20券+国际5折，carari日本速干浴巾25.7元2026-06-20 00:23:400京东</title>
+    <link href="https://cjx8.com/post/1778499" rel="alternate" />
+    <id>tag:cjx8.com,2026-06-20:1778499</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
+    <author>
+      <name>超级线报</name>
+    </author>
+    <summary type="text">鬼黑五200-20券+国际5折券，carari日本速干浴巾25.7元2026-06-20 00:24:091京东菜黑五200-20券+国际5折，carari日本速干浴巾25.7元2026-06-20 00:23:400京东</summary>
+    <content type="html">&lt;p&gt;鬼黑五200-20券+国际5折券，carari日本速干浴巾25.7元2026-06-20 00:24:091京东菜黑五200-20券+国际5折，carari日本速干浴巾25.7元2026-06-20 00:23:400京东&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/post/1778499"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="京东" />
+  </entry>
+  <entry>
+    <title type="text">菜黑五200-20券+国际5折，carari日本速干浴巾25.7元2026-06-20 00:23:400京东</title>
+    <link href="https://cjx8.com/post/1778500" rel="alternate" />
+    <id>tag:cjx8.com,2026-06-20:1778500</id>
+    <updated>2026-06-20T02:14:58+08:00</updated>
+    <published>2026-06-20T02:14:58+08:00</published>
+    <author>
+      <name>超级线报</name>
+    </author>
+    <summary type="text">菜黑五200-20券+国际5折，carari日本速干浴巾25.7元2026-06-20 00:23:400京东</summary>
+    <content type="html">&lt;p&gt;菜黑五200-20券+国际5折，carari日本速干浴巾25.7元2026-06-20 00:23:400京东&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/post/1778500"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="京东" />
   </entry>
 </feed>
