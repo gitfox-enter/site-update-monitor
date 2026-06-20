@@ -3,9 +3,9 @@
   <title>果核剥壳 - RSSForge</title>
   <subtitle>果核剥壳 的 RSS 订阅源（由 RSSForge 生成）</subtitle>
   <link href="https://www.ghxi.com/" rel="alternate" />
-  <link href="https://gitfox-enter.github.io/RSSForge/feeds/果核剥壳.xml" rel="self" type="application/atom+xml" />
-  <id>https://gitfox-enter.github.io/RSSForge/feeds/果核剥壳.xml</id>
-  <updated>2026-06-19T10:57:43+08:00</updated>
+  <link href="https://gitfox-enter.github.io/RSSForge/feeds/guo-he-bao-ke.xml" rel="self" type="application/atom+xml" />
+  <id>https://gitfox-enter.github.io/RSSForge/feeds/guo-he-bao-ke.xml</id>
+  <updated>2026-06-20T12:16:26+08:00</updated>
   <generator uri="https://github.com/gitfox-enter/RSSForge">RSSForge</generator>
   <rights>内容版权归原作者所有，RSSForge 仅提供聚合索引</rights>
   <sy:updatePeriod>daily</sy:updatePeriod>
@@ -15,13 +15,13 @@
     <name>RSSForge</name>
     <uri>https://github.com/gitfox-enter/RSSForge</uri>
   </author>
-  <icon>https://gitfox-enter.github.io/RSSForge/public/icons/果核剥壳.png</icon>
+  <icon>https://gitfox-enter.github.io/RSSForge/public/icons/guo-he-bao-ke.png</icon>
   <entry>
     <title type="text">Android Vivaldi浏览器 v8.0.4045.49</title>
     <link href="https://www.ghxi.com/andvivaldi.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:andvivaldi.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:andvivaldi.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -31,9 +31,9 @@
   <entry>
     <title type="text">QQ v9.9.31.260528 新架构正式版</title>
     <link href="https://www.ghxi.com/qqgfb.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:qqgfb.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:qqgfb.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -43,9 +43,9 @@
   <entry>
     <title type="text">Android 多邻国 v6.84.2 高级版</title>
     <link href="https://www.ghxi.com/anddlg.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:anddlg.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:anddlg.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -55,9 +55,9 @@
   <entry>
     <title type="text">Chromium v151.0.7899.0 绿色版</title>
     <link href="https://www.ghxi.com/chromium.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:chromium.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:chromium.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -67,9 +67,9 @@
   <entry>
     <title type="text">夸克 (QuarkPC) 电脑版 v6.9.1.868</title>
     <link href="https://www.ghxi.com/quarkpc.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:quarkpc.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:quarkpc.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -79,9 +79,9 @@
   <entry>
     <title type="text">火狐浏览器 152.0.1 正式版</title>
     <link href="https://www.ghxi.com/mozillafirefox.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:mozillafirefox.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:mozillafirefox.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -91,9 +91,9 @@
   <entry>
     <title type="text">Android Speedtest(网速测试) v7.0.5 去广告版</title>
     <link href="https://www.ghxi.com/speedtest.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:speedtest.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:speedtest.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -103,9 +103,9 @@
   <entry>
     <title type="text">【果核视频】梦想中的看图软件，我自己开发了出来</title>
     <link href="https://www.ghxi.com/ghvideo195.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:ghvideo195.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:ghvideo195.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -115,9 +115,9 @@
   <entry>
     <title type="text">哔哩哔哩PC客户端 v1.17.9.4828</title>
     <link href="https://www.ghxi.com/pcbilibili.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:pcbilibili.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:pcbilibili.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -127,9 +127,9 @@
   <entry>
     <title type="text">Opera浏览器 v132.0.5905.73 绿色便携版</title>
     <link href="https://www.ghxi.com/operachrome.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:operachrome.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:operachrome.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -139,9 +139,9 @@
   <entry>
     <title type="text">Zen Browser v1.21.2</title>
     <link href="https://www.ghxi.com/zenbrowser.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:zenbrowser.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:zenbrowser.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -151,9 +151,9 @@
   <entry>
     <title type="text">zRenamer(批量重命名工具) v2.1 绿色版</title>
     <link href="https://www.ghxi.com/zrenamer.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:zrenamer.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:zrenamer.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -163,9 +163,9 @@
   <entry>
     <title type="text">FotoSketcher(数码相片处理工具) v4.30 绿色便携版</title>
     <link href="https://www.ghxi.com/fotosketcher.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:fotosketcher.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:fotosketcher.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -175,9 +175,9 @@
   <entry>
     <title type="text">LibreWolf浏览器 v152.0-1</title>
     <link href="https://www.ghxi.com/librewolf.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:librewolf.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:librewolf.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -187,9 +187,9 @@
   <entry>
     <title type="text">DownTimer(倒计时工具) v20260618</title>
     <link href="https://www.ghxi.com/downtimer.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:downtimer.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:downtimer.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -199,9 +199,9 @@
   <entry>
     <title type="text">By Click Downloader(视频下载器) v2.4.32 中文版</title>
     <link href="https://www.ghxi.com/byclick.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:byclick.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:byclick.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -211,9 +211,9 @@
   <entry>
     <title type="text">XYplorer(资源管理器 ) v28.30.1100 绿色便携版</title>
     <link href="https://www.ghxi.com/xyplorer-2.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:xyplorer-2.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:xyplorer-2.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -223,9 +223,9 @@
   <entry>
     <title type="text">Icaros Shell Extensions(资源管理器视频扩展) v3.3.6 中文版</title>
     <link href="https://www.ghxi.com/icaros.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:icaros.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:icaros.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -235,9 +235,9 @@
   <entry>
     <title type="text">Wing FTP Server v8.2.0 修改版</title>
     <link href="https://www.ghxi.com/wingftpserver.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:wingftpserver.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:wingftpserver.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -247,9 +247,9 @@
   <entry>
     <title type="text">迅雷12 v12.4.11.3980 绿色精简版</title>
     <link href="https://www.ghxi.com/xl12green.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:xl12green.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:xl12green.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -259,9 +259,9 @@
   <entry>
     <title type="text">高通被曝测试 6 款骁龙 8 Elite Gen 6 Pro 样品：2nm 工艺，瞄准 2027 旗舰</title>
     <link href="https://www.ghxi.com/new202606182.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:new202606182.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:new202606182.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -271,9 +271,9 @@
   <entry>
     <title type="text">谷歌 Chrome Canary 测试工具栏 AI Mode 快捷方式：支持侧边栏深度问答</title>
     <link href="https://www.ghxi.com/ai202606182.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:ai202606182.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:ai202606182.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -283,9 +283,9 @@
   <entry>
     <title type="text">QOwnNotes(开源Markdown笔记本) v26.6.7 绿色版</title>
     <link href="https://www.ghxi.com/qownnotes.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:qownnotes.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:qownnotes.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -295,9 +295,9 @@
   <entry>
     <title type="text">Visual Studio Code 1.125.0 官方版</title>
     <link href="https://www.ghxi.com/vscode.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:vscode.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:vscode.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -307,9 +307,9 @@
   <entry>
     <title type="text">抖音PC版 v8.0.0 官方版</title>
     <link href="https://www.ghxi.com/douyinpc.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:douyinpc.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:douyinpc.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -319,9 +319,9 @@
   <entry>
     <title type="text">Waterfox(水狐浏览器) v6.6.15 官方版</title>
     <link href="https://www.ghxi.com/waterfox.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:waterfox.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:waterfox.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -331,9 +331,9 @@
   <entry>
     <title type="text">Android Image Toolbox(图片编辑器) v4.0.0</title>
     <link href="https://www.ghxi.com/imagetoolbox.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:imagetoolbox.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:imagetoolbox.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -343,9 +343,9 @@
   <entry>
     <title type="text">微软实测 iOS 端 Blink 引擎浏览器：性能超 Safari 近 30%，打破内核壁垒仍艰难</title>
     <link href="https://www.ghxi.com/new202606181.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:new202606181.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:new202606181.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -355,9 +355,9 @@
   <entry>
     <title type="text">受AI热潮推高芯片成本影响，苹果产品即将涨价</title>
     <link href="https://www.ghxi.com/ai202606181.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:ai202606181.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:ai202606181.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>
@@ -367,9 +367,9 @@
   <entry>
     <title type="text">Vivaldi(个性浏览器) v8.0.4033.50 官方中文版</title>
     <link href="https://www.ghxi.com/vivaldi.html" rel="alternate" />
-    <id>tag:www.ghxi.com,2026-06-19:vivaldi.html</id>
-    <updated>2026-06-19T10:57:43+08:00</updated>
-    <published>2026-06-19T10:57:43+08:00</published>
+    <id>tag:www.ghxi.com,2026-06-20:vivaldi.html</id>
+    <updated>2026-06-20T12:16:26+08:00</updated>
+    <published>2026-06-20T12:16:26+08:00</published>
     <author>
       <name>果核剥壳</name>
     </author>

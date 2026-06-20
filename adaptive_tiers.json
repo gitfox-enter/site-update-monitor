@@ -24,10 +24,10 @@
     "updated_at": "2026-06-17 22:09:06"
   },
   "https://www.huifabu.cn/": {
-    "tier": "medium",
+    "tier": "high",
     "success_streak": 0,
     "fail_streak": 0,
-    "updated_at": "2026-06-20 12:08:26"
+    "updated_at": "2026-06-20 12:16:41"
   },
   "https://xianbaomi.com/": {
     "tier": "high",
@@ -215,10 +215,10 @@
     "updated_at": "2026-06-17 12:27:48"
   },
   "https://www.ghxi.com/": {
-    "tier": "medium",
+    "tier": "high",
     "success_streak": 0,
     "fail_streak": 0,
-    "updated_at": "2026-06-20 12:08:26"
+    "updated_at": "2026-06-20 12:16:41"
   },
   "https://www.onlinedown.net/": {
     "tier": "dead",

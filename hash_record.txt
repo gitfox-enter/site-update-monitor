@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-06-20T12:08:26.746622+08:00",
+  "updated_at": "2026-06-20T12:16:41.800583+08:00",
   "records": {
     "https://xianbao.icu/": "7317d53fb47e37c186d1ea5820b55c70",
     "https://www.douban.com/group/711811/": "546783c574e0bf73d8b7aba909c5dcd0",
@@ -32,7 +32,7 @@
     "https://www.bacaoo.com/": "314e937b884852fe8e8f2181b423df07",
     "https://www.huodong5.com/": "6421a5086856d1892b40ff1ddfb322ed",
     "https://www.zhuanyes.com/xianbao/": "41b35effd7af23e74d0dc89f4d7cd459",
-    "https://www.huifabu.cn/": "556bbd1b643fa042c28064cfc065be9c",
+    "https://www.huifabu.cn/": "1c757db0763560b771566a13241422be",
     "https://www.baicaio.com/": "8e7665e06fb87df9ec04c6b2c9e18c10",
     "https://v1.xianbao.net/": "08c35e3e912e00685d624b4248df309d",
     "https://www.haodanku.com/": "b26735e38902aa2ceefd07f9579ac58d",
