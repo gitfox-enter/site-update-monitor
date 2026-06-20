@@ -517,8 +517,7 @@ def _generate_feeds_meta(stats: Dict, by_source: Dict[str, List[Dict]]) -> None:
     for url, name in SOURCE_NAME_MAP.items():
         # 跳过无数据的站点
         items_count = len(by_source.get(name, []))
-        if items_count == 0:
-            continue
+        # Include all sites regardless of item count
 
         safe_name = _safe_filename(name)
         interval = SITE_INTERVALS.get(url, 30)
