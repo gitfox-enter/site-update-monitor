@@ -5,7 +5,7 @@
   <link href="https://feed.iplaysoft.com/" rel="alternate" />
   <link href="https://gitfox-enter.github.io/RSSForge/feeds/yi-ci-yuan-RSS.xml" rel="self" type="application/atom+xml" />
   <id>https://gitfox-enter.github.io/RSSForge/feeds/yi-ci-yuan-RSS.xml</id>
-  <updated>2026-06-20T20:13:58+08:00</updated>
+  <updated>2026-06-20T22:38:07+08:00</updated>
   <generator uri="https://github.com/gitfox-enter/RSSForge">RSSForge</generator>
   <rights>内容版权归原作者所有，RSSForge 仅提供聚合索引</rights>
   <sy:updatePeriod>daily</sy:updatePeriod>
@@ -16,6 +16,19 @@
     <uri>https://github.com/gitfox-enter/RSSForge</uri>
   </author>
   <icon>https://gitfox-enter.github.io/RSSForge/icons/yi-ci-yuan-RSS.png</icon>
+  <entry>
+    <title type="text">🧧 支付宝扫码领红包 — 每天可领一次，消费直接抵扣</title>
+    <link href="https://gitfox-enter.github.io/RSSForge/alipay-redpacket.html" rel="alternate" />
+    <id>tag:gitfox-enter.github.io,2026-06-20:alipay-redpacket.html</id>
+    <updated>2026-06-20T22:45:29+08:00</updated>
+    <published>2026-06-20T22:45:29+08:00</published>
+    <author>
+      <name>异次元RSS</name>
+    </author>
+    <summary type="text">打开支付宝扫一扫，领取现金红包，消费时直接抵扣。每天可领一次，长期有效！</summary>
+    <content type="html">&lt;p&gt;打开支付宝扫一扫，领取现金红包，消费时直接抵扣。每天可领一次，长期有效！&lt;/p&gt;&lt;p&gt;&lt;a href="https://gitfox-enter.github.io/RSSForge/alipay-redpacket.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="推荐" />
+  </entry>
   <entry>
     <title type="text">PixPin 3 新版大升级 - Win / Mac 截图工具标杆！滚动长截图/贴图/标注/录屏/OCR</title>
     <link href="https://www.iplaysoft.com/pixpin3.html" rel="alternate" />
