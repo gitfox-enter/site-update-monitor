@@ -5,7 +5,7 @@
   <link href="https://www.daydayzhuan.com/" rel="alternate" />
   <link href="https://gitfox-enter.github.io/RSSForge/feeds/tian-tian-zhuan.xml" rel="self" type="application/atom+xml" />
   <id>https://gitfox-enter.github.io/RSSForge/feeds/tian-tian-zhuan.xml</id>
-  <updated>2026-06-20T12:20:16+08:00</updated>
+  <updated>2026-06-20T13:26:39+08:00</updated>
   <generator uri="https://github.com/gitfox-enter/RSSForge">RSSForge</generator>
   <rights>内容版权归原作者所有，RSSForge 仅提供聚合索引</rights>
   <sy:updatePeriod>hourly</sy:updatePeriod>
@@ -15,7 +15,20 @@
     <name>RSSForge</name>
     <uri>https://github.com/gitfox-enter/RSSForge</uri>
   </author>
-  <icon>https://gitfox-enter.github.io/RSSForge/public/icons/tian-tian-zhuan.png</icon>
+  <icon>https://gitfox-enter.github.io/RSSForge/icons/tian-tian-zhuan.png</icon>
+  <entry>
+    <title type="text">微博世界杯点评抽红包亲测0.39元红包</title>
+    <link href="https://www.daydayzhuan.com/article/21927" rel="alternate" />
+    <id>tag:www.daydayzhuan.com,2026-06-20:21927</id>
+    <updated>2026-06-20T13:26:39+08:00</updated>
+    <published>2026-06-20T13:26:39+08:00</published>
+    <author>
+      <name>天天赚</name>
+    </author>
+    <summary type="text">微博世界杯点评抽红包亲测0.39元红包</summary>
+    <content type="html">&lt;p&gt;微博世界杯点评抽红包亲测0.39元红包&lt;/p&gt;&lt;p&gt;&lt;a href="https://www.daydayzhuan.com/article/21927"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="红包" />
+  </entry>
   <entry>
     <title type="text">可乐读书复活：半自动阅读单号每天拿2~4元</title>
     <link href="https://www.daydayzhuan.com/article/21596" rel="alternate" />
