@@ -467,7 +467,6 @@ footer p { font-size: 12px; color: var(--text3); }
       </div>
     </a>
     <nav class="nav-links">
-      <a class="nav-link" href="opml.xml" download>📥 OPML 全部订阅</a>
       <a class="nav-link" href="opml.xml" download>📥 OPML</a>
       <a class="nav-link" href="https://github.com/gitfox-enter/RSSForge" target="_blank">📂 GitHub</a>
       <a class="nav-link pink" href="https://github.com/gitfox-enter/RSSForge/fork" target="_blank">Fork 自建</a>
@@ -634,7 +633,6 @@ footer p { font-size: 12px; color: var(--text3); }
   <div class="container">
     <div class="footer-links">
       <a href="opml.xml" download>📥 OPML</a>
-      <a href="opml.xml" download>📥 OPML</a>
       <a href="https://github.com/gitfox-enter/RSSForge" target="_blank">📂 GitHub</a>
       <a href="https://github.com/gitfox-enter/RSSForge/issues" target="_blank">反馈</a>
     </div>
@@ -656,14 +654,16 @@ if (!sessionStorage.getItem('rssforge_alipay_shown')) {
 }
 
 /* ========== 复制链接 ========== */
-function copyFeedLink(feedUrl) {
+function copyFeedLink(feedUrl, ev) {
   var full = location.origin + location.pathname.replace(/[^/]*$/, '') + feedUrl;
+  var btn = ev && ev.target ? ev.target : null;
   navigator.clipboard.writeText(full).then(function() {
-    var btn = event.target;
-    var orig = btn.textContent;
-    btn.textContent = '已复制 ✓';
-    btn.style.color = 'var(--pink)';
-    setTimeout(function() { btn.textContent = orig; btn.style.color = ''; }, 1500);
+    if (btn) {
+      var orig = btn.textContent;
+      btn.textContent = '已复制 ✓';
+      btn.style.color = 'var(--pink)';
+      setTimeout(function() { btn.textContent = orig; btn.style.color = ''; }, 1500);
+    }
   }).catch(function() {
     prompt('复制链接:', full);
   });
@@ -688,7 +688,7 @@ function copyFeedLink(feedUrl) {
       + '</div>'
       + '<div class="feed-actions">'
       +   '<a class="feed-btn rss" href="' + feedFile + '" target="_blank">订阅</a>'
-      +   '<button class="feed-btn" onclick="copyFeedLink(\'' + feedFile + '\')">复制</button>'
+      +   '<button class="feed-btn" onclick="copyFeedLink(\'' + feedFile + '\', event)">复制</button>'
       + '</div>'
       + '</div>';
   }

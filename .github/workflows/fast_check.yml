@@ -58,9 +58,9 @@ jobs:
           # 调度器状态和日志（智能调度需要）
           git add scheduler_state.json fast_log.jsonl 2>/dev/null || true
           # 数据和状态文件
-          git add hash_record.txt notified_items.json adaptive_tiers.json feed.xml 2>/dev/null || true
+          git add hash_record.txt notified_items.json adaptive_tiers.json 2>/dev/null || true
           # Per-site feeds, OPML, and meta
-          git add feeds/ opml.xml opml-*.xml feeds_meta.json 2>/dev/null || true
+          git add feeds/ opml.xml feeds_meta.json 2>/dev/null || true
 
           git status
           if git diff --staged --quiet 2>/dev/null; then
@@ -69,7 +69,7 @@ jobs:
           fi
 
           # 检查是否有新内容
-          if git diff --staged --name-only | grep -q "feed.xml\|adaptive_tiers.json"; then
+          if git diff --staged --name-only | grep -q "adaptive_tiers.json"; then
             COMMIT_MSG="快速更新: $(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')"
           else
             COMMIT_MSG="状态更新: $(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')"
@@ -80,7 +80,7 @@ jobs:
           for i in 1 2 3 4 5; do
             echo "=== Push attempt $i ==="
             git rebase --abort 2>/dev/null || true
-            git pull --rebase --strategy-option=theirs origin main
+            git pull --rebase --strategy-option=ours origin main
             rebase_rc=$?
             if [ $rebase_rc -ne 0 ]; then
               git diff --name-only --diff-filter=U | while read conflict_file; do

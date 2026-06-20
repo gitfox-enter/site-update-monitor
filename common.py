@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-site-update-monitor shared module.
+RSSForge shared module.
 
 This module extracts and centralizes all code shared between ``crawl.py``
 (the hourly full crawler) and ``fast_check.py`` (the high-frequency
-incremental checker).  Importing from a single place eliminates duplication,
+incremental checker) for the **RSSForge** project.  Importing from a single place eliminates duplication,
 keeps constants in sync, and provides a stable public API that both scripts
 (and the test suite) can rely on.
 
@@ -505,7 +505,19 @@ class ProxyPool:
         """Return ``True`` when *proxy_url* has an acceptable URL scheme."""
         try:
             parsed = urlparse(proxy_url)
-            return parsed.scheme.lower() in _ALLOWED_PROXY_SCHEMES and bool(parsed.netloc)
+            # 1. Check scheme
+            if parsed.scheme.lower() not in _ALLOWED_PROXY_SCHEMES:
+                return False
+            # 2. Require netloc
+            if not parsed.netloc:
+                return False
+            # 3. Require hostname
+            if not parsed.hostname:
+                return False
+            # 4. Validate port range (1-65535)
+            if parsed.port is not None and not (1 <= parsed.port <= 65535):
+                return False
+            return True
         except Exception:
             return False
 
@@ -908,7 +920,9 @@ def fetch_site_favicon(site_url: str, site_name: str) -> str:
         return icon_url
 
     # 5) 兜底：生成带首字母的 SVG 占位图
-    letter = site_name[0] if site_name else "?"
+    import html as _html
+    raw_letter = site_name[0] if site_name else "?"
+    letter = _html.escape(raw_letter)
     svg = (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">'
         f'<rect width="64" height="64" rx="12" fill="#e91e8e"/>'
@@ -924,7 +938,7 @@ def fetch_site_favicon(site_url: str, site_name: str) -> str:
 
 
 # 基础 URL，供 favicon 和 summary 使用
-SITE_URL_BASE = "https://gitfox-enter.github.io/RSSForge/"
+SITE_URL_BASE = os.environ.get("SITE_URL_BASE", "https://gitfox-enter.github.io/RSSForge/")
 
 
 # ============================================================

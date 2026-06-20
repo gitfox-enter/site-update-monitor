@@ -1,4 +1,4 @@
-# Site configuration for site-update-monitor
+# Site configuration for RSSForge
 # 所有站点配置的单一真相源 (Single Source of Truth)
 # 最后清理: 2026-06-15
 
@@ -111,11 +111,7 @@ sites:
     tier: medium
     interval: 60
 
-  - url: "https://www.huodong5.com/"       # 活动5
-    max_pages: 5
-    name: 活动5
-    tier: medium
-    interval: 60
+  # [DEAD-ROBOTS] 已移至 dead_sites: 活动5 (robots.txt 拒绝)
 
   - url: "https://www.daydayzhuan.com/"    # 天天赚
     max_pages: 5
@@ -129,11 +125,7 @@ sites:
     tier: medium
     interval: 60
 
-  - url: "https://www.wycad.com/"          # 网赚
-    max_pages: 5
-    name: 网赚
-    tier: high
-    interval: 30
+  # [DEAD-ROBOTS] 已移至 dead_sites: 网赚 (robots.txt 拒绝)
 
   - url: "https://www.wobangzhao.com/"     # 我不找
     max_pages: 3
@@ -144,18 +136,9 @@ sites:
   # ============================================================
   # 购物比价 (MEDIUM tier - 每小时~2小时)
   # ============================================================
-  - url: "https://www.manmanbuy.com/"      # 慢慢买
-    max_pages: 5
-    name: 慢慢买
-    tier: medium
-    interval: 120
+  # [DEAD-ROBOTS] 已移至 dead_sites: 慢慢买 (robots.txt 拒绝)
 
-  - url: "https://www.baicaio.com/"        # 白菜哦
-    max_pages: 5
-    name: 白菜哦
-    tier: medium
-    interval: 60
-    fast_check: true
+  # [DEAD-ROBOTS] 已移至 dead_sites: 白菜哦 (robots.txt 拒绝)
 
   - url: "https://www.bacaoo.com/"         # 拔草哦
     max_pages: 5
@@ -343,3 +326,20 @@ dead_sites:
     reason: "adaptive_tiers 标记为 dead"
     confirmed_at: "2026-06-20"
     test_result: "tier=dead"
+  # --- robots.txt blocked sites (added 2026-06-20) ---
+  "https://www.huodong5.com/":
+    reason: "robots.txt 拒绝访问"
+    confirmed_at: "2026-06-20"
+    test_result: "robots.txt disallowed"
+  "https://www.wycad.com/":
+    reason: "robots.txt 拒绝访问"
+    confirmed_at: "2026-06-20"
+    test_result: "robots.txt disallowed"
+  "https://www.manmanbuy.com/":
+    reason: "robots.txt 拒绝访问"
+    confirmed_at: "2026-06-20"
+    test_result: "robots.txt disallowed"
+  "https://www.baicaio.com/":
+    reason: "robots.txt 拒绝访问"
+    confirmed_at: "2026-06-20"
+    test_result: "robots.txt disallowed"

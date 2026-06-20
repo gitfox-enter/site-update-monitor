@@ -39,5 +39,5 @@ jobs:
       - name: 运行测试
         run: |
           set -o pipefail
-          python -m pytest test_crawler.py --tb=short -q --no-header 2>&1 | head -100
+          python -m pytest test_crawler.py --tb=short -q --no-header 2>&1 | tee /tmp/pytest.log | tail -100
           echo "Exit code: $?"

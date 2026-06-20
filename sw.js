@@ -1,4 +1,4 @@
-const CACHE_NAME = 'xianbao-v15';
+const CACHE_NAME = 'rssforge-v1';
 const BASE = new URL('.', self.location.href).pathname.replace(/\/$/, '');
 const ASSETS = [
   BASE + '/index.html',
@@ -44,7 +44,7 @@ self.addEventListener('fetch', e => {
             const offlinePage = await caches.match(BASE + '/offline.html');
             if (offlinePage) return offlinePage;
           }
-          return new Response('离线 - 线报聚合', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+          return new Response('离线 - RSSForge', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
         })
     );
     return;

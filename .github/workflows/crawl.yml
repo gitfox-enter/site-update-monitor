@@ -1,4 +1,4 @@
-name: 站点更新监控
+name: RSSForge Crawl
 
 on:
   schedule:
@@ -108,7 +108,7 @@ jobs:
             echo "=== Push attempt $i ==="
             # Abort any existing rebase first
             git rebase --abort 2>/dev/null || true
-            git pull --rebase --strategy-option=theirs origin main
+            git pull --rebase --strategy-option=ours origin main
             rebase_rc=$?
             if [ $rebase_rc -ne 0 ]; then
               echo "Rebase had conflicts, resolving with our changes..."

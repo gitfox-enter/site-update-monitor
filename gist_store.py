@@ -22,7 +22,7 @@ logger = logging.getLogger('gist_store')
 
 # Gist 配置文件
 GIST_CONFIG_FILE = "gist_config.json"
-GIST_DESCRIPTION = "site-update-monitor data store (auto-updated by GitHub Actions)"
+GIST_DESCRIPTION = "RSSForge data store (auto-updated by GitHub Actions)"
 
 # 需要同步到 Gist 的数据文件
 GIST_FILES = {

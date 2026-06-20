@@ -1,7 +1,7 @@
 {
-  "name": "线报聚合 - 全网羊毛线报实时聚合导航",
-  "short_name": "线报聚合",
-  "description": "自动聚合全网羊毛线报、优惠信息、活动促销，实时更新一键跳转，支持PWA推送通知",
+  "name": "RSSForge - 全网RSS订阅源实时聚合",
+  "short_name": "RSSForge",
+  "description": "基于 GitHub Actions 的免费 RSS 订阅源生成器，给任何网站生成 RSS，实时更新一键订阅",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -29,12 +29,12 @@
     {
       "name": "今日线报",
       "url": "./#today",
-      "description": "查看今天的线报"
+      "description": "查看今日RSS更新"
     },
     {
       "name": "搜索线报",
       "url": "./#search",
-      "description": "搜索关键词查找线报"
+      "description": "搜索关键词查找订阅源"
     }
   ]
 }
