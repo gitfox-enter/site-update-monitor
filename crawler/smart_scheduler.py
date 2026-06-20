@@ -121,11 +121,29 @@ def _is_night(now: Optional[datetime] = None) -> bool:
 
 
 def _get_effective_interval(url: str, is_night: bool = False) -> int:
-    """Get effective interval in minutes, considering night weight."""
+    """Get effective interval in minutes, considering adaptive tier and night weight.
+
+    Adaptive logic (#37):
+      - If adaptive tier says 'low' update frequency but base interval is high,
+        reduce interval (site doesn't update often, no need to check frequently).
+      - If tier is 'dead', return infinity (never crawl).
+    """
     base_interval = get_site_interval(url)
-    if is_night:
-        return base_interval * 2
-    return base_interval
+    multiplier = 2 if is_night else 1
+
+    # Adaptive tier adjustment
+    from crawler.config import get_all_adaptive_tiers
+    tiers = get_all_adaptive_tiers()
+    tier_info = tiers.get(url, {})
+    tier = tier_info.get('tier', '')
+
+    if tier == 'dead':
+        return 999999  # effectively never crawl
+    elif tier == 'low' and base_interval <= 60:
+        # Low activity site with tight interval: loosen to save resources
+        base_interval = max(base_interval, 120)
+
+    return base_interval * multiplier
 
 
 def _minutes_since_last_crawl(state: Dict[str, Any], url: str) -> Optional[int]:
