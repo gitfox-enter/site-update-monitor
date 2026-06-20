@@ -11,28 +11,28 @@ High-frequency deal alerts, coupons, and bargain aggregators.
 
 | Site | Update Frequency | Feed |
 |------|-----------------|------|
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/线报酷.png" alt="" width="20"> **线报酷** | Every 15 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/线报酷.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/线报ICU.png" alt="" width="20"> **线报ICU** | Every 15 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/线报ICU.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/专业线报.png" alt="" width="20"> **专业线报** | Every 20 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/专业线报.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/超级线报.png" alt="" width="20"> **超级线报** | Every 20 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/超级线报.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/汇发部.png" alt="" width="20"> **汇发部** | Every 20 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/汇发部.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/爱Q社区.png" alt="" width="20"> **爱Q社区** | Every 20 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/爱Q社区.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/线报网.png" alt="" width="20"> **线报网** | Every 20 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/线报网.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/线报迷.png" alt="" width="20"> **线报迷** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/线报迷.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/H6线报.png" alt="" width="20"> **H6线报** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/H6线报.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/天天赚.png" alt="" width="20"> **天天赚** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/天天赚.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/网赚.png" alt="" width="20"> **网赚** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/网赚.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/羊毛线报.png" alt="" width="20"> **羊毛线报** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/羊毛线报.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/12345线报.png" alt="" width="20"> **12345线报** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/12345线报.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/新赚吧.png" alt="" width="20"> **新赚吧** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/新赚吧.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/羊毛王.png" alt="" width="20"> **羊毛王** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/羊毛王.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/羊毛党.png" alt="" width="20"> **羊毛党** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/羊毛党.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/爱Q生活.png" alt="" width="20"> **爱Q生活** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/爱Q生活.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/007羊毛党.png" alt="" width="20"> **007羊毛党** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/007羊毛党.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/好赚网.png" alt="" width="20"> **好赚网** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/好赚网.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/活动5.png" alt="" width="20"> **活动5** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/活动5.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/资源厅.png" alt="" width="20"> **资源厅** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/资源厅.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/我不找.png" alt="" width="20"> **我不找** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/我不找.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/xian-bao-ku.png" alt="" width="20"> **线报酷** | Every 15 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-ku.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/xian-bao-ICU.png" alt="" width="20"> **线报ICU** | Every 15 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-ICU.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/zhuan-ye-xian-bao.png" alt="" width="20"> **专业线报** | Every 20 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/zhuan-ye-xian-bao.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/chao-ji-xian-bao.png" alt="" width="20"> **超级线报** | Every 20 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/chao-ji-xian-bao.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/hui-fa-bu.png" alt="" width="20"> **汇发部** | Every 20 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/hui-fa-bu.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/ai-Q-she-qu.png" alt="" width="20"> **爱Q社区** | Every 20 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/ai-Q-she-qu.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/xian-bao-wang.png" alt="" width="20"> **线报网** | Every 20 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-wang.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/xian-bao-mi.svg" alt="" width="20"> **线报迷** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-mi.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/H6-xian-bao.png" alt="" width="20"> **H6线报** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/H6-xian-bao.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/tian-tian-zhuan.png" alt="" width="20"> **天天赚** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/tian-tian-zhuan.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/wang-zhuan.png" alt="" width="20"> **网赚** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/wang-zhuan.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/yang-mao-xian-bao.png" alt="" width="20"> **羊毛线报** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/yang-mao-xian-bao.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/12345-xian-bao.svg" alt="" width="20"> **12345线报** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/12345-xian-bao.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/xin-zhuan-ba.svg" alt="" width="20"> **新赚吧** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/xin-zhuan-ba.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/yang-mao-wang.png" alt="" width="20"> **羊毛王** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/yang-mao-wang.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/yang-mao-dang.png" alt="" width="20"> **羊毛党** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/yang-mao-dang.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/ai-Q-sheng-huo.png" alt="" width="20"> **爱Q生活** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/ai-Q-sheng-huo.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/007-yang-mao-dang.svg" alt="" width="20"> **007羊毛党** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/007-yang-mao-dang.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/hao-zhuan-wang.png" alt="" width="20"> **好赚网** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/hao-zhuan-wang.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/huo-dong-5.png" alt="" width="20"> **活动5** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/huo-dong-5.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/zi-yuan-ting.png" alt="" width="20"> **资源厅** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/zi-yuan-ting.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/wo-bu-zhao.png" alt="" width="20"> **我不找** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/wo-bu-zhao.xml) |
 
 ## Shopping & Price Comparison
 
@@ -40,10 +40,10 @@ E-commerce deals, historical price tracking, and bargain recommendations.
 
 | Site | Update Frequency | Feed |
 |------|-----------------|------|
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/白菜哦.png" alt="" width="20"> **白菜哦** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/白菜哦.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/拔草哦.png" alt="" width="20"> **拔草哦** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/拔草哦.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/优惠线报.png" alt="" width="20"> **优惠线报** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/优惠线报.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/慢慢买.png" alt="" width="20"> **慢慢买** | Every 2 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/慢慢买.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/bai-cai-o.png" alt="" width="20"> **白菜哦** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/bai-cai-o.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/ba-cao-o.png" alt="" width="20"> **拔草哦** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/ba-cao-o.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/you-hui-xian-bao.png" alt="" width="20"> **优惠线报** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/you-hui-xian-bao.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/man-man-mai.png" alt="" width="20"> **慢慢买** | Every 2 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/man-man-mai.xml) |
 
 ## Software Resources
 
@@ -51,16 +51,16 @@ Software recommendations, freeware, portable apps, and tools.
 
 | Site | Update Frequency | Feed |
 |------|-----------------|------|
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/小众软件.png" alt="" width="20"> **小众软件 (Appinn)** | Every 4 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/小众软件.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/免费族.png" alt="" width="20"> **免费族** | Every 4 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/免费族.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/佛系软件.png" alt="" width="20"> **佛系软件** | Every 4 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/佛系软件.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/反斗限免.png" alt="" width="20"> **反斗限免** | Every 4 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/反斗限免.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/果核剥壳.png" alt="" width="20"> **果核剥壳** | Every 6 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/果核剥壳.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/xiao-zhong-ruan-jian.png" alt="" width="20"> **小众软件 (Appinn)** | Every 4 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/xiao-zhong-ruan-jian.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/mian-fei-zu.png" alt="" width="20"> **免费族** | Every 4 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/mian-fei-zu.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/fo-xi-ruan-jian.png" alt="" width="20"> **佛系软件** | Every 4 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/fo-xi-ruan-jian.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/fan-dou-xian-mian.png" alt="" width="20"> **反斗限免** | Every 4 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/fan-dou-xian-mian.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/guo-he-bao-ke.png" alt="" width="20"> **果核剥壳** | Every 6 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/guo-he-bao-ke.xml) |
 | <img src="https://gitfox-enter.github.io/RSSForge/icons/423Down.png" alt="" width="20"> **423Down** | Every 6 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/423Down.xml) |
 | <img src="https://gitfox-enter.github.io/RSSForge/icons/LSapk.png" alt="" width="20"> **LSapk** | Every 6 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/LSapk.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/多多软件.png" alt="" width="20"> **多多软件** | Every 6 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/多多软件.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/华军软件.png" alt="" width="20"> **华��软件** | Every 8 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/华军软件.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/异次元RSS.png" alt="" width="20"> **异次元软件** | Every 8 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/异次元RSS.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/duo-duo-ruan-jian.png" alt="" width="20"> **多多软件** | Every 6 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/duo-duo-ruan-jian.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/hua-jun-ruan-jian.png" alt="" width="20"> **华��软件** | Every 8 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/hua-jun-ruan-jian.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/yi-ci-yuan-RSS.png" alt="" width="20"> **异次元软件** | Every 8 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/yi-ci-yuan-RSS.xml) |
 
 ## Community Forums
 
@@ -68,16 +68,16 @@ Forum posts, group discussions, and community deals.
 
 | Site | Update Frequency | Feed |
 |------|-----------------|------|
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/豆瓣小组.png" alt="" width="20"> **豆瓣小组** | Every 2 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/豆瓣小组.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/开心赚.png" alt="" width="20"> **开心赚** | Every 2 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/开心赚.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/51卡农.png" alt="" width="20"> **51卡农** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/51卡农.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/IT之家.png" alt="" width="20"> **IT之家** | Every 2 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/IT之家.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/dou-ban-xiao-zu.png" alt="" width="20"> **豆瓣小组** | Every 2 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/dou-ban-xiao-zu.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/kai-xin-zhuan.png" alt="" width="20"> **开心赚** | Every 2 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/kai-xin-zhuan.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/51-ka-nong.png" alt="" width="20"> **51卡农** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/51-ka-nong.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/IT-zhi-jia.png" alt="" width="20"> **IT之家** | Every 2 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/IT-zhi-jia.xml) |
 
 ## Others
 
 | Site | Update Frequency | Feed |
 |------|-----------------|------|
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/万云积分.png" alt="" width="20"> **万云积分** | Every 6 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/万云积分.xml) |
+| <img src="https://gitfox-enter.github.io/RSSForge/icons/wan-yun-ji-fen.png" alt="" width="20"> **万云积分** | Every 6 hours | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/wan-yun-ji-fen.xml) |
 
 ## Bulk Subscribe (OPML)
 

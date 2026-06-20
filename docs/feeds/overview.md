@@ -15,7 +15,7 @@ feeds/
 Feed 地址格式：
 
 ```
-https://用户名.github.io/RSSForge/feeds/{站点名}.xml
+https://用户名.github.io/RSSForge/feeds/zhan-dian-ming.xml
 ```
 
 ## Feed 格式

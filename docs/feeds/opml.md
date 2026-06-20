@@ -61,7 +61,7 @@ curl -X POST https://your-miniflux.io/feed/import \
   <body>
     <outline type="rss" text="线报酷"
              title="线报酷"
-             xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/线报酷.xml"
+             xmlUrl="https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-ku.xml"
              htmlUrl="https://news.ixbk.fun/"/>
     <outline type="rss" text="423Down"
              title="423Down"

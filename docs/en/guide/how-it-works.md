@@ -27,7 +27,7 @@ items.json (data)
     ↓
 rss_feed.py → Atom Feed XML
     ↓
-feeds/{site-name}.xml
+feeds/site-name.xml
     ↓
 GitHub Pages → User access
 ```
@@ -79,7 +79,7 @@ items.json
     ↓
 rss_feed.py (grouped by source)
     ↓
-feeds/{site-name}.xml   ← One independent feed per website
+feeds/site-name.xml   ← One independent feed per website
 feeds_meta.json         ← Metadata for the frontend display
 ```
 

@@ -15,7 +15,7 @@ feeds/
 Feed URL format:
 
 ```
-https://USERNAME.github.io/RSSForge/feeds/{SITE_NAME}.xml
+https://USERNAME.github.io/RSSForge/feeds/SITE-NAME.xml
 ```
 
 ## Feed Format

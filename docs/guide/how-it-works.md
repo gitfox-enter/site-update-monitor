@@ -27,7 +27,7 @@ items.json（数据）
     ↓
 rss_feed.py → Atom Feed XML
     ↓
-feeds/{站点名}.xml
+feeds/zhan-dian-ming.xml
     ↓
 GitHub Pages → 用户访问
 ```
@@ -79,7 +79,7 @@ items.json
     ↓
 rss_feed.py（按来源分组）
     ↓
-feeds/{站点名}.xml   ← 每个网站一个独立 feed
+feeds/zhan-dian-ming.xml   ← 每个网站一个独立 feed
 feeds_meta.json     ← 前端展示用的元数据
 ```
 
