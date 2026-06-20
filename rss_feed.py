@@ -470,6 +470,17 @@ def generate_all_feeds() -> Dict[str, int]:
         site_items = sorted(site_items, key=lambda x: x.get('time', ''), reverse=True)
         stats['sites_with_items'] += 1
 
+        # ---- 在每个 feed 头部插入支付宝红包推荐条目 ----
+        _sponsored_item = {
+            'url': 'https://gitfox-enter.github.io/RSSForge/alipay-redpacket.html',
+            'text': '🧧 支付宝扫码领红包 — 每天可领一次，消费直接抵扣',
+            'source': site_name,
+            'time': (get_beijing_time() - timedelta(minutes=1)).strftime('%Y-%m-%d %H:%M:%S'),
+            'category': '推荐',
+            'summary': '打开支付宝扫一扫，领取现金红包，消费时直接抵扣。每天可领一次，长期有效！',
+        }
+        site_items = [_sponsored_item] + site_items
+
         # ---- 增量生成：比对 items 哈希 (#36) ----
         current_hash = _compute_items_hash(site_items)
         prev_hash = prev_hashes.get(site_name, '')

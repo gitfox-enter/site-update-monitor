@@ -49,11 +49,6 @@ features:
     title: 智能去重
     details: 自动识别并过滤重复内容，同一内容不会在订阅源里出现两次
 
-  - icon: 🧧
-    title: 支付宝扫码领红包
-    details: 每天可领一次现金红包，消费直接抵扣，扫码试试 →
-    link: /alipay-redpacket.html
-
 footer:
   message: RSSForge · 万物皆可 RSS
   copyright: MIT License · © 2026 RSSForge

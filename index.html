@@ -51,18 +51,7 @@ a {
 }
 a:hover { color: var(--pink-dark); text-decoration: underline; }
 
-/* ==================== 支付宝弹窗 ==================== */
-#alipay-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  z-index: 9999;
-  justify-content: center;
-  align-items: center;
-  backdrop-filter: blur(3px);
-}
-#alipay-modal.show { display: flex; }
+
 .modal-box {
   background: var(--bg);
   border-radius: 20px;
@@ -520,17 +509,7 @@ footer p { font-size: 12px; color: var(--text3); }
 </head>
 <body>
 
-<!-- ==================== 支付宝弹窗 ==================== -->
-<div id="alipay-modal">
-  <div class="modal-box">
-    <div class="modal-badge">🧧 红包赞助</div>
-    <div class="modal-title">支付宝扫码领红包</div>
-    <div class="modal-sub">每天可领一次，消费直接抵扣</div>
-    <div class="modal-qr">
-      <img src="public/alipay-redpacket.jpg" alt="支付宝红包码"
-        onerror="this.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 200 200\'><rect width=\'200\' height=\'200\' fill=\'%23f5f5f5\'/><text x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' font-size=\'14\' fill=\'%23999\'>请替换为真实二维码</text></svg>'">
-      <div class="modal-qr-msg">截图保存 → 打开支付宝扫一扫</div>
-    </div>
+
     <div class="modal-tip">
       💡 这个项目完全免费，无服务器费用。<br>
       如果对你有帮助，欢迎领个红包支持一下 ❤️
@@ -720,7 +699,6 @@ footer p { font-size: 12px; color: var(--text3); }
   <div class="section">
     <h2 class="section-title">Backers</h2>
     <p style="font-size:13px;color:var(--text2)">
-      🧧 <a href="javascript:void(0)" onclick="document.getElementById('alipay-modal').classList.add('show')">扫码领支付宝红包</a>，你的支持是我们最大的动力
     </p>
   </div>
 
@@ -742,14 +720,6 @@ footer p { font-size: 12px; color: var(--text3); }
 <!-- ==================== Scripts ==================== -->
 <script>
 /* ========== 弹窗 ========== */
-function closeAlipay() {
-  document.getElementById('alipay-modal').classList.remove('show');
-}
-if (!sessionStorage.getItem('rssforge_alipay_shown')) {
-  window.addEventListener('load', function() {
-    document.getElementById('alipay-modal').classList.add('show');
-    sessionStorage.setItem('rssforge_alipay_shown', '1');
-  });
 }
 
 /* ========== 复制链接 ========== */
