@@ -677,7 +677,7 @@ function copyFeedLink(feedUrl) {
   function renderCard(name, m) {
     var freq = m.freq_label || '定期更新';
     var count = m.count || 0;
-    var feedFile = m.feed_url ? m.feed_url.replace(/^https?:\/\/[^\/]+\//, '') : 'feeds/' + encodeURIComponent(name) + '.xml';
+    var feedFile = m.feed_url ? 'feeds/' + m.feed_url.split('/').pop() : 'feeds/' + encodeURIComponent(name) + '.xml';
     return '<div class="feed-card">'
       + '<div class="feed-icon-wrap">'
       +   '<img class="feed-icon" src="' + escapeHtml(m.icon || '') + '" alt="' + escapeHtml(name) + '" onerror="this.style.display=\'none\';">'
