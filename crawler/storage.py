@@ -139,33 +139,43 @@ def save_hash_records(records: Dict[str, str]) -> bool:
 
 def load_notified_items() -> Dict[str, Any]:
     """
-    加载已通知条目
-    新格式：dict{'items': [{'url', 'text', 'source', 'time'}, ...]}
-    旧格式：set of URLs（向后兼容）
+    加载已通知条目 URL 集合。
+    新格式：{'urls': [url1, url2, ...], 'updated_at': '...'}
+    旧格式兼容：{'items': [{url, text, ...}, ...]} / list / set
     """
     if os.path.exists(NOTIFIED_ITEMS_FILE):
         try:
             with open(NOTIFIED_ITEMS_FILE, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-            if isinstance(data, dict):
-                return data  # 新格式直接返回
-            elif isinstance(data, list):
-                return {'items': [{'url': u} for u in data]}  # 旧格式转新格式
-            elif isinstance(data, set):
-                return {'items': [{'url': u} for u in data]}
+            # 新格式：{'urls': [...], 'updated_at': '...'}
+            if isinstance(data, dict) and 'urls' in data:
+                return data
+            # 旧格式：{'items': [{url, ...}, ...]}
+            if isinstance(data, dict) and 'items' in data:
+                urls = [item['url'] if isinstance(item, dict) else item
+                        for item in data.get('items', [])]
+                return {'urls': urls, 'updated_at': data.get('updated_at', '')}
+            # 更旧的 list/set 格式
+            if isinstance(data, (list, set)):
+                return {'urls': list(data), 'updated_at': ''}
         except Exception as e:
             logger.warning("读取已通知条目文件失败: %s", e)
-    return {'items': []}
+    return {'urls': [], 'updated_at': ''}
 
 
 def save_notified_items(item_dict: Dict[str, Any]) -> bool:
-    """保存已通知条目URL集合到文件（原子写入）"""
+    """保存已通知条目 URL 集合到文件（原子写入，紧凑格式）"""
     tmp_file = NOTIFIED_ITEMS_FILE + '.tmp'
     try:
+        from datetime import datetime, timezone, timedelta
+        item_dict['updated_at'] = datetime.now(
+            timezone(timedelta(hours=8))
+        ).strftime('%Y-%m-%d %H:%M:%S')
         with open(tmp_file, 'w', encoding='utf-8') as f:
-            json.dump(item_dict, f, ensure_ascii=False, indent=2)
+            json.dump(item_dict, f, ensure_ascii=False, separators=(',', ':'))
         os.replace(tmp_file, NOTIFIED_ITEMS_FILE)
-        logger.info("已通知条目记录已更新: %s (%d 条)", NOTIFIED_ITEMS_FILE, len(item_dict.get('items', [])))
+        logger.info("已通知条目记录已更新: %s (%d URLs)",
+                     NOTIFIED_ITEMS_FILE, len(item_dict.get('urls', [])))
         return True
     except Exception as e:
         logger.error("保存已通知条目失败: %s", e)
@@ -183,10 +193,7 @@ def filter_new_items(items: List[Any], notified: Dict[str, Any]) -> Tuple[List[A
     new_urls: Set[str] = set()
     # Handle both dict (production) and set (legacy) formats
     if isinstance(notified, dict):
-        notified_urls = set(
-            item['url'] if isinstance(item, dict) else item
-            for item in notified.get('items', [])
-        )
+        notified_urls = set(notified.get('urls', []))
     else:
         notified_urls = set(notified)
     for item in items:

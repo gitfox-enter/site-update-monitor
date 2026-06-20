@@ -1252,7 +1252,7 @@ async def main_async() -> None:
 
     # 加载已通知过的条目URL（去重用）
     notified = load_notified_items()
-    logger.info("已加载历史条目: %d 条", len(notified.get('items', [])))
+    logger.info("已加载历史条目: %d 条", len(notified.get('urls', [])))
 
     # Shuffle site order to avoid deterministic crawl patterns
     random.shuffle(active_sites)
@@ -1399,15 +1399,14 @@ async def main_async() -> None:
         added = merge_items_into_db(new_item_list, check_time)
         logger.info("SQLite 新增 %d 条线报", added)
 
-    # Save notified items AFTER merge so they include 'category' field
-    save_notified_items({
-        'items': new_item_list,
-        'updated_at': check_time,
-    })
+    # Merge existing notified URLs with new ones
+    existing_urls = set(notified.get('urls', []))
+    new_urls = set(item['url'] for item in new_item_list if item['url'] not in existing_urls)
+    all_urls = existing_urls | new_urls
+    save_notified_items({'urls': list(all_urls)})
+    logger.info("本轮新通知条目: %d 条, 总计: %d 条", len(new_urls), len(all_urls))
 
     # 计算本轮新增URL数
-    existing_urls_set = set(item['url'] for item in (notified.get('items', []) if isinstance(notified, dict) else []))
-    new_urls = set(item['url'] for item in new_item_list if item['url'] not in existing_urls_set)
     logger.info("本轮新通知条目: %d 条", len(new_urls))
 
     # Git提交 - use actual added count from merge_result, not raw new_item_list length
