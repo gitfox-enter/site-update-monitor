@@ -36,8 +36,9 @@ rss_history.json
 
 # 大数据文件 - 已迁移到 GitHub Gist 存储
 # 前端通过 items_ref.json 中的 Gist URL 加载数据
-items.json
-items_latest.json
+# items.json 和 items_latest.json 已移除 gitignore，需要持久化到仓库
+# items.json
+# items_latest.json
 notified_items.json
 
 # 邮件备份 - 一次性快照，不再维护
