@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-06-20T20:15:14.001830+08:00",
+  "updated_at": "2026-06-20T20:23:05.858379+08:00",
   "records": {
     "https://xianbao.icu/": "afb67ee3fac2cc1ab40fe199733ae995",
     "https://www.douban.com/group/711811/": "546783c574e0bf73d8b7aba909c5dcd0",
