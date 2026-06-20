@@ -7,6 +7,7 @@ RSS/Atom Feed 生成器 — 为每个订阅站点生成独立 feed。
   - 为 sites.yaml 中配置的每个站点生成独立 feed
   - 自动从网站获取真实 favicon 并缓存到 public/icons/
   - 不生成主聚合 feed.xml（仅 individual feeds + unified OPML）
+  - 支持 fulltext 模式（在 sites.yaml 中设置 fulltext: true）
 """
 
 import json
@@ -300,6 +301,73 @@ def _write_feed(root: ET.Element, output_path: str) -> bool:
 
 
 # ============================================================
+# RSS 2.0 Feed Builder
+# ============================================================
+
+def _build_rss2_feed(
+    items: List[Dict],
+    title: str,
+    feed_url: str,
+    description: str,
+    updated_at: str,
+    interval_min: int = 60,
+    site_name: str = '',
+    site_url: str = '',
+) -> ET.Element:
+    """构建 RSS 2.0 feed 根元素."""
+    root = ET.Element('rss', {'version': '2.0', 'xmlns:atom': 'http://www.w3.org/2005/Atom'})
+    channel = ET.SubElement(root, 'channel')
+    ET.SubElement(channel, 'title').text = title
+    ET.SubElement(channel, 'link').text = site_url or feed_url
+    ET.SubElement(channel, 'description').text = description
+    ET.SubElement(channel, 'lastBuildDate').text = _to_rfc822(updated_at)
+    ET.SubElement(channel, 'language').text = 'zh-cn'
+    atom_link = ET.SubElement(channel, '{http://www.w3.org/2005/Atom}link')
+    atom_link.set('href', feed_url)
+    atom_link.set('rel', 'self')
+    atom_link.set('type', 'application/rss+xml')
+    ET.SubElement(channel, 'ttl').text = str(max(15, interval_min // 15))
+
+    from html import escape as html_escape
+    for item in items[:50]:
+        url = item.get('url', '')
+        if not url:
+            continue
+        rss_item = ET.SubElement(channel, 'item')
+        ET.SubElement(rss_item, 'title').text = _sanitize_xml(item.get('text', item.get('title', '')))
+        ET.SubElement(rss_item, 'link').text = url
+        guid = ET.SubElement(rss_item, 'guid')
+        guid.text = url
+        guid.set('isPermaLink', 'true')
+        if item.get('time'):
+            ET.SubElement(rss_item, 'pubDate').text = _to_rfc822(item['time'])
+        summary = item.get('summary', '')
+        title_text = _sanitize_xml(item.get('text', item.get('title', '')))
+        html_content = '<p>' + html_escape(summary or title_text) + '</p>'
+        if url:
+            html_content += f'<p><a href="{html_escape(url)}">查看原文 →</a></p>'
+        content_el = ET.SubElement(rss_item, 'description')
+        content_el.text = html_content
+        category = item.get('category', '')
+        if category:
+            ET.SubElement(rss_item, 'category').text = _sanitize_xml(category)
+    return root
+
+
+def _to_rfc822(time_str: str) -> str:
+    """Convert 'YYYY-MM-DD HH:MM:SS' to RFC 822 date format."""
+    if not time_str:
+        from datetime import datetime, timezone, timedelta
+        return datetime.now(timezone(timedelta(hours=8))).strftime('%a, %d %b %Y %H:%M:%S +0800')
+    try:
+        from datetime import datetime, timezone, timedelta
+        dt = datetime.strptime(time_str, '%Y-%m-%d %H:%M:%S')
+        return dt.strftime('%a, %d %b %Y %H:%M:%S +0800')
+    except Exception:
+        return time_str
+
+
+# ============================================================
 # 主函数: 为所有配置的站点生成 feed
 # ============================================================
 
@@ -418,6 +486,13 @@ def generate_all_feeds() -> Dict[str, int]:
         
         if _write_feed(root, filename):
             stats['feeds_generated'] += 1
+            # Also generate RSS 2.0 version (#38)
+            rss2_root = _build_rss2_feed(
+                site_items, title, feed_url, desc, updated_at,
+                interval_min=interval, site_name=site_name, site_url=site_url,
+            )
+            rss2_filename = filename.replace('.xml', '.rss2.xml')
+            _write_feed(rss2_root, rss2_filename)
             print(f"  ✓ {site_name}: {len(site_items)} 条")
         else:
             stats['feeds_skipped'] += 1

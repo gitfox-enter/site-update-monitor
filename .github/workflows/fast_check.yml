@@ -19,7 +19,18 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: 夜间跳过 (23:00-07:00 减少运行)
+        id: night-check
+        run: |
+          HOUR=$(date +%H)
+          if [ "$HOUR" -ge 23 ] || [ "$HOUR" -lt 7 ]; then
+            echo "SKIP=true" >> $GITHUB_OUTPUT
+            echo "夜间模式 ($HOUR:00)，跳过本次检查"
+          else
+            echo "SKIP=false" >> $GITHUB_OUTPUT
+          fi
       - name: 检出仓库
+        if: steps.night-check.outputs.SKIP != 'true'
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
