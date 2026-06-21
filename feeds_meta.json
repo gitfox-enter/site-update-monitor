@@ -2,20 +2,20 @@
   "线报酷": {
     "interval": 15,
     "freq_label": "每15分钟",
-    "count": 1657,
+    "count": 1697,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-ku.xml",
     "icon": "https://gitfox-enter.github.io/RSSForge/icons/xian-bao-ku.png",
     "site_url": "http://news.ixbk.net/",
-    "items_hash": "1cb1668bc32c614ec679e566bcd28e06"
+    "items_hash": "f610da66323ffa48c36a56c2844d7e0f"
   },
   "线报ICU": {
     "interval": 15,
     "freq_label": "每15分钟",
-    "count": 308,
+    "count": 312,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-ICU.xml",
     "icon": "https://gitfox-enter.github.io/RSSForge/icons/xian-bao-ICU.png",
     "site_url": "https://xianbao.icu/",
-    "items_hash": "20ba82c280218e56b4182cd1cd35ebf1"
+    "items_hash": "9bfac7ad18022ad01af488b869aa11e1"
   },
   "专业线报": {
     "interval": 20,
@@ -92,20 +92,20 @@
   "超级线报": {
     "interval": 20,
     "freq_label": "每20分钟",
-    "count": 98,
+    "count": 102,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/chao-ji-xian-bao.xml",
     "icon": "https://gitfox-enter.github.io/RSSForge/icons/chao-ji-xian-bao.png",
     "site_url": "https://cjx8.com/",
-    "items_hash": "ffd3cd0e125896dbade9333a9c995472"
+    "items_hash": "b98d60f7101804111260b0892e565e4f"
   },
   "汇发部": {
     "interval": 20,
     "freq_label": "每20分钟",
-    "count": 781,
+    "count": 809,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/hui-fa-bu.xml",
     "icon": "https://gitfox-enter.github.io/RSSForge/icons/hui-fa-bu.png",
     "site_url": "https://www.huifabu.cn/",
-    "items_hash": "088d7b58bebd89478cae2a7df0521dbd"
+    "items_hash": "0f1e41ddaf3e9d6749af0a5f7fe2bd4c"
   },
   "爱Q社区": {
     "interval": 20,
@@ -119,11 +119,11 @@
   "爱Q生活": {
     "interval": 30,
     "freq_label": "每30分钟",
-    "count": 107,
+    "count": 109,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/ai-Q-sheng-huo.xml",
     "icon": "https://gitfox-enter.github.io/RSSForge/icons/ai-Q-sheng-huo.png",
     "site_url": "https://axutongxue.net/",
-    "items_hash": "5ab624783732af2141d11d38cf623b99"
+    "items_hash": "132aa9933ef90dc53887320baf9be4e6"
   },
   "007羊毛党": {
     "interval": 30,
