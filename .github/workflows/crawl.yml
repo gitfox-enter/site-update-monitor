@@ -10,12 +10,19 @@ concurrency:
   group: site-monitor
   cancel-in-progress: false
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   monitor:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
       TZ: Asia/Shanghai
+    outputs:
+      needs_deploy: ${{ steps.deploy-flag.outputs.NEEDS_DEPLOY }}
     permissions:
       contents: write
       packages: write
@@ -142,9 +149,23 @@ jobs:
           done
           if [ "$push_success" = true ]; then
             echo "Changes committed and pushed successfully"
+            # 写入部署标记文件，通知下游 job 需要部署
+            echo "true" > /tmp/needs_deploy.flag
           else
             echo "Failed to push changes after 5 attempts"
             exit 1
+          fi
+      - name: 输出部署标记
+        id: deploy-flag
+        if: steps.night-check.outputs.SKIP != 'true'
+        run: |
+          # 检查提交变更步骤是否写入了部署标记
+          if [ -f /tmp/needs_deploy.flag ] && [ "$(cat /tmp/needs_deploy.flag)" = "true" ]; then
+            echo "NEEDS_DEPLOY=true" >> $GITHUB_OUTPUT
+            echo "检测到 feed 变更，将触发 Pages 部署"
+          else
+            echo "NEEDS_DEPLOY=false" >> $GITHUB_OUTPUT
+            echo "无 feed 变更，跳过 Pages 部署"
           fi
       - name: 上传运行日志
         uses: actions/upload-artifact@v4
@@ -153,3 +174,73 @@ jobs:
           name: run-log-${{ github.run_number }}
           path: run_log.jsonl
           retention-days: 30
+
+  # ======== Pages 部署 job ========
+  # 解决 GITHUB_TOKEN push 不触发其他 workflow 的问题
+  # 直接在 crawl workflow 中部署，确保每次抓取后 feed 立刻更新到 CDN
+  deploy-pages:
+    needs: monitor
+    if: needs.monitor.outputs.needs_deploy == 'true'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: package.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build VitePress documentation
+        run: npm run docs:build
+
+      - name: Prepare site
+        run: |
+          mkdir -p _site
+          # VitePress 文档构建产物
+          if [ -d "docs/.vitepress/dist" ]; then
+            cp -r docs/.vitepress/dist/* _site/
+          fi
+          # 订阅源（feeds）
+          if [ -d "feeds" ]; then
+            mkdir -p _site/feeds
+            cp feeds/*.xml _site/feeds/ 2>/dev/null || true
+          fi
+          # OPML 文件
+          for f in opml.xml opml-*.xml; do
+            [ -f "$f" ] && cp "$f" _site/
+          done
+          # 元数据 JSON
+          for f in feeds_meta.json crawl_status.json; do
+            [ -f "$f" ] && cp "$f" _site/
+          done
+          # 公开文件（favicon.svg 等静态资源直接放到站点根目录）
+          if [ -d "public" ]; then
+            cp -r public/* _site/ 2>/dev/null || true
+          fi
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
