@@ -247,7 +247,7 @@ def fetch_page_content(url: str) -> Tuple[bool, Any]:
             encoding = response.apparent_encoding or 'utf-8'
             if encoding.lower() in ['gb2312', 'gbk', 'gb18030']:
                 encoding = 'gbk'
-            content = response.content.decode(encoding, errors='ignore')
+            content = response.content.decode(encoding, errors='replace')  # fix #116
             soup = BeautifulSoup(content, 'html.parser')
 
         # 获取页面标题

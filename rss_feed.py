@@ -98,7 +98,7 @@ def _extract_favicon_from_html(site_url: str, filepath: str) -> bool:
         import urllib.request as _urllib_request
         req = _urllib_request.Request(site_url, headers={"User-Agent": _USER_AGENT})
         with _urllib_request.urlopen(req, timeout=10) as resp:
-            html = resp.read(32768).decode("utf-8", errors="ignore")
+            html = resp.read(32768).decode("utf-8", errors="replace")  # fix #116
 
         # 查找 icon link 标签
         for m in re.finditer(

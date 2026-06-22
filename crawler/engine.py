@@ -926,7 +926,7 @@ def git_commit_if_changed() -> bool:
         TRACKED_FILES = [
             'items.json', 'items_latest.json', 'crawl_status.json',
             'hash_record.txt', 'monitor.db',
-            'notified_items.json', 'run_log.jsonl', '.gitignore',
+            'notified_items.json', 'run_log.jsonl',
         ]
         # Resolve project root (one level up from crawler/)
         project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

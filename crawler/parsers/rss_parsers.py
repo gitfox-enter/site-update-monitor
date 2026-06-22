@@ -36,7 +36,7 @@ def parse_rss_feed(content_bytes: bytes, base_url: str) -> List[Dict[str, str]]:
     seen: Set[str] = set()
 
     # 预处理：修复常见的 XML 格式问题
-    text = content_bytes.decode('utf-8', errors='ignore')
+    text = content_bytes.decode('utf-8', errors='replace')  # fix #116/#63: replace bad bytes instead of dropping them
     # 去除 BOM
     if text.startswith('\ufeff'):
         text = text[1:]

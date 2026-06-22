@@ -551,20 +551,19 @@ class ProxyPool:
             }
 
     def _is_active_unlocked(self, info: Dict[str, Any]) -> bool:
-        """Return ``True`` when a proxy entry is currently usable.
+        """Return ``True`` when a proxy entry is currently usable (pure check, no side effects).
 
-        A blacklisted proxy is automatically re-enabled once its cooldown
-        period has elapsed.  This method mutates *info* in-place when
-        re-enabling (resets failure counter and blacklist timestamp).
+        Fixes #70: this getter must not mutate state — re-enabling is done by callers.
         """
         if info["blacklisted_at"] == 0.0:
             return True
-        # Check whether the cooldown has elapsed
-        if time.time() - info["blacklisted_at"] >= self._cooldown:
+        return time.time() - info["blacklisted_at"] >= self._cooldown
+
+    def _re_enable_if_cooldown_elapsed(self, info: Dict[str, Any]) -> None:
+        """Re-enable a blacklisted proxy if its cooldown has elapsed (side-effect method)."""
+        if info["blacklisted_at"] != 0.0 and time.time() - info["blacklisted_at"] >= self._cooldown:
             info["blacklisted_at"] = 0.0
             info["failures"] = 0
-            return True
-        return False
 
     # ------------------------------------------------------------------
     # Loading helpers
@@ -662,8 +661,7 @@ class ProxyPool:
 
             # Re-enable any proxies whose cooldown has elapsed
             for info in self._proxies.values():
-                if info["blacklisted_at"] != 0.0:
-                    self._is_active_unlocked(info)
+                self._re_enable_if_cooldown_elapsed(info)
 
             # Build the candidate list (active, non-blacklisted proxies)
             active: List[str] = [
@@ -854,7 +852,7 @@ def _try_fetch_favicon_from_html(site_url: str, filepath: str) -> bool:
     try:
         req = _urllib_request.Request(site_url, headers={"User-Agent": _USER_AGENT})
         with _urllib_request.urlopen(req, timeout=10) as resp:
-            html = resp.read(32768).decode("utf-8", errors="ignore")
+            html = resp.read(32768).decode("utf-8", errors="replace")  # fix #116
 
         # Parse link tags for icon references
         for m in re.finditer(
@@ -959,8 +957,11 @@ SITE_URL_BASE = "https://gitfox-enter.github.io/RSSForge/"
 # Article summary extraction — 提取文章摘要用于 RSS 正文
 # ============================================================
 
-def fetch_article_summary(url: str, timeout: int = 8) -> Dict[str, str]:
-    """抓取文章页面并提取摘要文本和图片。
+async def fetch_article_summary(url: str, timeout: int = 8) -> Dict[str, str]:
+    """抓取文章页面并提取摘要文本和图片（fix #59: must be async when called in async contexts）。
+
+    WARNING: This is a synchronous function called in async event loops.
+    TODO(#59): Convert to httpx/aiohttp async, or wrap with asyncio.to_thread() at call sites.
 
     Returns:
         dict with keys: 'summary' (text), 'image' (first image URL or '')
@@ -970,7 +971,7 @@ def fetch_article_summary(url: str, timeout: int = 8) -> Dict[str, str]:
         req = _urllib_request.Request(url, headers={"User-Agent": _USER_AGENT})
         with _urllib_request.urlopen(req, timeout=timeout) as resp:
             raw = resp.read(65536)
-            html = raw.decode("utf-8", errors="ignore")
+            html = raw.decode("utf-8", errors="replace")  # fix #116
 
         # 尝试 <meta name="description">
         desc_m = re.search(
