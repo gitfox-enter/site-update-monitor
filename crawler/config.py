@@ -234,6 +234,38 @@ def get_site_categories(url: str) -> List[Dict[str, str]]:
     return SITE_CATEGORIES.get(url, [])
 
 
+# ============================================================
+# Parser 策略（从 sites.yaml parser 字段加载）
+# ============================================================
+
+def _load_site_parsers() -> Dict[str, str]:
+    """Load per-site parser strategy from sites.yaml. Returns {url: parser_name}."""
+    sites = _get_sites_list()
+    if not sites:
+        return {}
+    result: Dict[str, str] = {}
+    for s in sites:
+        parser_name = s.get("parser")
+        if parser_name:
+            result[s["url"]] = parser_name
+    return result
+
+
+SITE_PARSERS: Dict[str, str] = _load_site_parsers()
+
+
+def get_parser_strategy(url: str) -> Optional[str]:
+    """Get the parser strategy for a given site URL from sites.yaml.
+    
+    Returns the parser name string (e.g. 'ghxi', 'rss', '423down.com'),
+    or None if no parser is specified.
+    
+    The engine can use this to select a different parsing strategy
+    instead of relying solely on PARSER_REGISTRY domain matching.
+    """
+    return SITE_PARSERS.get(url)
+
+
 def get_category_feed_key(category_url: str) -> str:
     """Generate a unique feed key for a category URL.
     
@@ -536,7 +568,7 @@ def update_adaptive_tier(url: str, status: str, has_new_items: bool = False) -> 
         entry['tier'] = new_tier
         entry['success_streak'] = 0
         entry['fail_streak'] = 0
-        entry['updated_at'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        entry['updated_at'] = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
 
     _ADAPTIVE_TIERS[url] = entry
 

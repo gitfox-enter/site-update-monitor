@@ -37,8 +37,10 @@ jobs:
           git filter-repo --path fast_log.jsonl --invert-paths --force
 
       - name: Force push cleaned history
+        env:
+          GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # git filter-repo removes remotes; re-add origin
-          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git push --force --all
-          git push --force --tags
+          # 使用直接 push URL，避免在 remote 中暴露 token
+          REPO_URL="https://x-access-token:${GIT_TOKEN}@github.com/${{ github.repository }}.git"
+          git push "$REPO_URL" --force --all
+          git push "$REPO_URL" --force --tags

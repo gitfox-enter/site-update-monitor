@@ -53,14 +53,15 @@ jobs:
         run: |
           set +e
 
-          # 总是添加 crawl_status.json，确保网页显示最后爬取时间
-          git add crawl_status.json 2>/dev/null || true
-          # 调度器状态和日志（智能调度需要）
-          git add scheduler_state.json fast_log.jsonl 2>/dev/null || true
-          # 数据和状态文件
-          git add hash_record.txt notified_items.json adaptive_tiers.json feed.xml 2>/dev/null || true
-          # Per-site feeds, OPML, and meta
-          git add feeds/ opml.xml opml-*.xml feeds_meta.json 2>/dev/null || true
+          # 使用排他性文件名策略：仅 commit fast_check workflow 负责的文件
+          # feeds_meta.json 由 fast_check 单独管理（避免与 crawl 并发冲突）
+          git add -u feeds_meta.json 2>/dev/null || true
+          # feeds/ 目录（fast_check 更新 feeds）
+          git add -u feeds/ 2>/dev/null || true
+          # 调度器状态和日志
+          git add -u scheduler_state.json fast_log.jsonl 2>/dev/null || true
+          # OPML 由 fast_check 更新
+          git add -u opml.xml opml-*.xml 2>/dev/null || true
 
           git status
           if git diff --staged --quiet 2>/dev/null; then
@@ -82,19 +83,36 @@ jobs:
             git rebase --abort 2>/dev/null || true
             git pull --rebase --strategy-option=theirs origin main
             rebase_rc=$?
+            
+            # 检查 rebase 是否成功
             if [ $rebase_rc -ne 0 ]; then
+              # 检查是否是网络错误（不是合并冲突）
+              if ! git status | grep -q "Unmerged paths"; then
+                echo "Network error during pull, skipping push attempt $i"
+                sleep 2
+                continue
+              fi
+              
+              echo "Merge conflicts detected, resolving..."
               git diff --name-only --diff-filter=U | while read conflict_file; do
                 git checkout --theirs "$conflict_file"
                 git add "$conflict_file"
               done
-              git -c core.editor=true rebase --continue || true
+              git -c core.editor=true rebase --continue || {
+                echo "Failed to continue rebase, skipping push attempt $i"
+                sleep 2
+                continue
+              }
             fi
+            
             if git push origin main; then
               push_success=true
               break
             fi
+            echo "Push attempt $i failed, waiting before retry..."
             sleep 2
           done
+          
           if [ "$push_success" != "true" ]; then
             echo "All push attempts failed"
             exit 1

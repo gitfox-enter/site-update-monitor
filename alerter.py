@@ -98,6 +98,8 @@ def check_existing_issue(title_substring: str) -> bool:
     """Check if an open issue with similar title already exists.
 
     Avoids creating duplicate issues for the same problem.
+    Fix #93: was returning False on all exceptions, causing duplicate issue creation.
+    Now explicitly checks gh exit code and output to correctly return True/False.
     """
     if os.getenv('GITHUB_ACTIONS') != 'true':
         return False
@@ -106,7 +108,10 @@ def check_existing_issue(title_substring: str) -> bool:
             ['gh', 'issue', 'list', '--state', 'open', '--search', title_substring, '--limit', '5'],
             capture_output=True, text=True, timeout=15,
         )
-        return bool(result.stdout.strip())
+        # gh exits 0 with empty output when no issues found
+        # Only return True (exists) if we got actual output lines
+        lines = [l for l in result.stdout.strip().split('\n') if l.strip()]
+        return len(lines) > 0
     except Exception:
         return False
 

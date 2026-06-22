@@ -1,40 +1,40 @@
 {
-  "name": "线报聚合 - 全网羊毛线报实时聚合导航",
-  "short_name": "线报聚合",
-  "description": "自动聚合全网羊毛线报、优惠信息、活动促销，实时更新一键跳转，支持PWA推送通知",
+  "name": "RSSForge · 万物皆可 RSS",
+  "short_name": "RSSForge",
+  "description": "基于 GitHub Actions 的免费 RSS 订阅源生成器，给任何网站生成 RSS，无服务器、零成本、可持续更新。",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#1976d2",
+  "theme_color": "#e91e8e",
   "orientation": "any",
-  "categories": ["utilities", "shopping", "news"],
+  "categories": ["utilities", "news"],
   "icons": [
     {
-      "src": "public/icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "public/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "public/favicon.svg",
+      "src": "favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml"
     }
   ],
   "shortcuts": [
     {
-      "name": "今日线报",
-      "url": "./#today",
-      "description": "查看今天的线报"
+      "name": "订阅源列表",
+      "url": "./",
+      "description": "查看所有可用订阅源"
     },
     {
-      "name": "搜索线报",
-      "url": "./#search",
-      "description": "搜索关键词查找线报"
+      "name": "OPML 订阅包",
+      "url": "./opml.xml",
+      "description": "下载 OPML 文件批量订阅"
     }
   ]
 }

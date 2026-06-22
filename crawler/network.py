@@ -7,7 +7,7 @@ import threading
 import time
 from urllib.robotparser import RobotFileParser
 from typing import Any, Dict, List, Optional
-from urllib.parse import urlparse
+from urllib.parse import urlparse, unquote
 from crawler.config import RESPECT_ROBOTS_TXT
 
 import requests
@@ -100,8 +100,19 @@ def get_session(domain: str) -> requests.Session:
 # HTTP 条件请求缓存（ETag / Last-Modified）
 # ============================================================
 
-_conditional_cache: Dict[str, Dict[str, str]] = {}  # url -> {'etag': ..., 'last_modified': ...}
+_conditional_cache: Dict[str, Dict[str, Any]] = {}  # url -> {'etag': ..., 'last_modified': ..., 'cached_at': float}
 _conditional_cache_lock = threading.Lock()
+
+# TTL for conditional cache entries (seconds)
+_CONDITIONAL_CACHE_TTL = 3600  # 1 hour
+
+
+def _cleanup_expired_cache(cache: Dict[str, Dict[str, Any]], ttl: float) -> None:
+    """Remove expired entries from a TTL cache dict."""
+    now = time.time()
+    expired = [k for k, v in cache.items() if now - v.get('cached_at', 0) > ttl]
+    for k in expired:
+        del cache[k]
 
 
 def get_conditional_headers(url: str) -> Dict[str, str]:
@@ -109,9 +120,14 @@ def get_conditional_headers(url: str) -> Dict[str, str]:
     获取指定 URL 的条件请求头（If-None-Match / If-Modified-Since）。
     如果之前请求过该 URL 且服务端返回了 ETag 或 Last-Modified，
     则在下次请求时携带条件头以避免重复下载未变更的内容。
+    已缓存的条目超过 TTL（默认1小时）后失效。
     """
     with _conditional_cache_lock:
         cached = _conditional_cache.get(url, {})
+        # Check TTL expiration
+        if cached and time.time() - cached.get('cached_at', 0) > _CONDITIONAL_CACHE_TTL:
+            del _conditional_cache[url]
+            cached = {}
     headers = {}
     if cached.get('etag'):
         headers['If-None-Match'] = cached['etag']
@@ -121,7 +137,7 @@ def get_conditional_headers(url: str) -> Dict[str, str]:
 
 
 def update_conditional_cache(url: str, response: requests.Response) -> None:
-    """从响应中提取 ETag / Last-Modified 并缓存。"""
+    """从响应中提取 ETag / Last-Modified 并缓存（带 TTL 时间戳）。"""
     etag = response.headers.get('ETag')
     last_modified = response.headers.get('Last-Modified')
     if etag or last_modified:
@@ -129,21 +145,28 @@ def update_conditional_cache(url: str, response: requests.Response) -> None:
             _conditional_cache[url] = {
                 'etag': etag or '',
                 'last_modified': last_modified or '',
+                'cached_at': time.time(),
             }
+        # Periodic cleanup: when cache grows large, purge expired entries
+        if len(_conditional_cache) > 1000:
+            _cleanup_expired_cache(_conditional_cache, _CONDITIONAL_CACHE_TTL)
 
 
 # ============================================================
 # robots.txt 合规检查
 # ============================================================
 
-_robots_cache: Dict[str, RobotFileParser] = {}  # base_url -> RobotFileParser
+_robots_cache: Dict[str, Dict[str, Any]] = {}  # base_url -> {'rp': RobotFileParser, 'cached_at': float}
 _robots_lock = threading.Lock()
+
+# TTL for robots.txt cache (seconds) — short because robots.txt can change
+_ROBOTS_CACHE_TTL = 300  # 5 minutes
 
 
 def is_allowed_by_robots(url: str) -> bool:
     """
     检查指定 URL 是否被该站点的 robots.txt 允许爬取。
-    结果按域名缓存，避免重复请求 robots.txt。
+    结果按域名缓存（TTL 5分钟），避免重复请求 robots.txt。
     如果 robots.txt 无法获取，默认允许（宽容策略）。
     """
     if not RESPECT_ROBOTS_TXT:
@@ -154,11 +177,17 @@ def is_allowed_by_robots(url: str) -> bool:
     robots_url = f"{base_url}/robots.txt"
 
     with _robots_lock:
+        # Check cache with TTL expiration
         if base_url in _robots_cache:
-            rp = _robots_cache[base_url]
-            return rp.can_fetch('*', url)
+            entry = _robots_cache[base_url]
+            if time.time() - entry.get('cached_at', 0) <= _ROBOTS_CACHE_TTL:
+                rp = entry['rp']
+                return rp.can_fetch('*', url)
+            else:
+                # Expired — remove and re-fetch
+                del _robots_cache[base_url]
 
-    # 首次访问该域名的 robots.txt
+    # 首次访问或缓存已过期，重新请求 robots.txt
     rp = RobotFileParser()
     rp.set_url(robots_url)
     try:
@@ -168,10 +197,10 @@ def is_allowed_by_robots(url: str) -> bool:
         logger.info("robots.txt 读取失败，默认允许爬取", extra={'site': base_url, 'event': 'robots_txt_error'})
         return True
 
-    with _robots_lock:
-        _robots_cache[base_url] = rp
-
     allowed = rp.can_fetch('*', url)
+    with _robots_lock:
+        _robots_cache[base_url] = {'rp': rp, 'cached_at': time.time()}
+
     if not allowed:
         logger.info("robots.txt 禁止爬取该 URL", extra={'site': url, 'event': 'robots_txt_denied'})
     return allowed

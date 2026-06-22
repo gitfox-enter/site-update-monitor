@@ -17,7 +17,7 @@ jobs:
     env:
       TZ: Asia/Shanghai
     permissions:
-      contents: read
+      contents: write
       issues: write
     steps:
       - name: 检出仓库
@@ -36,3 +36,11 @@ jobs:
 
       - name: 生成每日摘要
         run: python alerter.py
+
+      - name: 提交变更
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --staged --quiet || git commit -m "chore: 每日摘要自动提交 $(date +%Y-%m-%d)"
+          git push

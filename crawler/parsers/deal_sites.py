@@ -57,7 +57,7 @@ def parse_423down_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, st
                 '实用软件', '系统辅助', '系统必备', '安全软件', '补丁相关', '硬件相关')
             if text in skip_words:
                 continue
-            _add_item(items, seen, text, href)
+            _add_item(items, seen, text, href, base_url)
 
     return items[:30]
 
@@ -265,7 +265,7 @@ def parse_h6room_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str
         if not _has_chinese(text):
             continue
 
-        _add_item(items, seen, text, href)
+        _add_item(items, seen, text, href, base_url)
 
     return items[:30]
 
@@ -468,7 +468,7 @@ def parse_007ymd_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str
         if not _is_valid_text(text, min_len=5, max_len=999):
             continue
 
-        _add_item(items, seen, text, href)
+        _add_item(items, seen, text, href, base_url)
 
     return items[:30]
 
@@ -542,7 +542,7 @@ def parse_manmanbuy_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, 
         if not _has_chinese(text, min_count=1) and len(text) < 8:
             continue
 
-        _add_item(items, seen, text, href)
+        _add_item(items, seen, text, href, base_url)
 
     return items[:30]
 
@@ -577,7 +577,7 @@ def parse_axutongxue_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str,
         skip = ['获取公众号自动回复资源', '搜索储物间', '搜索公众号文章']
         if text in skip:
             continue
-        _add_item(items, seen, text, href)
+        _add_item(items, seen, text, href, base_url)
     return items[:30]
 
 
@@ -832,7 +832,7 @@ def parse_haodanku_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, s
             ]
             if any(d in href for d in skip_domains):
                 continue
-            _add_item(items, seen, text, href)
+            _add_item(items, seen, text, href, base_url)
 
     return items[:30]
 

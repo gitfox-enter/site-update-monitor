@@ -158,8 +158,18 @@ def load_notified_items() -> Dict[str, Any]:
     return {'items': []}
 
 
+MAX_NOTIFIED_ITEMS = 5000
+
+
 def save_notified_items(item_dict: Dict[str, Any]) -> bool:
-    """保存已通知条目URL集合到文件（原子写入）"""
+    """保存已通知条目URL集合到文件（原子写入，超过5000条时裁剪旧条目）"""
+    items = item_dict.get('items', [])
+    if len(items) > MAX_NOTIFIED_ITEMS:
+        # 保留最新的 5000 条，丢弃最旧的
+        items = items[-MAX_NOTIFIED_ITEMS:]
+        item_dict = dict(item_dict)
+        item_dict['items'] = items
+        logger.info("已通知条目超过 %d 条，裁剪旧条目", MAX_NOTIFIED_ITEMS)
     tmp_file = NOTIFIED_ITEMS_FILE + '.tmp'
     try:
         with open(tmp_file, 'w', encoding='utf-8') as f:
@@ -242,16 +252,20 @@ def is_noise_item(item: Dict[str, str]) -> bool:
 
 def _fuzzy_dedupe_key(text: str) -> str:
     """Generate a fuzzy dedup key by normalizing text.
-    
+
     Strips whitespace, punctuation, and lowercases for approximate matching.
     Two items with similar titles from different sources will share the same key.
+
+    Fix #119: use character count (not byte count) truncation to avoid
+    over-aggressive truncation of Chinese text. 50 characters is enough for
+    any language while keeping keys short.
     """
     import re as _re
     # Remove common prefixes/suffixes, whitespace, and punctuation
     normalized = _re.sub(r'[\s\-_【】\[\]（）()《》<>""\'\'·.,;:!?！？…]', '', text)
     normalized = normalized.lower()
-    # Truncate to first 20 chars for comparison (catches "京东红包" vs "京东红包活动")
-    return normalized[:20]
+    # Use character count (not byte count) — 50 chars is enough for any language
+    return normalized[:50]
 
 
 def merge_items_into_db(new_item_list: List[Dict[str, str]], check_time: str) -> int:
@@ -265,12 +279,18 @@ def merge_items_into_db(new_item_list: List[Dict[str, str]], check_time: str) ->
     """
     db = load_items_db()
     existing_urls = set(item['url'] for item in db['items'])
-    # Build fuzzy dedup index from existing items
+
+    # Build O(n) fuzzy dedup index from existing items:
+    # fuzzy_key -> url  (for duplicate detection)
+    # url -> item_index (for O(1) source aggregation)
     existing_fuzzy_keys: Dict[str, str] = {}
-    for item in db['items']:
+    existing_url_to_item: Dict[str, int] = {}  # url -> list index
+    for idx, item in enumerate(db['items']):
+        url = item.get('url', '')
+        existing_url_to_item[url] = idx
         key = _fuzzy_dedupe_key(item.get('text', ''))
         if key and key not in existing_fuzzy_keys:
-            existing_fuzzy_keys[key] = item.get('url', '')
+            existing_fuzzy_keys[key] = url
 
     # 过滤出真正的新条目，并添加自动分类
     added = 0
@@ -286,14 +306,14 @@ def merge_items_into_db(new_item_list: List[Dict[str, str]], check_time: str) ->
             fuzzy_key = _fuzzy_dedupe_key(item.get('text', ''))
             existing_fuzzy_url = existing_fuzzy_keys.get(fuzzy_key)
             if existing_fuzzy_url and fuzzy_key:
-                # 同一线报，多源聚合 — 在已有条目中添加来源
-                for existing in db['items']:
-                    if existing.get('url') == existing_fuzzy_url:
-                        sources = existing.setdefault('sources', [existing.get('source', '')])
-                        new_source = item.get('source', '')
-                        if new_source and new_source not in sources:
-                            sources.append(new_source)
-                        break
+                # 同一线报，多源聚合 — O(1) lookup via index (fix #87: was O(n))
+                item_idx = existing_url_to_item.get(existing_fuzzy_url)
+                if item_idx is not None:
+                    existing = db['items'][item_idx]
+                    sources = existing.setdefault('sources', [existing.get('source', '')])
+                    new_source = item.get('source', '')
+                    if new_source and new_source not in sources:
+                        sources.append(new_source)
                 existing_urls.add(url)
                 continue
 
@@ -350,6 +370,8 @@ _STICKY_ITEM: Dict[str, Any] = {
     "source": "支付宝",
     "category": "置顶",
     "sticky": True,
+    # 使用固定时间而非爬取时间，保证哈希每轮一致（Bug #91）
+    "time": "2024-01-01 00:00:00",
 }
 
 

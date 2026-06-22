@@ -18,7 +18,6 @@ jobs:
       TZ: Asia/Shanghai
     permissions:
       contents: write
-      packages: write
     steps:
       - name: 检出仓库
         uses: actions/checkout@v4
@@ -63,15 +62,13 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-          # 总是添加 crawl_status.json，确保网页显示最后爬取时间
-          git add crawl_status.json items.json items_latest.json 2>/dev/null || true
-          # 调度器状态和日志（智能调度需要）
-          git add scheduler_state.json run_log.jsonl 2>/dev/null || true
-          # 数据和状态文件（不包含 feed.xml）
-          git add hash_record.txt notified_items.json adaptive_tiers.json 2>/dev/null || true
-          # Per-site feeds, 统一 OPML, 和 meta
-          git add -A feeds/ opml.xml feeds_meta.json public/icons/ 2>/dev/null || true
-          git add -u opml-*.xml 2>/dev/null || true
+          # 使用排他性文件名策略：仅 commit crawl workflow 负责的文件
+          # 核心状态文件（git add -u 仅修改已跟踪的文件）
+          git add -u crawl_status.json items.json items_latest.json scheduler_state.json run_log.jsonl hash_record.txt notified_items.json adaptive_tiers.json 2>/dev/null || true
+          # Per-site feeds 目录（feeds/ 中的文件由 crawl 创建）
+          git add -u feeds/ 2>/dev/null || true
+          # 不再 commit feeds_meta.json（由 fast_check 单独管理，避免并发冲突）
+          git add -u opml.xml opml-*.xml public/icons/ 2>/dev/null || true
 
           git status
           if git diff --staged --quiet 2>/dev/null; then
@@ -108,19 +105,30 @@ jobs:
             echo "=== Push attempt $i ==="
             # Abort any existing rebase first
             git rebase --abort 2>/dev/null || true
-            git pull --rebase --strategy-option=theirs origin main
+            # Use --no-commit to avoid auto-committing merge; let conflicts be resolved manually
+            # Fix #58: --strategy-option=theirs can discard incoming crawled data
+            git pull --no-commit origin main
             rebase_rc=$?
             if [ $rebase_rc -ne 0 ]; then
-              echo "Rebase had conflicts, resolving with our changes..."
+              echo "Rebase had conflicts, attempting auto-resolution..."
+              # Stage all resolved files (Git marks conflicts in index)
               git diff --name-only --diff-filter=U | while read conflict_file; do
-                echo "Resolving conflict in $conflict_file using our version"
-                git checkout --theirs "$conflict_file"
+                # Prefer local (our crawler) version for data files, else accept theirs
+                case "$conflict_file" in
+                  items.json|items_latest.json|run_log.jsonl|feeds/|feeds_meta.json)
+                    echo "Data conflict: keeping our crawler version of $conflict_file"
+                    git checkout --ours "$conflict_file" 2>/dev/null || git checkout --theirs "$conflict_file"
+                    ;;
+                  *)
+                    echo "Conflict in $conflict_file: accepting remote version"
+                    git checkout --theirs "$conflict_file"
+                    ;;
+                esac
                 git add "$conflict_file"
               done
-              git rebase --continue 2>/dev/null || {
-                echo "Rebase continue failed, trying --skip..."
-                git rebase --skip 2>/dev/null || true
-              }
+              # Abort rebase and do a merge commit instead (preserves both sides)
+              git rebase --abort 2>/dev/null || true
+              git merge origin/main --no-edit
             fi
             if git push origin main; then
               push_success=true

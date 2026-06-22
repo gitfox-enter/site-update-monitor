@@ -69,25 +69,30 @@ def get_gist_raw_url(filename: str = "items_latest.json") -> Optional[str]:
 
 
 def _run_gh_api(method: str, url: str, data: Optional[Dict] = None) -> Optional[Dict]:
-    """Run a GitHub API call using curl with the GITHUB_TOKEN.
+    """Run a GitHub API call using gh CLI (avoids token in command-line args).
 
     Returns the JSON response or None on failure.
+
+    Fixes #53: using curl with token in command args exposes the token in /proc/*/cmdline.
+    The gh CLI reads GITHUB_TOKEN from env automatically — no token in argv.
     """
     token = os.getenv('GITHUB_TOKEN', '')
     if not token:
-        # Try to get from git config or other sources
         logger.warning("GITHUB_TOKEN not set, Gist sync will be skipped")
         return None
 
-    cmd = ['curl', '-s', '-X', method,
-           '-H', f'Authorization: token {token}',
-           '-H', 'Content-Type: application/json',
-           url]
+    # gh api accepts full URLs or relative paths; read token from env, not argv
+    cmd = ['gh', 'api', '--method', method]
     if data:
-        cmd.extend(['-d', json.dumps(data)])
+        cmd.extend(['--input', '-'])  # read body from stdin
 
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        input_data = json.dumps(data) if data else None
+        result = subprocess.run(
+            cmd + [url],
+            input=input_data.encode() if input_data else None,
+            capture_output=True, text=True, timeout=30,
+        )
         if result.returncode == 0 and result.stdout.strip():
             return json.loads(result.stdout)
     except Exception as e:

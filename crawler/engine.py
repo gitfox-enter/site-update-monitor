@@ -10,8 +10,7 @@ import time
 import random
 import json
 import asyncio
-from urllib.parse import urlparse
-from datetime import datetime, timezone, timedelta
+from urllib.parse import urlparse, unquote
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Set, Tuple
 
@@ -26,7 +25,7 @@ from common import (
     sanitize_text, is_junk, ITEMS_DB_FILE, BLACKLIST_FILE, CRAWL_STATUS_FILE, MAX_ITEMS_DB,
     ProxyPool, create_proxy_pool,
 )
-from crawler.config import JS_RENDER_SITES, MAX_RETRIES, REQUEST_TIMEOUT, RETRY_BASE_DELAY, RUN_LOG_FILE, MONITOR_SITES, is_dead_site, get_source_name, get_site_tier, init_adaptive_tiers, update_adaptive_tier, save_adaptive_tiers, get_all_adaptive_tiers, RSS_FIRST_SITES, SITE_MAX_PAGES, get_site_categories
+from crawler.config import JS_RENDER_SITES, MAX_RETRIES, REQUEST_TIMEOUT, RETRY_BASE_DELAY, RUN_LOG_FILE, MONITOR_SITES, is_dead_site, get_source_name, get_site_tier, init_adaptive_tiers, update_adaptive_tier, save_adaptive_tiers, get_all_adaptive_tiers, RSS_FIRST_SITES, SITE_MAX_PAGES, get_site_categories, get_parser_strategy
 from crawler.storage import get_current_round, load_notified_items, save_notified_items, filter_new_items, merge_items_into_db, load_hash_records, save_hash_records, export_items_latest_json, get_random_delay, get_random_profile, get_referer
 from crawler.network import MetricsTracker, metrics, get_conditional_headers, rate_limiter, is_allowed_by_robots, update_conditional_cache
 from crawler.parsers import _match_parser, extract_article_items, parse_rss_feed, parse_ghxi_items, fetch_page_content, fetch_ghxi_items_async, fetch_rss_feed_async
@@ -198,13 +197,15 @@ def _parse_response_html(
     title = title_tag.get_text(strip=True) if title_tag else url
 
     # Site-specific parser dispatch
+    # Priority: sites.yaml parser field > PARSER_REGISTRY domain match
+    parser_strategy = get_parser_strategy(url)
     parser_pair = _match_parser(url)
 
     # Special handling: RSS/Atom Feed
-    if 'feed.iplaysoft.com' in url or url.endswith('.xml'):
+    if parser_strategy == 'rss' or 'feed.iplaysoft.com' in url or url.endswith('.xml'):
         article_items = parse_rss_feed(content, url)
         text = '\n'.join(item['text'] for item in article_items)
-    elif 'ghxi.com' in url:
+    elif parser_strategy == 'ghxi' or 'ghxi.com' in url:
         # 兜底：同步路径仍可能走到这里，异步路径已在 fetch_page_content_async 中直接处理
         if ghxi_items is not None:
             article_items = ghxi_items
@@ -305,12 +306,40 @@ async def _fetch_paginated(
     title = None
     summary = ''
     seen_ids: Set[str] = set()
+    visited_page_urls: Set[str] = set()
 
     for page_num in range(1, max_pages + 1):
         # Rate limit per request
         parsed = urlparse(page_url)
         domain = parsed.hostname or parsed.netloc
         await rate_limiter.async_wait(domain)
+
+        # SSRF pre-check: resolve hostname before making request (fix #84)
+        import ipaddress as _ipaddress
+        import socket as _socket
+        try:
+            ssrf_host = parsed.hostname or parsed.netloc
+            ssrf_infos = _socket.getaddrinfo(ssrf_host, None, _socket.AF_UNSPEC, _socket.SOCK_STREAM)
+            for ssrf_info in ssrf_infos:
+                ssrf_af, ssrf_socktype, ssrf_proto, ssrf_canonname, ssrf_sockaddr = ssrf_info
+                if ssrf_af == _socket.AF_INET:
+                    ssrf_ip_str = ssrf_sockaddr[0]
+                elif ssrf_af == _socket.AF_INET6:
+                    ssrf_ip_str = ssrf_sockaddr[0]
+                else:
+                    continue
+                try:
+                    ssrf_ip = _ipaddress.ip_address(ssrf_ip_str)
+                    if (ssrf_ip.is_private or ssrf_ip.is_loopback or
+                            ssrf_ip.is_link_local or ssrf_ip.is_reserved):
+                        return False, f"SSRF blocked (pre-check): {ssrf_host} -> {ssrf_ip_str}"
+                except ValueError:
+                    pass
+            if ssrf_host.lower() in ('localhost', 'metadata.google.internal',
+                                     '169.254.169.254', 'metadata.azure.com'):
+                return False, f"SSRF blocked (hostname): {ssrf_host}"
+        except Exception:
+            pass
 
         profile = get_random_profile()
         headers = {
@@ -393,6 +422,12 @@ async def _fetch_paginated(
                         else:
                             from urllib.parse import urljoin
                             page_url = urljoin(page_url, next_page_url)
+                        # Skip already-visited page URLs to prevent infinite loops (Bug #69)
+                        if page_url in visited_page_urls:
+                            logger.info("分页[%d] 检测到重复页面 URL，停止翻页: %s", page_num, page_url)
+                            page_url = None
+                            break
+                        visited_page_urls.add(page_url)
                         break
 
                     elif resp.status in (403, 500, 502, 503, 504):
@@ -645,6 +680,36 @@ async def fetch_page_content_async(
     timeout_seconds = REQUEST_TIMEOUT if site_tier == 'high' else REQUEST_TIMEOUT + 15
 
     logger.info("爬取 %s", url, extra={'site': url, 'event': 'crawl_start'})
+
+    # SSRF pre-check: resolve hostname before making request (fix #84)
+    import ipaddress as _ipaddress
+    import socket as _socket
+    try:
+        ssrf_host = parsed.hostname or parsed.netloc
+        # Resolve all IPs for the hostname
+        ssrf_infos = _socket.getaddrinfo(ssrf_host, None, _socket.AF_UNSPEC, _socket.SOCK_STREAM)
+        for ssrf_info in ssrf_infos:
+            ssrf_af, ssrf_socktype, ssrf_proto, ssrf_canonname, ssrf_sockaddr = ssrf_info
+            if ssrf_af == _socket.AF_INET:
+                ssrf_ip_str = ssrf_sockaddr[0]
+            elif ssrf_af == _socket.AF_INET6:
+                ssrf_ip_str = ssrf_sockaddr[0]
+            else:
+                continue
+            try:
+                ssrf_ip = _ipaddress.ip_address(ssrf_ip_str)
+                if (ssrf_ip.is_private or ssrf_ip.is_loopback or
+                        ssrf_ip.is_link_local or ssrf_ip.is_reserved):
+                    return False, f"SSRF blocked (pre-check): {ssrf_host} -> {ssrf_ip_str}"
+            except ValueError:
+                pass
+        # Also block known metadata endpoints by hostname
+        if ssrf_host.lower() in ('localhost', 'metadata.google.internal',
+                                   '169.254.169.254', 'metadata.azure.com'):
+            return False, f"SSRF blocked (hostname): {ssrf_host}"
+    except Exception:
+        # DNS resolution failure will be caught by the request itself
+        pass
 
     response = None
     elapsed = 0.0
@@ -1262,11 +1327,14 @@ async def main_async() -> None:
     logger.info("已加载哈希记录 (SQLite): %d 条", len(old_records))
 
     # Create aiohttp session with connection pooling
-    # 使用宽松但非完全禁用的 SSL 上下文 (fix #11)
+    # SSL 上下文：默认严格验证，可通过 DISABLE_SSL_VERIFY 环境变量禁用（仅用于调试）
     import ssl as _ssl
-    ssl_ctx = _ssl.create_default_context()
-    ssl_ctx.check_hostname = False
-    ssl_ctx.verify_mode = _ssl.CERT_NONE  # 部分目标站证书无效，但仍走 TLS 加密
+    if os.getenv('DISABLE_SSL_VERIFY'):
+        ssl_ctx = _ssl.create_default_context()
+        ssl_ctx.check_hostname = False
+        ssl_ctx.verify_mode = _ssl.CERT_NONE
+    else:
+        ssl_ctx = _ssl.create_default_context()
     connector = aiohttp.TCPConnector(
         limit=10,
         limit_per_host=2,

@@ -60,7 +60,7 @@ def parse_yxssp_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str]
                 continue
             if text in seen:
                 continue
-            _add_item(items, seen, text, href)
+            _add_item(items, seen, text, href, base_url)
 
     return items[:30]
 
@@ -268,7 +268,7 @@ def parse_appinn_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str
                 continue
             if '/category/' in href or '/tag/' in href or '/page/' in href:
                 continue
-            _add_item(items, seen, text, href)
+            _add_item(items, seen, text, href, base_url)
 
     return items[:30]
 
@@ -316,7 +316,7 @@ def parse_lsapk_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str]
                 continue
             if text in seen:
                 continue
-            _add_item(items, seen, text, href)
+            _add_item(items, seen, text, href, base_url)
 
     return items[:30]
 
@@ -429,7 +429,7 @@ def parse_ithome_xijiayi_items(soup: BeautifulSoup, base_url: str) -> List[Dict[
                 continue
             if text in seen:
                 continue
-            _add_item(items, seen, text, href)
+            _add_item(items, seen, text, href, base_url)
 
     return items[:30]
 

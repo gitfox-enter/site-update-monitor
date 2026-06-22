@@ -39,7 +39,7 @@ import logging
 import threading
 from datetime import datetime, timezone, timedelta
 from typing import Any, Dict, List, Optional, Set, Tuple
-from urllib.parse import urlparse
+from urllib.parse import urlparse, unquote
 
 # ============================================================
 # Constants
@@ -181,6 +181,10 @@ CATEGORY_KEYWORDS: Dict[str, List[str]] = {
     "外卖": ["外卖", "美团", "饿了么", "美团外卖"],
     "红包": ["红包", "虹包", "鸿包", "必中红包"],
     "优惠券": ["优惠券", "券", "满减", "消费券", "领券"],
+    "开发": ["GitHub", "编程", "代码", "开源", "程序员", "IDE", "API", "SDK", "教程", "前端", "后端"],
+    "AI": ["AI", "人工智能", "GPT", "大模型", "LLM", "机器学习", "深度学习", "ChatGPT", "Claude"],
+    "效率": ["效率", "工具", "软件", "办公", "协作", "Notion", "Obsidian"],
+    "生活": ["生活", "购物", "省钱", "优惠", "薅羊毛", "线报"],
 }
 
 
@@ -265,8 +269,12 @@ def is_blacklisted(url: str, blacklist_domains: List[str]) -> bool:
 
     The comparison strips ``www.`` and ``m.`` prefixes and also matches
     sub-domains (e.g. ``sub.example.com`` matches ``example.com``).
+    URL-encoded characters (%XX) are decoded before comparison to prevent
+    bypass via encoding (fix #118).
     """
-    parsed = urlparse(url)
+    # Decode URL-encoded characters to prevent bypass via %XX encoding
+    decoded_url = unquote(url)
+    parsed = urlparse(decoded_url)
     host = parsed.hostname or parsed.netloc
     host = host.lower()
     if host.startswith("www."):
@@ -357,22 +365,34 @@ def sanitize_text(text: str) -> str:
 # Junk detection
 # ============================================================
 
-JUNK_PATTERNS: List[str] = [
-    "安卓软件", "办公软件", "安全软件", "查看详情", "直达链接", "阅读全文",
-    "继续阅读", "更多", "首页", "登录", "注册", "搜索", "javascript:",
+JUNK_PATTERNS: frozenset[str] = frozenset({
+    # UI chrome and navigation (not actual article content)
+    "查看详情", "直达链接", "阅读全文", "继续阅读", "更多", "首页",
+    "登录", "注册", "搜索", "javascript:",
+    # Footer/meta links (not content)
     "关于我们", "联系我们", "免责声明", "版权声明", "友情链接",
-]
+})
+
+# Common software category words — removed from JUNK_PATTERNS (fix #121)
+# These appear in normal article titles on software sites and are not junk.
 
 
 def is_junk(text: str) -> bool:
-    """Return ``True`` if *text* looks like a non-content link (too short, pure digits, or a known junk pattern)."""
+    """Return ``True`` if *text* looks like a non-content link.
+
+    Checks:
+      - Too short (< 5 chars)
+      - Pure digits
+      - Contains any junk pattern word (substring match, fix #122)
+    """
     if len(text) < 5:
         return True
     if text.isdigit():
         return True
+    # Use set lookup + substring match for O(1) junk pattern checking
     clean = text.replace(" ", "")
-    for jp in JUNK_PATTERNS:
-        if clean == jp:
+    for junk_word in JUNK_PATTERNS:
+        if junk_word in clean:
             return True
     return False
 
@@ -427,19 +447,25 @@ class DomainRateLimiter:
             time.sleep(sleep_time)
 
     async def async_wait(self, domain: str) -> None:
-        """Async-compatible rate limiter: uses asyncio.sleep to avoid blocking the event loop."""
+        """Async-compatible rate limiter: uses asyncio.sleep to avoid blocking the event loop.
+
+        Uses an asyncio.Lock to protect shared state, preventing race conditions
+        where multiple coroutines could simultaneously bypass the rate limit.
+        """
         import asyncio as _asyncio
-        sleep_time = 0.0
-        with self._lock:
+        async with self._lock:
             now = time.time()
             last = self._last_request.get(domain, 0)
             elapsed = now - last
             if elapsed < self._min_gap:
                 sleep_time = self._min_gap - elapsed
+                # Update timestamp while holding lock to reserve the slot
+                self._last_request[domain] = now + sleep_time
+            else:
+                sleep_time = 0.0
+                self._last_request[domain] = now
         if sleep_time > 0:
             await _asyncio.sleep(sleep_time)
-        with self._lock:
-            self._last_request[domain] = time.time()
 
 
 # ============================================================

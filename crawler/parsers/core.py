@@ -25,10 +25,27 @@ except ImportError:
 from crawler.parsers._utils import (
     _has_chinese, _is_valid_text, _add_item, _make_skip_set, COMMON_SKIP_WORDS,
 )
-from crawler.parsers.deal_sites import *
-from crawler.parsers.software_sites import *
-from crawler.parsers.forum_sites import *
-from crawler.parsers.rss_parsers import *
+from crawler.parsers.deal_sites import (
+    parse_423down_items, parse_ziyuanting_items, parse_wycad_items,
+    parse_baicaio_items_v2, parse_h6room_items, parse_xzba_items,
+    parse_apprcn_items, parse_daydayzhuan_items, parse_007ymd_items,
+    parse_axutongxue_items, parse_12345pro_items, parse_wobangzhao_items,
+    parse_haodanku_items, parse_hybase_items, parse_huodong5_items,
+    parse_yangmaodang_items, parse_xianbaomi_items, parse_yangmao_wang_items,
+    parse_iqnew_items, parse_51kanong_items, parse_ymxianbao_items,
+    parse_linejia_items, parse_10000yun_items,
+)
+from crawler.parsers.software_sites import (
+    parse_yxssp_items, parse_foxirj_items, parse_ddooo_items,
+    parse_onlinedown_items, parse_appinn_items, parse_lsapk_items,
+    parse_thosefree_items, parse_ithome_xijiayi_items,
+)
+from crawler.parsers.forum_sites import (
+    parse_discuz_items, parse_douban_group_items,
+)
+from crawler.parsers.rss_parsers import (
+    parse_rss_feed,
+)
 
 logger = logging.getLogger('crawl')
 
@@ -239,14 +256,21 @@ def fetch_page_content(url: str) -> Tuple[bool, Any]:
         title = title_tag.get_text(strip=True) if title_tag else url
 
         # === 站点专用解析器（通过注册表查找） ===
+        # Priority: sites.yaml parser field > PARSER_REGISTRY domain match
+        parser_strategy = None
+        try:
+            from crawler.config import get_parser_strategy as _get_parser_strategy
+            parser_strategy = _get_parser_strategy(url)
+        except Exception:
+            pass
         parser_pair = _match_parser(url)
 
         # 特殊处理：RSS/Atom Feed
-        if 'feed.iplaysoft.com' in url or url.endswith('.xml'):
+        if parser_strategy == 'rss' or 'feed.iplaysoft.com' in url or url.endswith('.xml'):
             # RSS/Atom Feed：直接解析XML
             article_items = parse_rss_feed(response.content, url)
             text = '\n'.join(item['text'] for item in article_items)
-        elif 'ghxi.com' in url:
+        elif parser_strategy == 'ghxi' or 'ghxi.com' in url:
             # 果核剥壳特殊处理：优先 WP API，失败回退通用解析
             article_items = parse_ghxi_items(soup, url)
             if article_items:

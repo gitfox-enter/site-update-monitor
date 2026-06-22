@@ -44,5 +44,9 @@ notified_items.json
 # 邮件备份 - 一次性快照，不再维护
 email_backup/
 
+# 遗留文件 - 未被引用（Bug #89）
+public/js/app.js
+public/css/app.css
+
 # 空目录占位
 data/.gitkeep

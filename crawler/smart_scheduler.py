@@ -38,7 +38,9 @@ NIGHT_START = 22  # 22:00
 NIGHT_END = 8     # 08:00
 
 # State file: records per-site last crawl timestamps
-_SCHEDULER_STATE_FILE = "scheduler_state.json"
+# Use absolute path so the file is always in the project directory, not cwd
+_SCRIPT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_SCHEDULER_STATE_FILE = os.path.join(_SCRIPT_DIR, "scheduler_state.json")
 
 # Default interval when not specified in sites.yaml (minutes)
 DEFAULT_INTERVAL = 30

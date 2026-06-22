@@ -4,10 +4,13 @@ on:
   push:
     branches:
       - main
-  workflow_run:
-    workflows: ["站点更新监控"]
-    types:
-      - completed
+    paths:
+      - 'feeds/**'
+      - 'feeds_meta.json'
+      - 'opml.xml'
+      - 'docs/**'
+      - 'public/**'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -55,6 +58,14 @@ jobs:
             mkdir -p _site/feeds
             cp feeds/*.xml _site/feeds/ 2>/dev/null || true
           fi
+          # 根级 HTML 文件
+          for f in index.html redirect.html health.html offline.html status.html; do
+            [ -f "$f" ] && cp "$f" _site/ 2>/dev/null || true
+          done
+          # 根级 JS/CSS/manifest/PWA
+          for f in sw.js manifest.json opml.xml opml-*.xml; do
+            [ -f "$f" ] && cp "$f" _site/ 2>/dev/null || true
+          done
           # OPML 文件
           for f in opml.xml opml-*.xml; do
             [ -f "$f" ] && cp "$f" _site/

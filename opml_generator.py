@@ -17,7 +17,7 @@ import os
 import re
 import json
 import xml.etree.ElementTree as ET
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Set, Tuple
 from urllib.parse import quote as url_quote
 from common import slugify, SITE_URL_BASE
@@ -181,7 +181,7 @@ def _build_opml(feeds: List[Dict], title: str) -> ET.Element:
     ET.SubElement(head, 'title').text = title
     ET.SubElement(head, 'ownerName').text = 'RSSForge'
     ET.SubElement(head, 'ownerEmail').text = 'noreply@gitfox-enter.github.io'
-    ET.SubElement(head, 'dateCreated').text = datetime.utcnow().strftime('%Y-%m-%d')
+    ET.SubElement(head, 'dateCreated').text = datetime.now(timezone.utc).strftime('%Y-%m-%d')
 
     body = ET.SubElement(root, 'body')
 
@@ -267,7 +267,6 @@ def generate_opml() -> Dict[str, int]:
     Returns:
         dict: {'feeds_count': N, 'opml_generated': 0/1, 'cleaned': N}
     """
-    cleaned = _cleanup_legacy_files()
     feeds = _load_feeds()
 
     if not feeds:
@@ -277,7 +276,6 @@ def generate_opml() -> Dict[str, int]:
     stats = {
         'feeds_count': len(feeds),
         'opml_generated': 0,
-        'cleaned': cleaned,
     }
 
     root = _build_opml(feeds, "RSSForge - 订阅源")
