@@ -99,12 +99,6 @@ sites:
     interval: 20
     fast_check: true
 
-  - url: "https://axutongxue.net/"         # 爱Q生活
-    max_pages: 3
-    name: 爱Q生活
-    tier: high
-    interval: 30
-
   - url: "https://www.007ymd.com/"         # 007羊毛党
     max_pages: 3
     name: 007羊毛党

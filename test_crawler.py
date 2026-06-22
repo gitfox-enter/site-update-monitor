@@ -2370,46 +2370,6 @@ class TestParse007ymdItems(unittest.TestCase):
         self.assertNotIn("长期羊毛", texts)
 
 
-class TestParseAxutongxueItems(unittest.TestCase):
-    """Tests for crawl.parse_axutongxue_items()."""
-
-    MOCK_HTML = """
-    <html><body>
-    <a href="https://pan.baidu.com/s/1abc123">百度网盘资源合集分享</a>
-    <a href="https://www.aliyundrive.com/s/xyz">阿里云盘学习资料</a>
-    <a href="https://axutongxue.net/page1">内部页面链接</a>
-    <a href="https://axutongxue.net/page2">另一个内部链接</a>
-    <a href="https://external.com/tool">外部工具资源链接</a>
-    </body></html>
-    """
-
-    def test_extracts_items(self):
-        soup = make_soup(self.MOCK_HTML)
-        items = crawl.parse_axutongxue_items(soup, "https://axutongxue.net/")
-        texts = [item["text"] for item in items]
-        self.assertIn("百度网盘资源合集分享", texts)
-        self.assertIn("阿里云盘学习资料", texts)
-        self.assertIn("外部工具资源链接", texts)
-        self.assertGreaterEqual(len(items), 2)
-
-    def test_dedup(self):
-        html = """<html><body>
-        <a href="https://external.com/1">重复资源标题内容</a>
-        <a href="https://external.com/2">重复资源标题内容</a>
-        </body></html>"""
-        soup = make_soup(html)
-        items = crawl.parse_axutongxue_items(soup, "https://axutongxue.net/")
-        self.assertEqual(len(items), 1)
-
-    def test_filters_junk(self):
-        soup = make_soup(self.MOCK_HTML)
-        items = crawl.parse_axutongxue_items(soup, "https://axutongxue.net/")
-        texts = [item["text"] for item in items]
-        # Internal links should be excluded
-        for item in items:
-            self.assertNotIn("axutongxue.net", item["url"])
-
-
 class TestParseManmanbuyItems(unittest.TestCase):
     """Tests for crawl.parse_manmanbuy_items()."""
 

@@ -55,7 +55,7 @@ def _load_sites_from_yaml() -> List[str]:
         return [s["url"] for s in sites]
     # Fallback
     return [
-        "https://axutongxue.net/", "http://news.ixbk.net/",
+        "http://news.ixbk.net/",
         "https://b1.ymxianbao.cn/", "https://cjx8.com/",
         "https://m.hybase.com/", "https://news.ixbk.fun/",
         "https://www.007ymd.com/", "https://www.12345pro.com/",

@@ -35,7 +35,6 @@ from crawler.parsers.deal_sites import (
     parse_007ymd_items,
     parse_baicaio_items_v2,
     parse_manmanbuy_items,
-    parse_axutongxue_items,
     parse_12345pro_items,
     parse_ym2cc_items,
     parse_wobangzhao_items,

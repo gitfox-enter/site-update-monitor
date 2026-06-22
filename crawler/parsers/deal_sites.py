@@ -556,32 +556,6 @@ def parse_manmanbuy_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, 
 
 
 
-def parse_axutongxue_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str]]:
-    """阿虚同学的储物间 - 提取资源导航链接"""
-    items: List[Dict[str, str]] = []
-    seen: Set[str] = set()
-    # 提取所有外部链接
-    for a in soup.find_all('a', href=True):
-        href = a.get('href', '').strip()
-        text = a.get_text(strip=True)
-        if not href.startswith('http'):
-            continue
-        if not _is_valid_text(text, min_len=3, max_len=999):
-            continue
-        # 过滤内部链接
-        if 'axutongxue.net' in href:
-            continue
-        if text in seen:
-            continue
-        # 过滤导航词
-        skip = ['获取公众号自动回复资源', '搜索储物间', '搜索公众号文章']
-        if text in skip:
-            continue
-        _add_item(items, seen, text, href, base_url)
-    return items[:30]
-
-
-
 
 def parse_12345pro_items(soup: BeautifulSoup, base_url: str) -> List[Dict[str, str]]:
     """12345线报 - 提取文章条目。
