@@ -181,16 +181,16 @@ def _parse_response_html(
                         decoded = content.decode('gbk', errors='strict')
                         soup = BeautifulSoup(decoded, 'html.parser')
                     except (UnicodeDecodeError, LookupError):
-                        decoded = content.decode('utf-8', errors='ignore')
+                        decoded = content.decode('utf-8', errors='replace')
                         soup = BeautifulSoup(decoded, 'html.parser')
                 else:
-                    decoded = content.decode(enc, errors='ignore')
+                    decoded = content.decode(enc, errors='replace')
                     soup = BeautifulSoup(decoded, 'html.parser')
             except Exception:
-                decoded = content.decode(enc, errors='ignore')
+                decoded = content.decode(enc, errors='replace')
                 soup = BeautifulSoup(decoded, 'html.parser')
         else:
-            decoded = content.decode(enc, errors='ignore')
+            decoded = content.decode(enc, errors='replace')
             soup = BeautifulSoup(decoded, 'html.parser')
 
     title_tag = soup.find('title')

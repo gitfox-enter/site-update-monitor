@@ -30,11 +30,7 @@ jobs:
           
           # Remove email_backup directory
           git filter-repo --path email_backup/ --invert-paths --force
-          
-          # Remove stale files
-          git filter-repo --path rss_history.json --invert-paths --force
-          git filter-repo --path run_log.jsonl --invert-paths --force
-          git filter-repo --path fast_log.jsonl --invert-paths --force
+
 
       - name: Force push cleaned history
         env:

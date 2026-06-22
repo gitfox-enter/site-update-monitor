@@ -27,7 +27,6 @@ High-frequency deal alerts, coupons, and bargain aggregators.
 | <img src="https://gitfox-enter.github.io/RSSForge/icons/xin-zhuan-ba.svg" alt="" width="20"> **新赚吧** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/xin-zhuan-ba.xml) |
 | <img src="https://gitfox-enter.github.io/RSSForge/icons/yang-mao-wang.png" alt="" width="20"> **羊毛王** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/yang-mao-wang.xml) |
 | <img src="https://gitfox-enter.github.io/RSSForge/icons/yang-mao-dang.png" alt="" width="20"> **羊毛党** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/yang-mao-dang.xml) |
-| <img src="https://gitfox-enter.github.io/RSSForge/icons/ai-Q-sheng-huo.png" alt="" width="20"> **爱Q生活** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/ai-Q-sheng-huo.xml) |
 | <img src="https://gitfox-enter.github.io/RSSForge/icons/007-yang-mao-dang.svg" alt="" width="20"> **007羊毛党** | Every 30 min | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/007-yang-mao-dang.xml) |
 | <img src="https://gitfox-enter.github.io/RSSForge/icons/hao-zhuan-wang.png" alt="" width="20"> **好赚网** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/hao-zhuan-wang.xml) |
 | <img src="https://gitfox-enter.github.io/RSSForge/icons/huo-dong-5.png" alt="" width="20"> **活动5** | Hourly | [Subscribe](https://gitfox-enter.github.io/RSSForge/feeds/huo-dong-5.xml) |

@@ -80,31 +80,33 @@ jobs:
           push_success=false
           for i in 1 2 3 4 5; do
             echo "=== Push attempt $i ==="
+            # Abort any existing rebase first
             git rebase --abort 2>/dev/null || true
-            git pull --rebase --strategy-option=theirs origin main
+            # Use --no-commit to avoid auto-committing merge; let conflicts be resolved manually
+            # Fix #58: --strategy-option=theirs can discard incoming crawled data
+            git pull --no-commit origin main
             rebase_rc=$?
-            
-            # 检查 rebase 是否成功
             if [ $rebase_rc -ne 0 ]; then
-              # 检查是否是网络错误（不是合并冲突）
-              if ! git status | grep -q "Unmerged paths"; then
-                echo "Network error during pull, skipping push attempt $i"
-                sleep 2
-                continue
-              fi
-              
-              echo "Merge conflicts detected, resolving..."
+              echo "Rebase had conflicts, attempting auto-resolution..."
+              # Stage all resolved files (Git marks conflicts in index)
               git diff --name-only --diff-filter=U | while read conflict_file; do
-                git checkout --theirs "$conflict_file"
+                # Prefer local (our crawler) version for data files, else accept theirs
+                case "$conflict_file" in
+                  items.json|items_latest.json|run_log.jsonl|feeds/|feeds_meta.json)
+                    echo "Data conflict: keeping our fast_check version of $conflict_file"
+                    git checkout --ours "$conflict_file" 2>/dev/null || git checkout --theirs "$conflict_file"
+                    ;;
+                  *)
+                    echo "Conflict in $conflict_file: accepting remote version"
+                    git checkout --theirs "$conflict_file"
+                    ;;
+                esac
                 git add "$conflict_file"
               done
-              git -c core.editor=true rebase --continue || {
-                echo "Failed to continue rebase, skipping push attempt $i"
-                sleep 2
-                continue
-              }
+              # Abort rebase and do a merge commit instead (preserves both sides)
+              git rebase --abort 2>/dev/null || true
+              git merge origin/main --no-edit
             fi
-            
             if git push origin main; then
               push_success=true
               break
@@ -112,8 +114,9 @@ jobs:
             echo "Push attempt $i failed, waiting before retry..."
             sleep 2
           done
-          
-          if [ "$push_success" != "true" ]; then
+          if [ "$push_success" = true ]; then
+            echo "Changes committed and pushed successfully"
+          else
             echo "All push attempts failed"
             exit 1
           fi
