@@ -5,7 +5,7 @@
   <link href="https://news.ixbk.net/" rel="alternate" />
   <link href="https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-ku.xml" rel="self" type="application/atom+xml" />
   <id>https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-ku.xml</id>
-  <updated>2026-06-28T06:43:37+08:00</updated>
+  <updated>2026-06-28T06:52:51+08:00</updated>
   <generator uri="https://github.com/gitfox-enter/RSSForge">RSSForge</generator>
   <rights>内容版权归原作者所有，RSSForge 仅提供聚合索引</rights>
   <sy:updatePeriod>hourly</sy:updatePeriod>
@@ -16,6 +16,334 @@
     <uri>https://github.com/gitfox-enter/RSSForge</uri>
   </author>
   <icon>https://gitfox-enter.github.io/RSSForge/icons/xian-bao-ku.png</icon>
+  <entry>
+    <title type="text">我的关注</title>
+    <link href="https://news.ixbk.net/category-guanzhu1/" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:category-guanzhu1</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">我的关注</summary>
+    <content type="html">&lt;p&gt;我的关注&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/category-guanzhu1/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">豆瓣线报</title>
+    <link href="https://news.ixbk.net/category-douban/" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:category-douban</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">豆瓣线报</summary>
+    <content type="html">&lt;p&gt;豆瓣线报&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/category-douban/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="生活" />
+  </entry>
+  <entry>
+    <title type="text">豆瓣热帖</title>
+    <link href="https://news.ixbk.net/douban-hot.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:douban-hot.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">豆瓣热帖</summary>
+    <content type="html">&lt;p&gt;豆瓣热帖&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/douban-hot.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">微博线报</title>
+    <link href="https://news.ixbk.net/category-weibo/" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:category-weibo</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">微博线报</summary>
+    <content type="html">&lt;p&gt;微博线报&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/category-weibo/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="生活" />
+  </entry>
+  <entry>
+    <title type="text">微博超话</title>
+    <link href="https://news.ixbk.net/category-weibo-chaohua/" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:category-weibo-chaohua</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">微博超话</summary>
+    <content type="html">&lt;p&gt;微博超话&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/category-weibo-chaohua/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">微博热帖</title>
+    <link href="https://news.ixbk.net/weibo-hot.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:weibo-hot.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">微博热帖</summary>
+    <content type="html">&lt;p&gt;微博热帖&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/weibo-hot.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">好单线报</title>
+    <link href="https://news.ixbk.net/category-haodan/" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:category-haodan</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">好单线报</summary>
+    <content type="html">&lt;p&gt;好单线报&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/category-haodan/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="生活" />
+  </entry>
+  <entry>
+    <title type="text">佳农大蒜头4条20头净800g 赠小黄姜净重3斤 15.8元</title>
+    <link href="https://news.ixbk.net/haodan/6543933.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543933.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">佳农大蒜头4条20头净800g 赠小黄姜净重3斤 15.8元</summary>
+    <content type="html">&lt;p&gt;佳农大蒜头4条20头净800g 赠小黄姜净重3斤 15.8元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/haodan/6543933.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">德胜斋复合多维营养片80片 15.9元</title>
+    <link href="https://news.ixbk.net/haodan/6543932.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543932.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">德胜斋复合多维营养片80片 15.9元</summary>
+    <content type="html">&lt;p&gt;德胜斋复合多维营养片80片 15.9元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/haodan/6543932.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">qw补了</title>
+    <link href="https://news.ixbk.net/weibo-chaohua/6543805.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543805.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">qw补了</summary>
+    <content type="html">&lt;p&gt;qw补了&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/weibo-chaohua/6543805.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">贝德美冰沙霜350g 44元</title>
+    <link href="https://news.ixbk.net/haodan/6543721.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543721.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">贝德美冰沙霜350g 44元</summary>
+    <content type="html">&lt;p&gt;贝德美冰沙霜350g 44元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/haodan/6543721.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">班港苹果手机壳 拍 9.9元</title>
+    <link href="https://news.ixbk.net/haodan/6543723.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543723.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">班港苹果手机壳 拍 9.9元</summary>
+    <content type="html">&lt;p&gt;班港苹果手机壳 拍 9.9元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/haodan/6543723.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">真空分装瓶 0.7元</title>
+    <link href="https://news.ixbk.net/haodan/6543720.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543720.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">真空分装瓶 0.7元</summary>
+    <content type="html">&lt;p&gt;真空分装瓶 0.7元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/haodan/6543720.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">贝亲润肤油 1元，贝亲面霜 1元，贝亲身体乳 1元</title>
+    <link href="https://news.ixbk.net/weibo/6543717.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543717.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">贝亲润肤油 1元，贝亲面霜 1元，贝亲身体乳 1元</summary>
+    <content type="html">&lt;p&gt;贝亲润肤油 1元，贝亲面霜 1元，贝亲身体乳 1元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/weibo/6543717.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">三只松鼠海苔卷225g 9.9元</title>
+    <link href="https://news.ixbk.net/haodan/6543719.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543719.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">三只松鼠海苔卷225g 9.9元</summary>
+    <content type="html">&lt;p&gt;三只松鼠海苔卷225g 9.9元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/haodan/6543719.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">索泰5050星夜 1878元，索泰5060TI星夜 2719元，盈通9070花嫁 3799元</title>
+    <link href="https://news.ixbk.net/haodan/6543718.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543718.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">索泰5050星夜 1878元，索泰5060TI星夜 2719元，盈通9070花嫁 3799元</summary>
+    <content type="html">&lt;p&gt;索泰5050星夜 1878元，索泰5060TI星夜 2719元，盈通9070花嫁 3799元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/haodan/6543718.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">野马3c认证电动车头盔 74元</title>
+    <link href="https://news.ixbk.net/haodan/6543716.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543716.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">野马3c认证电动车头盔 74元</summary>
+    <content type="html">&lt;p&gt;野马3c认证电动车头盔 74元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/haodan/6543716.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">WARSUN强光手电筒高亮大功率可充电户外远射手提灯探照灯应急防灾 68.09元</title>
+    <link href="https://news.ixbk.net/haodan/6543715.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543715.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">WARSUN强光手电筒高亮大功率可充电户外远射手提灯探照灯应急防灾 68.09元</summary>
+    <content type="html">&lt;p&gt;WARSUN强光手电筒高亮大功率可充电户外远射手提灯探照灯应急防灾 68.09元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/haodan/6543715.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">芙丝饮用天然矿泉水 47.15元</title>
+    <link href="https://news.ixbk.net/haodan/6543714.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543714.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">芙丝饮用天然矿泉水 47.15元</summary>
+    <content type="html">&lt;p&gt;芙丝饮用天然矿泉水 47.15元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/haodan/6543714.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">慧员白砂糖碳化糖400g 1.6元</title>
+    <link href="https://news.ixbk.net/haodan/6543713.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543713.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">慧员白砂糖碳化糖400g 1.6元</summary>
+    <content type="html">&lt;p&gt;慧员白砂糖碳化糖400g 1.6元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/haodan/6543713.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">三顿半意式加浓速溶冻干咖啡限定风味30颗×2g 70元</title>
+    <link href="https://news.ixbk.net/haodan/6543712.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543712.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">三顿半意式加浓速溶冻干咖啡限定风味30颗×2g 70元</summary>
+    <content type="html">&lt;p&gt;三顿半意式加浓速溶冻干咖啡限定风味30颗×2g 70元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/haodan/6543712.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">usmile P10青春版电动牙刷晨雾灰+牙膏30g 125元</title>
+    <link href="https://news.ixbk.net/haodan/6543708.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543708.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">usmile P10青春版电动牙刷晨雾灰+牙膏30g 125元</summary>
+    <content type="html">&lt;p&gt;usmile P10青春版电动牙刷晨雾灰+牙膏30g 125元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/haodan/6543708.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">罗小曼单色腮红 16元</title>
+    <link href="https://news.ixbk.net/haodan/6543711.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543711.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">罗小曼单色腮红 16元</summary>
+    <content type="html">&lt;p&gt;罗小曼单色腮红 16元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/haodan/6543711.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">完美日记云纱综合眼影盘 110.7元</title>
+    <link href="https://news.ixbk.net/haodan/6543710.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543710.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">完美日记云纱综合眼影盘 110.7元</summary>
+    <content type="html">&lt;p&gt;完美日记云纱综合眼影盘 110.7元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/haodan/6543710.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">v扫美团下啦抽</title>
+    <link href="https://news.ixbk.net/weibo/6543707.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543707.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">v扫美团下啦抽</summary>
+    <content type="html">&lt;p&gt;v扫美团下啦抽&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/weibo/6543707.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="外卖" />
+  </entry>
+  <entry>
+    <title type="text">欧扎克水果燕麦片任拍3件赠同款1袋到手共4袋 19.9元</title>
+    <link href="https://news.ixbk.net/haodan/6543706.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543706.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">欧扎克水果燕麦片任拍3件赠同款1袋到手共4袋 19.9元</summary>
+    <content type="html">&lt;p&gt;欧扎克水果燕麦片任拍3件赠同款1袋到手共4袋 19.9元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/haodan/6543706.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">你最奢侈的一次消费是啥 评论里揪3个宝子每人15请你喝奶茶</title>
+    <link href="https://news.ixbk.net/weibo/6543709.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-06-28:6543709.html</id>
+    <updated>2026-06-28T06:52:51+08:00</updated>
+    <published>2026-06-28T06:52:51+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">你最奢侈的一次消费是啥 评论里揪3个宝子每人15请你喝奶茶</summary>
+    <content type="html">&lt;p&gt;你最奢侈的一次消费是啥 评论里揪3个宝子每人15请你喝奶茶&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/weibo/6543709.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
   <entry>
     <title type="text">jd 明星 小🧧 chen li jun 7个上限</title>
     <link href="https://news.ixbk.fun/weibo-chaohua/6543931.html" rel="alternate" />
