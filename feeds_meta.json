@@ -2,20 +2,20 @@
   "线报酷": {
     "interval": 15,
     "freq_label": "每15分钟",
-    "count": 1245,
+    "count": 1299,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-ku.xml",
     "icon": "https://gitfox-enter.github.io/RSSForge/icons/xian-bao-ku.png",
     "site_url": "https://news.ixbk.net/",
-    "items_hash": "c3a2ce28c25d1b1dab95f4c91090212b"
+    "items_hash": "c29dbd33f110515a1cd743430f166ce6"
   },
   "线报ICU": {
     "interval": 15,
     "freq_label": "每15分钟",
-    "count": 187,
+    "count": 188,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-ICU.xml",
     "icon": "https://gitfox-enter.github.io/RSSForge/icons/xian-bao-ICU.png",
     "site_url": "https://xianbao.icu/",
-    "items_hash": "fac26214331da863de76abbd98dcc276"
+    "items_hash": "dfaf54b1ebc38a43f0a968b19d5036b2"
   },
   "专业线报": {
     "interval": 20,
@@ -49,7 +49,7 @@
     "freq_label": "每30分钟",
     "count": 0,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/xin-zhuan-ba.xml",
-    "icon": "https://gitfox-enter.github.io/RSSForge/icons/xin-zhuan-ba.svg",
+    "icon": "https://gitfox-enter.github.io/RSSForge/icons/xin-zhuan-ba.png",
     "site_url": "https://xzba.cc/",
     "items_hash": ""
   },
@@ -92,20 +92,20 @@
   "超级线报": {
     "interval": 20,
     "freq_label": "每20分钟",
-    "count": 39,
+    "count": 40,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/chao-ji-xian-bao.xml",
     "icon": "https://gitfox-enter.github.io/RSSForge/icons/chao-ji-xian-bao.png",
     "site_url": "https://cjx8.com/",
-    "items_hash": "97c2930a654e083b794dd34b77dd4cef"
+    "items_hash": "8af7b7b36ff8530c002238a0e7ef3cd9"
   },
   "汇发部": {
     "interval": 20,
     "freq_label": "每20分钟",
-    "count": 722,
+    "count": 822,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/hui-fa-bu.xml",
     "icon": "https://gitfox-enter.github.io/RSSForge/icons/hui-fa-bu.png",
     "site_url": "https://www.huifabu.cn/",
-    "items_hash": "116dbec255b1aa90f443512bc1af8b2e"
+    "items_hash": "d5443fadbf5ed0e3e13456b6ddb60b8b"
   },
   "爱Q社区": {
     "interval": 20,
