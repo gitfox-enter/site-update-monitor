@@ -5,7 +5,7 @@
   <link href="https://news.ixbk.net/" rel="alternate" />
   <link href="https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-ku.xml" rel="self" type="application/atom+xml" />
   <id>https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-ku.xml</id>
-  <updated>2026-06-29T03:59:25+08:00</updated>
+  <updated>2026-06-29T04:15:08+08:00</updated>
   <generator uri="https://github.com/gitfox-enter/RSSForge">RSSForge</generator>
   <rights>内容版权归原作者所有，RSSForge 仅提供聚合索引</rights>
   <sy:updatePeriod>hourly</sy:updatePeriod>
@@ -16,6 +16,129 @@
     <uri>https://github.com/gitfox-enter/RSSForge</uri>
   </author>
   <icon>https://gitfox-enter.github.io/RSSForge/icons/xian-bao-ku.png</icon>
+  <entry>
+    <title type="text">我的关注</title>
+    <link href="https://news.ixbk.fun/category-guanzhu1/" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-06-29:category-guanzhu1</id>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">我的关注</summary>
+    <content type="html">&lt;p&gt;我的关注&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/category-guanzhu1/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">豆瓣线报</title>
+    <link href="https://news.ixbk.fun/category-douban/" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-06-29:category-douban</id>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">豆瓣线报</summary>
+    <content type="html">&lt;p&gt;豆瓣线报&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/category-douban/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="生活" />
+  </entry>
+  <entry>
+    <title type="text">豆瓣热帖</title>
+    <link href="https://news.ixbk.fun/douban-hot.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-06-29:douban-hot.html</id>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">豆瓣热帖</summary>
+    <content type="html">&lt;p&gt;豆瓣热帖&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/douban-hot.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">微博线报</title>
+    <link href="https://news.ixbk.fun/category-weibo/" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-06-29:category-weibo</id>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">微博线报</summary>
+    <content type="html">&lt;p&gt;微博线报&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/category-weibo/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="生活" />
+  </entry>
+  <entry>
+    <title type="text">微博超话</title>
+    <link href="https://news.ixbk.fun/category-weibo-chaohua/" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-06-29:category-weibo-chaohua</id>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">微博超话</summary>
+    <content type="html">&lt;p&gt;微博超话&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/category-weibo-chaohua/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">微博热帖</title>
+    <link href="https://news.ixbk.fun/weibo-hot.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-06-29:weibo-hot.html</id>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">微博热帖</summary>
+    <content type="html">&lt;p&gt;微博热帖&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/weibo-hot.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">好单线报</title>
+    <link href="https://news.ixbk.fun/category-haodan/" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-06-29:category-haodan</id>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">好单线报</summary>
+    <content type="html">&lt;p&gt;好单线报&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/category-haodan/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="生活" />
+  </entry>
+  <entry>
+    <title type="text">联想复古头戴式无线蓝牙耳机降噪长续航游戏音乐耳机电脑耳麦学生网课2026新款适用华为小米</title>
+    <link href="https://news.ixbk.fun/haodan/6548165.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-06-29:6548165.html</id>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">联想复古头戴式无线蓝牙耳机降噪长续航游戏音乐耳机电脑耳麦学生网课2026新款适用华为小米</summary>
+    <content type="html">&lt;p&gt;联想复古头戴式无线蓝牙耳机降噪长续航游戏音乐耳机电脑耳麦学生网课2026新款适用华为小米&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/haodan/6548165.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">NYO3高纯度97%深海鱼油omega3软胶囊120粒 158.35元</title>
+    <link href="https://news.ixbk.fun/haodan/6548032.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-06-29:6548032.html</id>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">NYO3高纯度97%深海鱼油omega3软胶囊120粒 158.35元</summary>
+    <content type="html">&lt;p&gt;NYO3高纯度97%深海鱼油omega3软胶囊120粒 158.35元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/haodan/6548032.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">味出道高蛋白藜麦全麦面包2斤/20包 19.8元</title>
+    <link href="https://news.ixbk.fun/haodan/6548031.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-06-29:6548031.html</id>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">味出道高蛋白藜麦全麦面包2斤/20包 19.8元</summary>
+    <content type="html">&lt;p&gt;味出道高蛋白藜麦全麦面包2斤/20包 19.8元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/haodan/6548031.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
   <entry>
     <title type="text">SANLI贝壳粉7A抗菌纯棉毛巾30×60cm中巾买2件 14.8元</title>
     <link href="https://news.ixbk.fun/haodan/6548164.html" rel="alternate" />

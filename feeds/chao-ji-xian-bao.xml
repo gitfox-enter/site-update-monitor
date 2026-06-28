@@ -5,7 +5,7 @@
   <link href="https://cjx8.com/" rel="alternate" />
   <link href="https://gitfox-enter.github.io/RSSForge/feeds/chao-ji-xian-bao.xml" rel="self" type="application/atom+xml" />
   <id>https://gitfox-enter.github.io/RSSForge/feeds/chao-ji-xian-bao.xml</id>
-  <updated>2026-06-29T03:00:17+08:00</updated>
+  <updated>2026-06-29T04:15:08+08:00</updated>
   <generator uri="https://github.com/gitfox-enter/RSSForge">RSSForge</generator>
   <rights>内容版权归原作者所有，RSSForge 仅提供聚合索引</rights>
   <sy:updatePeriod>hourly</sy:updatePeriod>
@@ -20,8 +20,8 @@
     <title type="text">全部线报</title>
     <link href="https://cjx8.com/?cat=0" rel="alternate" />
     <id>tag:cjx8.com,2026-06-29:item</id>
-    <updated>2026-06-29T03:00:17+08:00</updated>
-    <published>2026-06-29T03:00:17+08:00</published>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -33,8 +33,8 @@
     <title type="text">豆瓣买组</title>
     <link href="https://cjx8.com/?cat=9" rel="alternate" />
     <id>tag:cjx8.com,2026-06-29:item</id>
-    <updated>2026-06-29T03:00:17+08:00</updated>
-    <published>2026-06-29T03:00:17+08:00</published>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -45,8 +45,8 @@
     <title type="text">豆瓣拼组</title>
     <link href="https://cjx8.com/?cat=3" rel="alternate" />
     <id>tag:cjx8.com,2026-06-29:item</id>
-    <updated>2026-06-29T03:00:17+08:00</updated>
-    <published>2026-06-29T03:00:17+08:00</published>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -54,11 +54,24 @@
     <content type="html">&lt;p&gt;豆瓣拼组&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/?cat=3"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
+    <title type="text">佩奇线报</title>
+    <link href="https://cjx8.com/?cat=4" rel="alternate" />
+    <id>tag:cjx8.com,2026-06-29:item</id>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
+    <author>
+      <name>超级线报</name>
+    </author>
+    <summary type="text">佩奇线报</summary>
+    <content type="html">&lt;p&gt;佩奇线报&lt;/p&gt;&lt;p&gt;&lt;a href="https://cjx8.com/?cat=4"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="生活" />
+  </entry>
+  <entry>
     <title type="text">小屁屁找</title>
     <link href="https://cjx8.com/?cat=5" rel="alternate" />
     <id>tag:cjx8.com,2026-06-29:item</id>
-    <updated>2026-06-29T03:00:17+08:00</updated>
-    <published>2026-06-29T03:00:17+08:00</published>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -69,8 +82,8 @@
     <title type="text">妖娆本娆</title>
     <link href="https://cjx8.com/?cat=17" rel="alternate" />
     <id>tag:cjx8.com,2026-06-29:item</id>
-    <updated>2026-06-29T03:00:17+08:00</updated>
-    <published>2026-06-29T03:00:17+08:00</published>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -81,8 +94,8 @@
     <title type="text">学习资料</title>
     <link href="https://www.1haogu.com" rel="alternate" />
     <id>tag:www.1haogu.com,2026-06-29:item</id>
-    <updated>2026-06-29T03:00:17+08:00</updated>
-    <published>2026-06-29T03:00:17+08:00</published>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -93,8 +106,8 @@
     <title type="text">喵闪视觉</title>
     <link href="https://www.miao333.com" rel="alternate" />
     <id>tag:www.miao333.com,2026-06-29:item</id>
-    <updated>2026-06-29T03:00:17+08:00</updated>
-    <published>2026-06-29T03:00:17+08:00</published>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -105,8 +118,8 @@
     <title type="text">金聪线报</title>
     <link href="http://www.jincong.net" rel="alternate" />
     <id>tag:www.jincong.net,2026-06-29:item</id>
-    <updated>2026-06-29T03:00:17+08:00</updated>
-    <published>2026-06-29T03:00:17+08:00</published>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -118,8 +131,8 @@
     <title type="text">站点地图</title>
     <link href="https://cjx8.com/sitemap/index.xml" rel="alternate" />
     <id>tag:cjx8.com,2026-06-29:index.xml</id>
-    <updated>2026-06-29T03:00:17+08:00</updated>
-    <published>2026-06-29T03:00:17+08:00</published>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -130,8 +143,8 @@
     <title type="text">申请友链</title>
     <link href="https://cjx8.com/feedback" rel="alternate" />
     <id>tag:cjx8.com,2026-06-29:feedback</id>
-    <updated>2026-06-29T03:00:17+08:00</updated>
-    <published>2026-06-29T03:00:17+08:00</published>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -142,8 +155,8 @@
     <title type="text">夕红之卸妆油150ml+眼唇卸妆油150ml*2瓶 60元2026-06-29 00:24:292拼多多菜Sister care婴儿粘性棉棒50支独立装，百亿补贴1.9元2026-06-29 00:17:340京东</title>
     <link href="https://cjx8.com/post/1802199" rel="alternate" />
     <id>tag:cjx8.com,2026-06-29:1802199</id>
-    <updated>2026-06-29T03:00:17+08:00</updated>
-    <published>2026-06-29T03:00:17+08:00</published>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -155,8 +168,8 @@
     <title type="text">菜Sister care婴儿粘性棉棒50支独立装，百亿补贴1.9元2026-06-29 00:17:340京东</title>
     <link href="https://cjx8.com/post/1802206" rel="alternate" />
     <id>tag:cjx8.com,2026-06-29:1802206</id>
-    <updated>2026-06-29T03:00:17+08:00</updated>
-    <published>2026-06-29T03:00:17+08:00</published>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -168,8 +181,8 @@
     <title type="text">光三利7A抗菌纯棉毛巾30*60cm，4件25.6元，领47-222026-06-29 00:08:510京东好湾仔岛意面200g*3袋 凑后4.97元2026-06-29 00:08:380京东</title>
     <link href="https://cjx8.com/post/1802147" rel="alternate" />
     <id>tag:cjx8.com,2026-06-29:1802147</id>
-    <updated>2026-06-29T03:00:17+08:00</updated>
-    <published>2026-06-29T03:00:17+08:00</published>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
@@ -181,8 +194,8 @@
     <title type="text">好湾仔岛意面200g*3袋 凑后4.97元2026-06-29 00:08:380京东</title>
     <link href="https://cjx8.com/post/1802150" rel="alternate" />
     <id>tag:cjx8.com,2026-06-29:1802150</id>
-    <updated>2026-06-29T03:00:17+08:00</updated>
-    <published>2026-06-29T03:00:17+08:00</published>
+    <updated>2026-06-29T04:15:08+08:00</updated>
+    <published>2026-06-29T04:15:08+08:00</published>
     <author>
       <name>超级线报</name>
     </author>
