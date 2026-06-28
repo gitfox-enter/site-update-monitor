@@ -2,11 +2,11 @@
   "线报酷": {
     "interval": 15,
     "freq_label": "每15分钟",
-    "count": 2193,
+    "count": 2225,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-ku.xml",
     "icon": "https://gitfox-enter.github.io/RSSForge/icons/xian-bao-ku.png",
     "site_url": "https://news.ixbk.net/",
-    "items_hash": "170d377c4fbec5994e34592a62a941e9"
+    "items_hash": "c506cf70e338e7b79f9c2ab0c397b420"
   },
   "线报ICU": {
     "interval": 15,
@@ -58,7 +58,7 @@
     "freq_label": "每30分钟",
     "count": 0,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/xin-zhuan-ba.xml",
-    "icon": "https://gitfox-enter.github.io/RSSForge/icons/xin-zhuan-ba.svg",
+    "icon": "https://gitfox-enter.github.io/RSSForge/icons/xin-zhuan-ba.png",
     "site_url": "https://xzba.cc/",
     "items_hash": ""
   },
@@ -110,11 +110,11 @@
   "汇发部": {
     "interval": 20,
     "freq_label": "每20分钟",
-    "count": 1536,
+    "count": 1568,
     "feed_url": "https://gitfox-enter.github.io/RSSForge/feeds/hui-fa-bu.xml",
     "icon": "https://gitfox-enter.github.io/RSSForge/icons/hui-fa-bu.png",
     "site_url": "https://www.huifabu.cn/",
-    "items_hash": "55d538d4645e4d30346cc683e135c55f"
+    "items_hash": "a5e2817e631d64a4dd77452d2917f378"
   },
   "爱Q社区": {
     "interval": 20,
