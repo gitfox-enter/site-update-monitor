@@ -5,7 +5,7 @@
   <link href="https://news.ixbk.net/" rel="alternate" />
   <link href="https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-ku.xml" rel="self" type="application/atom+xml" />
   <id>https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-ku.xml</id>
-  <updated>2026-07-01T01:29:24+08:00</updated>
+  <updated>2026-07-01T03:14:22+08:00</updated>
   <generator uri="https://github.com/gitfox-enter/RSSForge">RSSForge</generator>
   <rights>内容版权归原作者所有，RSSForge 仅提供聚合索引</rights>
   <sy:updatePeriod>hourly</sy:updatePeriod>
@@ -16,6 +16,452 @@
     <uri>https://github.com/gitfox-enter/RSSForge</uri>
   </author>
   <icon>https://gitfox-enter.github.io/RSSForge/icons/xian-bao-ku.png</icon>
+  <entry>
+    <title type="text">我的关注</title>
+    <link href="https://news.ixbk.fun/category-guanzhu1/" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:category-guanzhu1</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">我的关注</summary>
+    <content type="html">&lt;p&gt;我的关注&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/category-guanzhu1/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">豆瓣线报</title>
+    <link href="https://news.ixbk.fun/category-douban/" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:category-douban</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">豆瓣线报</summary>
+    <content type="html">&lt;p&gt;豆瓣线报&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/category-douban/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="生活" />
+  </entry>
+  <entry>
+    <title type="text">豆瓣热帖</title>
+    <link href="https://news.ixbk.fun/douban-hot.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:douban-hot.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">豆瓣热帖</summary>
+    <content type="html">&lt;p&gt;豆瓣热帖&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/douban-hot.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">微博线报</title>
+    <link href="https://news.ixbk.fun/category-weibo/" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:category-weibo</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">微博线报</summary>
+    <content type="html">&lt;p&gt;微博线报&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/category-weibo/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="生活" />
+  </entry>
+  <entry>
+    <title type="text">微博超话</title>
+    <link href="https://news.ixbk.fun/category-weibo-chaohua/" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:category-weibo-chaohua</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">微博超话</summary>
+    <content type="html">&lt;p&gt;微博超话&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/category-weibo-chaohua/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">微博热帖</title>
+    <link href="https://news.ixbk.fun/weibo-hot.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:weibo-hot.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">微博热帖</summary>
+    <content type="html">&lt;p&gt;微博热帖&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/weibo-hot.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">好单线报</title>
+    <link href="https://news.ixbk.fun/category-haodan/" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:category-haodan</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">好单线报</summary>
+    <content type="html">&lt;p&gt;好单线报&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/category-haodan/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="生活" />
+  </entry>
+  <entry>
+    <title type="text">双喜临门</title>
+    <link href="https://news.ixbk.fun/xiaodigu/6557710.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557710.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">双喜临门</summary>
+    <content type="html">&lt;p&gt;双喜临门&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/xiaodigu/6557710.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">网易严选车载香薰 4r 左右简单作业</title>
+    <link href="https://news.ixbk.fun/douban-pinzu/6557709.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557709.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">网易严选车载香薰 4r 左右简单作业</summary>
+    <content type="html">&lt;p&gt;网易严选车载香薰 4r 左右简单作业&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/douban-pinzu/6557709.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">脉动太猛了 闰了100多睡觉{</title>
+    <link href="https://news.ixbk.fun/xiaodigu/6557708.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557708.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">脉动太猛了 闰了100多睡觉{</summary>
+    <content type="html">&lt;p&gt;脉动太猛了 闰了100多睡觉{&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/xiaodigu/6557708.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">美的电饭煲大布丁0涂层电饭锅4升 139.22元</title>
+    <link href="https://news.ixbk.fun/weibo/6557707.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557707.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">美的电饭煲大布丁0涂层电饭锅4升 139.22元</summary>
+    <content type="html">&lt;p&gt;美的电饭煲大布丁0涂层电饭锅4升 139.22元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/weibo/6557707.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">光大结束了？唯一一个银行大毛</title>
+    <link href="https://news.ixbk.fun/xiaodigu/6557705.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557705.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">光大结束了？唯一一个银行大毛</summary>
+    <content type="html">&lt;p&gt;光大结束了？唯一一个银行大毛&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/xiaodigu/6557705.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">超级好价112买酷态科cp25se 两万五毫安大充电宝</title>
+    <link href="https://news.ixbk.fun/douban-pinzu/6557704.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557704.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">超级好价112买酷态科cp25se 两万五毫安大充电宝</summary>
+    <content type="html">&lt;p&gt;超级好价112买酷态科cp25se 两万五毫安大充电宝&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/douban-pinzu/6557704.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">厨邦渔女蚝油605g挤挤装 3.9元</title>
+    <link href="https://news.ixbk.fun/weibo/6557703.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557703.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">厨邦渔女蚝油605g挤挤装 3.9元</summary>
+    <content type="html">&lt;p&gt;厨邦渔女蚝油605g挤挤装 3.9元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/weibo/6557703.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">江苏邮储 山西邮储</title>
+    <link href="https://news.ixbk.fun/xinzuanba/6557702.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557702.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">江苏邮储 山西邮储</summary>
+    <content type="html">&lt;p&gt;江苏邮储 山西邮储&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/xinzuanba/6557702.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">蒙牛现代牧场鲜牛奶屋顶包960ml加购7件 6.29元</title>
+    <link href="https://news.ixbk.fun/weibo/6557701.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557701.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">蒙牛现代牧场鲜牛奶屋顶包960ml加购7件 6.29元</summary>
+    <content type="html">&lt;p&gt;蒙牛现代牧场鲜牛奶屋顶包960ml加购7件 6.29元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/weibo/6557701.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">成都农商</title>
+    <link href="https://news.ixbk.fun/xiaodigu/6557696.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557696.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">成都农商</summary>
+    <content type="html">&lt;p&gt;成都农商&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/xiaodigu/6557696.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">这会试试 有无红包 京东APP 我的 互动游戏 看看有无弹出无门槛红包</title>
+    <link href="https://news.ixbk.fun/weibo/6557593.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557593.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">这会试试 有无红包 京东APP 我的 互动游戏 看看有无弹出无门槛红包</summary>
+    <content type="html">&lt;p&gt;这会试试 有无红包 京东APP 我的 互动游戏 看看有无弹出无门槛红包&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/weibo/6557593.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="京东" />
+  </entry>
+  <entry>
+    <title type="text">Loacker莱家进口经典夹心威化饼干175g 关注领券 拍2件</title>
+    <link href="https://news.ixbk.fun/weibo/6557594.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557594.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">Loacker莱家进口经典夹心威化饼干175g 关注领券 拍2件</summary>
+    <content type="html">&lt;p&gt;Loacker莱家进口经典夹心威化饼干175g 关注领券 拍2件&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/weibo/6557594.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="优惠券" />
+  </entry>
+  <entry>
+    <title type="text">今天再试试 有的账号弹红包 京东 app我的-互动游戏 进入试试有无弹红包</title>
+    <link href="https://news.ixbk.fun/weibo/6557589.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557589.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">今天再试试 有的账号弹红包 京东 app我的-互动游戏 进入试试有无弹红包</summary>
+    <content type="html">&lt;p&gt;今天再试试 有的账号弹红包 京东 app我的-互动游戏 进入试试有无弹红包&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/weibo/6557589.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="京东" />
+  </entry>
+  <entry>
+    <title type="text">app-我的-互动游戏 进入概率弹小虹包</title>
+    <link href="https://news.ixbk.fun/weibo/6557587.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557587.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">app-我的-互动游戏 进入概率弹小虹包</summary>
+    <content type="html">&lt;p&gt;app-我的-互动游戏 进入概率弹小虹包&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/weibo/6557587.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="红包" />
+  </entry>
+  <entry>
+    <title type="text">招行 红包体验金2个，夜毛</title>
+    <link href="https://news.ixbk.fun/xinzuanba/6557592.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557592.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">招行 红包体验金2个，夜毛</summary>
+    <content type="html">&lt;p&gt;招行 红包体验金2个，夜毛&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/xinzuanba/6557592.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="红包" />
+  </entry>
+  <entry>
+    <title type="text">7月份中行超给利报名</title>
+    <link href="https://news.ixbk.fun/zuankeba/6557591.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557591.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">7月份中行超给利报名</summary>
+    <content type="html">&lt;p&gt;7月份中行超给利报名&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/zuankeba/6557591.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">成都农商微信月月刷</title>
+    <link href="https://news.ixbk.fun/xiaodigu/6557588.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557588.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">成都农商微信月月刷</summary>
+    <content type="html">&lt;p&gt;成都农商微信月月刷&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/xiaodigu/6557588.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">试试 今天我的2.19 京东-我的 进去互动游戏 大概率3.11红包</title>
+    <link href="https://news.ixbk.fun/weibo/6557585.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557585.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">试试 今天我的2.19 京东-我的 进去互动游戏 大概率3.11红包</summary>
+    <content type="html">&lt;p&gt;试试 今天我的2.19 京东-我的 进去互动游戏 大概率3.11红包&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/weibo/6557585.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="京东" />
+  </entry>
+  <entry>
+    <title type="text">FANCL HealthScience复合维生素矿物质21片/袋拍2件 18元</title>
+    <link href="https://news.ixbk.fun/weibo/6557583.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557583.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">FANCL HealthScience复合维生素矿物质21片/袋拍2件 18元</summary>
+    <content type="html">&lt;p&gt;FANCL HealthScience复合维生素矿物质21片/袋拍2件 18元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/weibo/6557583.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">北京邮储互助专区［评论区互］</title>
+    <link href="https://news.ixbk.fun/xiaodigu/6557584.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557584.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">北京邮储互助专区［评论区互］</summary>
+    <content type="html">&lt;p&gt;北京邮储互助专区［评论区互］&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/xiaodigu/6557584.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">惠省钱建行0.99</title>
+    <link href="https://news.ixbk.fun/zuankeba/6557586.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557586.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">惠省钱建行0.99</summary>
+    <content type="html">&lt;p&gt;惠省钱建行0.99&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/zuankeba/6557586.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="生活" />
+  </entry>
+  <entry>
+    <title type="text">7.1京东拍卖</title>
+    <link href="https://news.ixbk.fun/zuankeba/6557581.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557581.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">7.1京东拍卖</summary>
+    <content type="html">&lt;p&gt;7.1京东拍卖&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/zuankeba/6557581.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="京东" />
+  </entry>
+  <entry>
+    <title type="text">试用 豪士蛋皮吐司早餐面包420g 砸3券 弹2立减 首单</title>
+    <link href="https://news.ixbk.fun/weibo/6557580.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557580.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">试用 豪士蛋皮吐司早餐面包420g 砸3券 弹2立减 首单</summary>
+    <content type="html">&lt;p&gt;试用 豪士蛋皮吐司早餐面包420g 砸3券 弹2立减 首单&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/weibo/6557580.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="优惠券" />
+  </entry>
+  <entry>
+    <title type="text">美的幸运草2s 157元左右</title>
+    <link href="https://news.ixbk.fun/douban-pinzu/6557579.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557579.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">美的幸运草2s 157元左右</summary>
+    <content type="html">&lt;p&gt;美的幸运草2s 157元左右&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/douban-pinzu/6557579.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">工行破零 直接抽 mp</title>
+    <link href="https://news.ixbk.fun/xiaodigu/6557578.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557578.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">工行破零 直接抽 mp</summary>
+    <content type="html">&lt;p&gt;工行破零 直接抽 mp&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/xiaodigu/6557578.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">名创优品洞洞鞋拖鞋拍2件 29.8元</title>
+    <link href="https://news.ixbk.fun/weibo/6557577.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557577.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">名创优品洞洞鞋拖鞋拍2件 29.8元</summary>
+    <content type="html">&lt;p&gt;名创优品洞洞鞋拖鞋拍2件 29.8元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/weibo/6557577.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">江苏工行2.88</title>
+    <link href="https://news.ixbk.fun/zuankeba/6557575.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557575.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">江苏工行2.88</summary>
+    <content type="html">&lt;p&gt;江苏工行2.88&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/zuankeba/6557575.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">外卖红包 每天领 美团 app搜 318888 每天拆外卖惊喜红包 京东外卖</title>
+    <link href="https://news.ixbk.fun/weibo/6557574.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557574.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">外卖红包 每天领 美团 app搜 318888 每天拆外卖惊喜红包 京东外卖</summary>
+    <content type="html">&lt;p&gt;外卖红包 每天领 美团 app搜 318888 每天拆外卖惊喜红包 京东外卖&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/weibo/6557574.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="京东" />
+  </entry>
+  <entry>
+    <title type="text">有需来 PDD首页百亿补贴-消费券 邀请好友助力 抽取5折券封顶减20元</title>
+    <link href="https://news.ixbk.fun/weibo/6557573.html" rel="alternate" />
+    <id>tag:news.ixbk.fun,2026-07-01:6557573.html</id>
+    <updated>2026-07-01T03:14:22+08:00</updated>
+    <published>2026-07-01T03:14:22+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">有需来 PDD首页百亿补贴-消费券 邀请好友助力 抽取5折券封顶减20元</summary>
+    <content type="html">&lt;p&gt;有需来 PDD首页百亿补贴-消费券 邀请好友助力 抽取5折券封顶减20元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.fun/weibo/6557573.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="优惠券" />
+  </entry>
   <entry>
     <title type="text">宋朝×JDear京东联名线香熏香3g*4 7.19元</title>
     <link href="https://news.ixbk.fun/weibo/6557700.html" rel="alternate" />
