@@ -5,7 +5,7 @@
   <link href="https://news.ixbk.net/" rel="alternate" />
   <link href="https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-ku.xml" rel="self" type="application/atom+xml" />
   <id>https://gitfox-enter.github.io/RSSForge/feeds/xian-bao-ku.xml</id>
-  <updated>2026-07-01T06:57:14+08:00</updated>
+  <updated>2026-07-01T07:04:09+08:00</updated>
   <generator uri="https://github.com/gitfox-enter/RSSForge">RSSForge</generator>
   <rights>内容版权归原作者所有，RSSForge 仅提供聚合索引</rights>
   <sy:updatePeriod>hourly</sy:updatePeriod>
@@ -16,6 +16,153 @@
     <uri>https://github.com/gitfox-enter/RSSForge</uri>
   </author>
   <icon>https://gitfox-enter.github.io/RSSForge/icons/xian-bao-ku.png</icon>
+  <entry>
+    <title type="text">我的关注</title>
+    <link href="https://news.ixbk.net/category-guanzhu1/" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-07-01:category-guanzhu1</id>
+    <updated>2026-07-01T07:04:09+08:00</updated>
+    <published>2026-07-01T07:04:09+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">我的关注</summary>
+    <content type="html">&lt;p&gt;我的关注&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/category-guanzhu1/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">豆瓣线报</title>
+    <link href="https://news.ixbk.net/category-douban/" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-07-01:category-douban</id>
+    <updated>2026-07-01T07:04:09+08:00</updated>
+    <published>2026-07-01T07:04:09+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">豆瓣线报</summary>
+    <content type="html">&lt;p&gt;豆瓣线报&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/category-douban/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="生活" />
+  </entry>
+  <entry>
+    <title type="text">豆瓣热帖</title>
+    <link href="https://news.ixbk.net/douban-hot.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-07-01:douban-hot.html</id>
+    <updated>2026-07-01T07:04:09+08:00</updated>
+    <published>2026-07-01T07:04:09+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">豆瓣热帖</summary>
+    <content type="html">&lt;p&gt;豆瓣热帖&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/douban-hot.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">微博线报</title>
+    <link href="https://news.ixbk.net/category-weibo/" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-07-01:category-weibo</id>
+    <updated>2026-07-01T07:04:09+08:00</updated>
+    <published>2026-07-01T07:04:09+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">微博线报</summary>
+    <content type="html">&lt;p&gt;微博线报&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/category-weibo/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="生活" />
+  </entry>
+  <entry>
+    <title type="text">微博超话</title>
+    <link href="https://news.ixbk.net/category-weibo-chaohua/" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-07-01:category-weibo-chaohua</id>
+    <updated>2026-07-01T07:04:09+08:00</updated>
+    <published>2026-07-01T07:04:09+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">微博超话</summary>
+    <content type="html">&lt;p&gt;微博超话&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/category-weibo-chaohua/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">微博热帖</title>
+    <link href="https://news.ixbk.net/weibo-hot.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-07-01:weibo-hot.html</id>
+    <updated>2026-07-01T07:04:09+08:00</updated>
+    <published>2026-07-01T07:04:09+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">微博热帖</summary>
+    <content type="html">&lt;p&gt;微博热帖&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/weibo-hot.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">好单线报</title>
+    <link href="https://news.ixbk.net/category-haodan/" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-07-01:category-haodan</id>
+    <updated>2026-07-01T07:04:09+08:00</updated>
+    <published>2026-07-01T07:04:09+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">好单线报</summary>
+    <content type="html">&lt;p&gt;好单线报&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/category-haodan/"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+    <category term="生活" />
+  </entry>
+  <entry>
+    <title type="text">工行互助</title>
+    <link href="https://news.ixbk.net/xiaodigu/6557719.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-07-01:6557719.html</id>
+    <updated>2026-07-01T07:04:09+08:00</updated>
+    <published>2026-07-01T07:04:09+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">工行互助</summary>
+    <content type="html">&lt;p&gt;工行互助&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/xiaodigu/6557719.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">双喜临门</title>
+    <link href="https://news.ixbk.net/xiaodigu/6557710.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-07-01:6557710.html</id>
+    <updated>2026-07-01T07:04:09+08:00</updated>
+    <published>2026-07-01T07:04:09+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">双喜临门</summary>
+    <content type="html">&lt;p&gt;双喜临门&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/xiaodigu/6557710.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">虎牌1.2L水壶 70</title>
+    <link href="https://news.ixbk.net/douban-maizu/6557527.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-07-01:6557527.html</id>
+    <updated>2026-07-01T07:04:09+08:00</updated>
+    <published>2026-07-01T07:04:09+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">虎牌1.2L水壶 70</summary>
+    <content type="html">&lt;p&gt;虎牌1.2L水壶 70&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/douban-maizu/6557527.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">nicedae益生菌漱口水20条*3盒+赠12条 16元</title>
+    <link href="https://news.ixbk.net/weibo/6557526.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-07-01:6557526.html</id>
+    <updated>2026-07-01T07:04:09+08:00</updated>
+    <published>2026-07-01T07:04:09+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">nicedae益生菌漱口水20条*3盒+赠12条 16元</summary>
+    <content type="html">&lt;p&gt;nicedae益生菌漱口水20条*3盒+赠12条 16元&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/weibo/6557526.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="text">5块钱电影票-魔方小姐，适合去影院吹空调（看图3，b类城市）</title>
+    <link href="https://news.ixbk.net/douban-maizu/6557522.html" rel="alternate" />
+    <id>tag:news.ixbk.net,2026-07-01:6557522.html</id>
+    <updated>2026-07-01T07:04:09+08:00</updated>
+    <published>2026-07-01T07:04:09+08:00</published>
+    <author>
+      <name>线报酷</name>
+    </author>
+    <summary type="text">5块钱电影票-魔方小姐，适合去影院吹空调（看图3，b类城市）</summary>
+    <content type="html">&lt;p&gt;5块钱电影票-魔方小姐，适合去影院吹空调（看图3，b类城市）&lt;/p&gt;&lt;p&gt;&lt;a href="https://news.ixbk.net/douban-maizu/6557522.html"&gt;查看原文 →&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
   <entry>
     <title type="text">中国移动 周三充值日</title>
     <link href="https://news.ixbk.fun/xiaodigu/6557730.html" rel="alternate" />
