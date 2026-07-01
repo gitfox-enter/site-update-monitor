@@ -333,13 +333,19 @@ def _build_atom_feed(
         url = _sanitize_xml(item.get('url', ''))
         if url:
             ET.SubElement(entry, f'{{{NS}}}link', href=url, rel='alternate')
-            # 使用 tag URI 格式保证 id 永久唯一 (fix #7)
+            # 使用 tag URI 格式保证 id 永久唯一 (fix #7 + fix #dup-id)
+            # 修复: ID 必须基于 URL 本身，不能包含日期，否则 feed 每天更新时会产生重复条目
             parsed = urlparse(url)
             domain = parsed.hostname or 'unknown'
-            path_short = parsed.path.rstrip('/').split('/')[-1] or 'item'
-            ET.SubElement(entry, f'{{{NS}}}id').text = f"tag:{domain},{updated_at[:10]}:{path_short}"
+            # 使用完整 URL（含路径和查询参数）的哈希作为唯一标识
+            url_for_hash = parsed.path + ('?' + parsed.query if parsed.query else '')
+            url_hash = hashlib.md5(url_for_hash.encode('utf-8')).hexdigest()[:16]
+            # 使用固定日期（RFC 4151 要求）确保 ID 永久不变
+            ET.SubElement(entry, f'{{{NS}}}id').text = f"tag:{domain},2024-01-01:{url_hash}"
         else:
-            ET.SubElement(entry, f'{{{NS}}}id').text = f"tag:gitfox-enter,{updated_at[:10]}:{hash(title_text)}"
+            # 无 URL 时使用标题哈希，同样使用固定日期
+            title_hash = hashlib.md5(title_text.encode('utf-8')).hexdigest()[:16]
+            ET.SubElement(entry, f'{{{NS}}}id').text = f"tag:gitfox-enter,2024-01-01:{title_hash}"
 
         # 时间戳处理 (fix #3):
         # - <published> 使用 item 的真实发布时间
